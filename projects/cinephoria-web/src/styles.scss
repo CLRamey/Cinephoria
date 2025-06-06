@@ -1,0 +1,69 @@
+// Global styles for the Cinephoria web app
+@use "@angular/material" as mat;
+
+@include mat.core();
+
+// Define custom color palettes
+$my-primary: mat.m2-define-palette(mat.$m2-green-palette, 600);
+$my-accent: mat.m2-define-palette(mat.$m2-light-green-palette, A200, A100, A400);
+$my-warn: mat.m2-define-palette(mat.$m2-red-palette);
+
+// Define the theme using the custom palettes
+$my-theme: mat.m2-define-light-theme(
+  (
+    color: (
+      primary: $my-primary,
+      accent: $my-accent,
+      warn: $my-warn,
+    ),
+    typography: mat.m2-define-typography-config(),
+    density: 0,
+  )
+);
+
+@include mat.all-component-themes($my-theme);
+
+$primary-background: white;
+$primary-text: black;
+
+//global scss
+:host {
+  font-family: "Inter", Roboto, "Helvetica", "Arial", "sans-serif";
+
+  --background: $primary-background;
+
+  --gray-900: oklch(19.37% 0.006 300.98);
+  --gray-700: oklch(36.98% 0.014 302.71);
+  --gray-400: oklch(70.9% 0.015 304.04);
+
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html {
+  height: 100vh;
+  width: 100vw;
+}
+
+body {
+  margin: 0;
+  font-family: "Inter", Roboto, "Helvetica", "Arial", "sans-serif";
+  background-color: var(--background);
+  color: var(--gray-900);
+  padding: 30px;
+  height: 100vh;
+}
+
+h1 {
+  font-size: 3.125rem;
+  color: var(--gray-900);
+  font-weight: 500;
+  line-height: 100%;
+  letter-spacing: -0.125rem;
+  margin: 5% 0;
+  font-family: "Inter", Roboto, "Helvetica", "Arial", "sans-serif";
+}
+
+// html, body { height: 100%; }
+// body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
