@@ -29,5 +29,29 @@
     "strictInjectionParameters": true,
     "strictInputAccessModifiers": true,
     "strictTemplates": true
-  }
+    },
+  "include": [
+    "projects/**/*.ts",
+    "projects/**/*.{html,scss}",
+    "backend/**/*.ts", "tests/unit/backend.mailService.test.ts", "tests/unit/api.service.spec.ts",
+  ],
+  "exclude": [
+    "**/node_modules",
+    "**/dist",
+    "**/coverage",
+    "**/out-tsc",
+    "**/tests",
+    "**/*.spec.ts",
+    "**/*.test.ts",
+    "**/*.e2e-spec.ts",
+    "**/*.svg",
+    "**/*.png",
+    "**/*.jpg",
+    "**/*.jpeg",
+    "**/*.gif",
+    "**/*.webp",
+    "**/.env",
+    "**/.env.*",
+    "**/*.env"
+  ]
 }
