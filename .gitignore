@@ -81,4 +81,4 @@ cypress.config.ts
 **/ci-feature.yml
 
 # Yml files while configurating
-**.yml
+docker-compose.yml
