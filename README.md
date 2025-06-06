@@ -1,27 +1,47 @@
-# Cinephoria
+# Cinéphoria
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.2.16.
+## Présentation
 
-## Development server
+Cinéphoria est une plateforme complète de gestion de cinéma comprenant une application web, une application mobile et une application de bureau.  
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+Liens des documents :
 
-## Code scaffolding
+Charte graphique :
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+Wireframes :
 
-## Build
+Maquettes :  
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+Documentation technique :
 
-## Running unit tests
+Gestion de projet :
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+Manuel d'utilisation : 
 
-## Running end-to-end tests
+Transaction SQL :
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+## Structure du projet
 
-## Further help
+1. Les applications :
+* cinephoria-web/ : Application web (frontend Angular et backend Node.js)
+* cinephoria-mobile/ : Application mobile (Angular + Ionic)
+* cinephoria-desktop/ : Application bureautique (Angular + Electron)
+2. Backend : 
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+## Pré-requis
+
+* Node.js (v20 ou supérieur)
+* Node package manager (npm)
+* Docker et Docker Compose
+* MariaDB
+* MongoDB
+
+## Installation et déploiement local
+
+### Application Web
+
+### Application Mobile
+
+### Application Bureautique
+
+## Tests
