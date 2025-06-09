@@ -50,6 +50,11 @@ export default defineConfig([globalIgnores([
 
     rules: {
         "prettier/prettier": "error",
+        "@typescript-eslint/no-unused-vars": ["error", {
+            argsIgnorePattern: "^_",
+            caughtErrorsIgnorePattern: "^_",
+            varsIgnorePattern: "^_",
+        }],
     },
 }, {
     files: ["**/*.html"],
