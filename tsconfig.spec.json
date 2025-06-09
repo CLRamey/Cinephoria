@@ -2,25 +2,14 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "./out-tsc/spec",
-    "types": ["node", "jest", "cypress"]
+    "types": ["node", "jest", "cypress"],
+    "allowJs": false,
+    "sourceMap": true,
+    "noEmit": true,
   },
   "include": [
+    "tests/*.ts",
     "tests/**/*.ts", 
-    "tests/**/**/*.ts",
-    "backend/src/**/*",
     "projects/cinephoria-web/src/**/*",
-    "tests/*.ts"
   ],
-  "exclude": [
-    "**/node_modules",
-    "**/dist",
-    "**/coverage",
-    "**/out-tsc",
-    "**/*.svg",
-    "**/*.png",
-    "**/*.jpg",
-    "**/*.jpeg",
-    "**/*.gif",
-    "**/*.webp"
-  ]
 }

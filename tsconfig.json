@@ -31,15 +31,15 @@
     "strictTemplates": true
     },
   "include": [
-    "projects/**/*.ts",
-    "projects/**/*.{html,scss}",
-    "backend/**/*.ts", "tests/unit/backend.mailService.test.ts", "tests/unit/api.service.spec.ts",
+    "projects/cinephoria-web/**/*.ts",
+    "projects/cinephoria-web/**/*.{html,scss}"
   ],
   "exclude": [
     "**/node_modules",
     "**/dist",
     "**/coverage",
     "**/out-tsc",
+    "**/tsconfig.spec.json",
     "**/tests",
     "**/*.spec.ts",
     "**/*.test.ts",
@@ -52,6 +52,26 @@
     "**/*.webp",
     "**/.env",
     "**/.env.*",
-    "**/*.env"
+    "**/*.env",
+    "**/.dockerignore",
+    "**/docker-compose.yml",
+    "**/docker-compose-test.yml",
+    "**/Dockerfile",
+    "**/.editorconfig",
+    "**/.gitignore",
+    "**/.prettierrc",
+    "**/.prettierignore",
+    "**/.eslintrc.config.mjs",
+    "**/README.md",
+    "**/LICENSE",
+    "**/.editorconfig",
+    "**/sql",
+    "**/nosql",
+    "**/backend",
+    "**/projects/cinephoria-mobile",
+    "**/projects/cinephoria-desktop",
+    "**/vscode",
+    "**/github",
+    "**/angular",
   ]
 }
