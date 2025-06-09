@@ -3,6 +3,7 @@
 # Compiled output
 /dist
 **/dist
+**/dist-out-tests
 /build
 /tmp
 **/out-tsc
@@ -82,3 +83,5 @@ cypress.config.ts
 
 # Yml files while configurating
 docker-compose.yml
+/backend/docker-compose-db.yml
+/backend/.dockerignore

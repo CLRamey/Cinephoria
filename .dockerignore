@@ -86,5 +86,15 @@ cypress.config.ts
 .prettierrrc
 eslint.config.mjs
 
+# Other
+.editorconfig
+
 # CI/CD file
+**/github
 **/ci-deploy.yml
+**/ci-development.yml
+**/ci-production.yml
+
+# Initial database files that should not be baked into the image
+**/sql
+**/nosql
