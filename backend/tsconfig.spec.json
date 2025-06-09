@@ -1,0 +1,15 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./dist/tests",
+    "types": ["node", "jest", "cypress"],
+    "allowJs": false,
+    "sourceMap": true,
+    "noEmit": true
+  },
+  "include": [
+    "tests/*.ts",
+    "tests/**/*.ts", 
+    "src/**/*",
+  ],
+}
