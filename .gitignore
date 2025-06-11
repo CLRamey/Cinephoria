@@ -73,7 +73,6 @@ Thumbs.
 
 # Priliminary Cypress files
 **/cypress/downloads/
-cypress.config.ts
 
 # CI/CD file whilst in development
 **/ci-deploy.yml
