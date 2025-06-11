@@ -1,0 +1,130 @@
+# This workflow will be triggered on every push to the feature branches.
+# It will run the build and test commands to ensure that the code is working correctly.
+
+name: CI Feature Branch
+
+on:
+  push:
+    branches: ["feature/**"]
+  pull_request:
+    branches: ["feature/**"]
+
+env: 
+  NODE_ENV: development
+  #SQL
+  MARIADB_DATABASE: ${{ secrets.MARIADB_DATABASE }}
+  MARIADB_USER: ${{ secrets.MARIADB_USER }}
+  MARIADB_PASSWORD: ${{ secrets.MARIADB_PASSWORD }}
+  MARIADB_ROOT_PASSWORD: ${{ secrets.MARIADB_ROOT_PASSWORD }}
+  MARIADB_HOST: ${{ secrets.MARIADB_HOST }}
+  MARIADB_PORT: ${{ secrets.MARIADB_PORT }}
+  DATABASE_URL: ${{ secrets.DATABASE_URL }}
+  DB_DIALECT: ${{ secrets.DB_DIALECT }}
+  # NoSQL
+  MONGO_INITDB_ROOT_USERNAME: ${{ secrets.MONGO_INITDB_ROOT_USERNAME }}
+  MONGO_INITDB_ROOT_PASSWORD: ${{ secrets.MONGO_INITDB_ROOT_PASSWORD }}
+  MONGO_INITDB_DATABASE: ${{ secrets.MONGO_INITDB_DATABASE }}
+  MONGO_NAME: ${{ secrets.MONGO_NAME }}
+  MONGO_USERNAME: ${{ secrets.MONGO_USERNAME }}
+  MONGO_PASSWORD: ${{ secrets.MONGO_PASSWORD }}
+  MONGO_HOST: ${{ secrets.MONGO_HOST }}
+  MONGO_PORT: ${{ secrets.MONGO_PORT }}
+  MONGO_URI: ${{ secrets.MONGO_URI }}
+  # Mail Service
+  SMTP_HOST: ${{ secrets.SMTP_HOST }}
+  SMTP_PORT: ${{ secrets.SMTP_PORT }}
+  SMTP_SECURE: ${{ secrets.SMTP_SECURE }}
+  SMTP_USER: ${{ secrets.SMTP_USER }}
+  SMTP_PASS: ${{ secrets.SMTP_PASS }}
+  SMTP_FROM: ${{ secrets.SMTP_FROM }}
+  # OTHER
+  JWT_SECRET: ${{ secrets.JWT_SECRET }}
+  CORS_ORIGIN: ${{ secrets.CORS_ORIGIN }}
+  COOKIE_SECRET: ${{ secrets.COOKIE_SECRET }}
+  API_URL: ${{ secrets.API_URL }}
+  frontendDomain: ${{ secrets.FRONTEND_DOMAIN }}
+  PORT: ${{ secrets.PORT }}
+ 
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    environment: development
+    strategy:
+      matrix:
+        node-version: [22.x]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+        cache-dependency-path: '**/package-lock.json'
+
+    - name: Install dependencies
+      run: npm ci
+      working-directory: ./
+
+    - name: Lint code
+      run: npm run lint
+      working-directory: ./
+
+    - name: Start Docker containers
+      run: npm run docker:test
+      working-directory: ./
+
+    - name: Wait for containers to be ready
+      run: |
+        echo "Waiting for containers to be ready..."
+        sleep 45
+    
+    - name: Check for test files
+      id: check_tests
+      run: |
+        UNIT_TESTS=$(find ./tests/unit ./backend/test/unit -type f \( -name "*.spec.ts" -o -name "*.test.ts" \) | wc -l)
+        FUNCTIONAL_TESTS=$(find ./tests/functional ./backend/tests/functional -type f \( -name "*.spec.ts" -o -name "*.test.ts" \) | wc -l)
+        INTEGRATION_TESTS=$(find ./tests/integration ./backend/tests/integration -type f \( -name "*.spec.ts" -o -name "*.test.ts" \) | wc -l)
+
+        if [ $UNIT_TESTS -gt 0 ]; then
+          echo "unit_tests=true" >> GITHUB_OUTPUT
+        else
+          echo "unit_tests=false" >> GITHUB_OUTPUT
+        fi
+
+        if [ $FUNCTIONAL_TESTS -gt 0 ]; then
+          echo "functional_tests=true" >> GITHUB_OUTPUT
+        else
+          echo "functional_tests=false" >> GITHUB_OUTPUT
+        fi
+
+        if [ $INTEGRATION_TESTS -gt 0 ]; then
+          echo "integration_tests=true" >> GITHUB_OUTPUT
+        else
+          echo "integration_tests=false" >> GITHUB_OUTPUT
+        fi
+      working-directory: ./
+
+    - name: Run Unit Tests
+      if: steps.check_tests.outputs.unit_tests == 'true'
+      run: |
+        echo "Running unit tests..."
+        docker compose -f docker-compose-test.yml exec -T cinephoria-test npm run test:unit:all
+
+    - name: Run Functional Tests
+      if: steps.check_tests.outputs.functional_tests == 'true'
+      run: |
+        echo "Running functional tests..."
+        docker compose -f docker-compose-test.yml exec -T cinephoria-test npm run test:functional:all
+
+    - name: Run Integration Tests
+      if: steps.check_tests.outputs.integration_tests == 'true'
+      run: |
+        echo "Running integration tests..."
+        docker compose -f docker-compose-test.yml exec -T cinephoria-test npm run test:integration:all
+    
+    - name: Stop Docker containers
+      if: always()
+      run: npm run docker:test:down
