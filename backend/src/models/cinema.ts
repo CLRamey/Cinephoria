@@ -3,6 +3,7 @@ import { DataTypes, Model, Optional } from 'sequelize';
 import type { cinemaFilm, cinemaFilmId } from './cinemaFilm';
 import type { film, filmId } from './film';
 import type { room, roomId } from './room';
+import type { screening, screeningId } from './screening';
 
 export interface cinemaAttributes {
   cinemaId: number;
@@ -71,6 +72,18 @@ export class cinema
   hasRoom!: Sequelize.HasManyHasAssociationMixin<room, roomId>;
   hasRooms!: Sequelize.HasManyHasAssociationsMixin<room, roomId>;
   countRooms!: Sequelize.HasManyCountAssociationsMixin;
+  // cinema hasMany screening via cinemaId
+  screenings!: screening[];
+  getScreenings!: Sequelize.HasManyGetAssociationsMixin<screening>;
+  setScreenings!: Sequelize.HasManySetAssociationsMixin<screening, screeningId>;
+  addScreening!: Sequelize.HasManyAddAssociationMixin<screening, screeningId>;
+  addScreenings!: Sequelize.HasManyAddAssociationsMixin<screening, screeningId>;
+  createScreening!: Sequelize.HasManyCreateAssociationMixin<screening>;
+  removeScreening!: Sequelize.HasManyRemoveAssociationMixin<screening, screeningId>;
+  removeScreenings!: Sequelize.HasManyRemoveAssociationsMixin<screening, screeningId>;
+  hasScreening!: Sequelize.HasManyHasAssociationMixin<screening, screeningId>;
+  hasScreenings!: Sequelize.HasManyHasAssociationsMixin<screening, screeningId>;
+  countScreenings!: Sequelize.HasManyCountAssociationsMixin;
 
   static initModel(sequelize: Sequelize.Sequelize): typeof cinema {
     return cinema.init(

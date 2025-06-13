@@ -1,6 +1,6 @@
 import * as Sequelize from 'sequelize';
 import { DataTypes, Model, Optional } from 'sequelize';
-import type { screening, screeningId } from './screening';
+import type { room, roomId } from './room';
 
 export interface qualityAttributes {
   qualityId: number;
@@ -21,18 +21,18 @@ export class quality
   qualityProjectionType?: '2D' | '3D' | 'IMAX' | '4K' | '4DX';
   qualityProjectionPrice!: number;
 
-  // quality hasMany screening via qualityId
-  screenings!: screening[];
-  getScreenings!: Sequelize.HasManyGetAssociationsMixin<screening>;
-  setScreenings!: Sequelize.HasManySetAssociationsMixin<screening, screeningId>;
-  addScreening!: Sequelize.HasManyAddAssociationMixin<screening, screeningId>;
-  addScreenings!: Sequelize.HasManyAddAssociationsMixin<screening, screeningId>;
-  createScreening!: Sequelize.HasManyCreateAssociationMixin<screening>;
-  removeScreening!: Sequelize.HasManyRemoveAssociationMixin<screening, screeningId>;
-  removeScreenings!: Sequelize.HasManyRemoveAssociationsMixin<screening, screeningId>;
-  hasScreening!: Sequelize.HasManyHasAssociationMixin<screening, screeningId>;
-  hasScreenings!: Sequelize.HasManyHasAssociationsMixin<screening, screeningId>;
-  countScreenings!: Sequelize.HasManyCountAssociationsMixin;
+  // quality hasMany room via qualityId
+  rooms!: room[];
+  getRooms!: Sequelize.HasManyGetAssociationsMixin<room>;
+  setRooms!: Sequelize.HasManySetAssociationsMixin<room, roomId>;
+  addRoom!: Sequelize.HasManyAddAssociationMixin<room, roomId>;
+  addRooms!: Sequelize.HasManyAddAssociationsMixin<room, roomId>;
+  createRoom!: Sequelize.HasManyCreateAssociationMixin<room>;
+  removeRoom!: Sequelize.HasManyRemoveAssociationMixin<room, roomId>;
+  removeRooms!: Sequelize.HasManyRemoveAssociationsMixin<room, roomId>;
+  hasRoom!: Sequelize.HasManyHasAssociationMixin<room, roomId>;
+  hasRooms!: Sequelize.HasManyHasAssociationsMixin<room, roomId>;
+  countRooms!: Sequelize.HasManyCountAssociationsMixin;
 
   static initModel(sequelize: Sequelize.Sequelize): typeof quality {
     return quality.init(
@@ -63,8 +63,8 @@ export class quality
         sequelize,
         tableName: 'Quality',
         modelName: 'quality',
-        timestamps: false,
         underscored: true,
+        timestamps: false,
         indexes: [
           {
             name: 'PRIMARY',

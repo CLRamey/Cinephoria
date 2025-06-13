@@ -1,7 +1,7 @@
 import * as Sequelize from 'sequelize';
 import { DataTypes, Model, Optional } from 'sequelize';
+import type { cinema, cinemaId } from './cinema';
 import type { film, filmId } from './film';
-import type { quality, qualityId } from './quality';
 import type { reservation, reservationId } from './reservation';
 import type { room, roomId } from './room';
 
@@ -10,9 +10,9 @@ export interface screeningAttributes {
   screeningDate: Date;
   screeningStatus?: 'active' | 'ended' | 'deleted';
   deletedAt?: Date;
+  cinemaId: number;
   filmId: number;
   roomId: number;
-  qualityId: number;
 }
 
 export type screeningPk = 'screeningId';
@@ -31,20 +31,20 @@ export class screening
   screeningDate!: Date;
   screeningStatus?: 'active' | 'ended' | 'deleted';
   deletedAt?: Date;
+  cinemaId!: number;
   filmId!: number;
   roomId!: number;
-  qualityId!: number;
 
+  // screening belongsTo cinema via cinemaId
+  cinema!: cinema;
+  getCinema!: Sequelize.BelongsToGetAssociationMixin<cinema>;
+  setCinema!: Sequelize.BelongsToSetAssociationMixin<cinema, cinemaId>;
+  createCinema!: Sequelize.BelongsToCreateAssociationMixin<cinema>;
   // screening belongsTo film via filmId
   film!: film;
   getFilm!: Sequelize.BelongsToGetAssociationMixin<film>;
   setFilm!: Sequelize.BelongsToSetAssociationMixin<film, filmId>;
   createFilm!: Sequelize.BelongsToCreateAssociationMixin<film>;
-  // screening belongsTo quality via qualityId
-  quality!: quality;
-  getQuality!: Sequelize.BelongsToGetAssociationMixin<quality>;
-  setQuality!: Sequelize.BelongsToSetAssociationMixin<quality, qualityId>;
-  createQuality!: Sequelize.BelongsToCreateAssociationMixin<quality>;
   // screening belongsTo room via roomId
   room!: room;
   getRoom!: Sequelize.BelongsToGetAssociationMixin<room>;
@@ -93,6 +93,15 @@ export class screening
           field: 'deleted_at',
           defaultValue: Sequelize.Sequelize.fn('current_timestamp'),
         },
+        cinemaId: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          references: {
+            model: 'Cinema',
+            key: 'cinema_id',
+          },
+          field: 'cinema_id',
+        },
         filmId: {
           type: DataTypes.INTEGER,
           allowNull: false,
@@ -111,28 +120,20 @@ export class screening
           },
           field: 'room_id',
         },
-        qualityId: {
-          type: DataTypes.INTEGER,
-          allowNull: false,
-          references: {
-            model: 'Quality',
-            key: 'quality_id',
-          },
-          field: 'quality_id',
-        },
       },
       {
         sequelize,
         tableName: 'Screening',
         modelName: 'screening',
+        underscored: true,
         timestamps: true,
         deletedAt: 'deletedAt',
-        paranoid: true,
         defaultScope: {
           attributes: {
             exclude: ['deletedAt'],
           },
         },
+        paranoid: true,
         indexes: [
           {
             name: 'PRIMARY',
@@ -146,10 +147,15 @@ export class screening
             using: 'BTREE',
             fields: [
               { name: 'screening_date' },
+              { name: 'cinema_id' },
               { name: 'room_id' },
               { name: 'film_id' },
-              { name: 'quality_id' },
             ],
+          },
+          {
+            name: 'cinema_id',
+            using: 'BTREE',
+            fields: [{ name: 'cinema_id' }],
           },
           {
             name: 'film_id',
@@ -160,11 +166,6 @@ export class screening
             name: 'room_id',
             using: 'BTREE',
             fields: [{ name: 'room_id' }],
-          },
-          {
-            name: 'quality_id',
-            using: 'BTREE',
-            fields: [{ name: 'quality_id' }],
           },
         ],
       },

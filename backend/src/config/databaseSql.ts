@@ -1,4 +1,5 @@
 import { Sequelize } from 'sequelize';
+import { initModels } from '../models/init-models';
 
 // Create Sequelize instance for SQL connection
 export const sequelize = new Sequelize(
@@ -21,6 +22,9 @@ export const sequelize = new Sequelize(
     },
   },
 );
+
+// Initialize models
+export const models = initModels(sequelize);
 
 // Connection to the database
 export const connectMariaDB = async () => {

@@ -135,6 +135,8 @@ export function initModels(sequelize: Sequelize) {
   cinema.hasMany(cinemaFilm, { as: 'cinemaFilms', foreignKey: 'cinemaId' });
   room.belongsTo(cinema, { as: 'cinema', foreignKey: 'cinemaId' });
   cinema.hasMany(room, { as: 'rooms', foreignKey: 'cinemaId' });
+  screening.belongsTo(cinema, { as: 'cinema', foreignKey: 'cinemaId' });
+  cinema.hasMany(screening, { as: 'screenings', foreignKey: 'cinemaId' });
   cinemaFilm.belongsTo(film, { as: 'film', foreignKey: 'filmId' });
   film.hasMany(cinemaFilm, { as: 'cinemaFilms', foreignKey: 'filmId' });
   genreFilm.belongsTo(film, { as: 'film', foreignKey: 'filmId' });
@@ -145,8 +147,8 @@ export function initModels(sequelize: Sequelize) {
   film.hasMany(screening, { as: 'screenings', foreignKey: 'filmId' });
   genreFilm.belongsTo(genre, { as: 'genre', foreignKey: 'genreId' });
   genre.hasMany(genreFilm, { as: 'genreFilms', foreignKey: 'genreId' });
-  screening.belongsTo(quality, { as: 'quality', foreignKey: 'qualityId' });
-  quality.hasMany(screening, { as: 'screenings', foreignKey: 'qualityId' });
+  room.belongsTo(quality, { as: 'quality', foreignKey: 'qualityId' });
+  quality.hasMany(room, { as: 'rooms', foreignKey: 'qualityId' });
   reservationSeat.belongsTo(reservation, { as: 'reservation', foreignKey: 'reservationId' });
   reservation.hasMany(reservationSeat, { as: 'reservationSeats', foreignKey: 'reservationId' });
   review.belongsTo(reservation, { as: 'reservation', foreignKey: 'reservationId' });

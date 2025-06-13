@@ -2,6 +2,7 @@ import * as Sequelize from 'sequelize';
 import { DataTypes, Model, Optional } from 'sequelize';
 import type { cinema, cinemaId } from './cinema';
 import type { incident, incidentId } from './incident';
+import type { quality, qualityId } from './quality';
 import type { screening, screeningId } from './screening';
 import type { seat, seatId } from './seat';
 
@@ -9,6 +10,7 @@ export interface roomAttributes {
   roomId: number;
   roomNumber: number;
   roomCapacity: number;
+  qualityId: number;
   seatMapId?: string;
   cinemaId: number;
   deletedAt?: Date;
@@ -23,6 +25,7 @@ export class room extends Model<roomAttributes, roomCreationAttributes> implemen
   roomId!: number;
   roomNumber!: number;
   roomCapacity!: number;
+  qualityId!: number;
   seatMapId?: string;
   cinemaId!: number;
   deletedAt?: Date;
@@ -32,6 +35,11 @@ export class room extends Model<roomAttributes, roomCreationAttributes> implemen
   getCinema!: Sequelize.BelongsToGetAssociationMixin<cinema>;
   setCinema!: Sequelize.BelongsToSetAssociationMixin<cinema, cinemaId>;
   createCinema!: Sequelize.BelongsToCreateAssociationMixin<cinema>;
+  // room belongsTo quality via qualityId
+  quality!: quality;
+  getQuality!: Sequelize.BelongsToGetAssociationMixin<quality>;
+  setQuality!: Sequelize.BelongsToSetAssociationMixin<quality, qualityId>;
+  createQuality!: Sequelize.BelongsToCreateAssociationMixin<quality>;
   // room hasMany incident via roomId
   incidents!: incident[];
   getIncidents!: Sequelize.HasManyGetAssociationsMixin<incident>;
@@ -89,6 +97,15 @@ export class room extends Model<roomAttributes, roomCreationAttributes> implemen
           allowNull: false,
           field: 'room_capacity',
         },
+        qualityId: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          references: {
+            model: 'Quality',
+            key: 'quality_id',
+          },
+          field: 'quality_id',
+        },
         seatMapId: {
           type: DataTypes.CHAR(36),
           allowNull: true,
@@ -115,6 +132,7 @@ export class room extends Model<roomAttributes, roomCreationAttributes> implemen
         sequelize,
         tableName: 'Room',
         modelName: 'room',
+        underscored: true,
         timestamps: true,
         deletedAt: 'deletedAt',
         paranoid: true,
@@ -135,6 +153,11 @@ export class room extends Model<roomAttributes, roomCreationAttributes> implemen
             unique: true,
             using: 'BTREE',
             fields: [{ name: 'room_number' }, { name: 'cinema_id' }],
+          },
+          {
+            name: 'quality_id',
+            using: 'BTREE',
+            fields: [{ name: 'quality_id' }],
           },
           {
             name: 'cinema_id',
