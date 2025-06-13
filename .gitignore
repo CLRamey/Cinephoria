@@ -76,11 +76,15 @@ Thumbs.
 **/cypress/fixtures/
 **/cypress/support/
 
+# Backend docker-compose and duplicate database init files for isolated/initial database testing and setup
+/backend/docker-compose-db.yml
+/backend/.dockerignore
+/backend/sql/
+/backend/nosql/
+
+# Main docker-compose file
+docker-compose.yml
+
 # CI/CD file whilst in development
 **/ci-deploy.yml
 **/ci-development.yml
-
-# Yml files while configurating
-docker-compose.yml
-/backend/docker-compose-db.yml
-/backend/.dockerignore
