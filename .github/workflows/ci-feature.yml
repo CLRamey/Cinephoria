@@ -84,7 +84,7 @@ jobs:
     - name: Check for test files
       id: check_tests
       run: |
-        UNIT_TESTS=$(find ./tests/unit ./backend/test/unit -type f \( -name "*.spec.ts" -o -name "*.test.ts" \) | wc -l)
+        UNIT_TESTS=$(find ./tests/unit ./backend/tests/unit -type f \( -name "*.spec.ts" -o -name "*.test.ts" \) | wc -l)
         FUNCTIONAL_TESTS=$(find ./tests/functional ./backend/tests/functional -type f \( -name "*.spec.ts" -o -name "*.test.ts" \) | wc -l)
         INTEGRATION_TESTS=$(find ./tests/integration ./backend/tests/integration -type f \( -name "*.spec.ts" -o -name "*.test.ts" \) | wc -l)
 
