@@ -73,6 +73,8 @@ Thumbs.
 
 # Priliminary Cypress files
 **/cypress/downloads/
+**/cypress/fixtures/
+**/cypress/support/
 
 # CI/CD file whilst in development
 **/ci-deploy.yml
