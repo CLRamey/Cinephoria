@@ -1,4 +1,4 @@
-# This workflow will be triggered on every push to the feature branches.
+# This workflow will be triggered on every push/pull to the feature branches.
 # It will run the build and test commands to ensure that the code is working correctly.
 
 name: CI Feature Branch
