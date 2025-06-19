@@ -38,5 +38,14 @@ COPY . .
 
 RUN npm run build:frontend
 
+WORKDIR /app/backend
+
+COPY backend/package.json ./backend/
+COPY backend/package-lock.json ./backend/
+
+RUN npm ci --prefix backend
+
+RUN npm run docker:backend
+
 ENTRYPOINT ["/bin/sh"]
 CMD ["-c", "while true; do sleep 30; done"]
