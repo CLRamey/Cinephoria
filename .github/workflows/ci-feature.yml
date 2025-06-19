@@ -81,12 +81,6 @@ jobs:
       run: npm run docker:test
       working-directory: ./
 
-    - name: Launching the cinephoria test app
-      run: |
-        echo "Launching the cinephoria test app..."  
-        docker compose -f docker-compose-test.yml exec -T cinephoria-test npm run dev
-      working-directory: ./
-
     - name: Wait for containers to be ready
       run: |
         echo "Waiting for containers to be ready..."
