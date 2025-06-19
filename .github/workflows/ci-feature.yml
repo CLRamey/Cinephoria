@@ -101,6 +101,11 @@ jobs:
         echo "Launching the cinephoria test app..."  
         docker compose -f docker-compose-test.yml exec -T cinephoria-test nohup npm run dev:test > /dev/null 2>&1 &
 
+    - name: Wait for cinephoria test app to be ready
+      run: |
+        echo "Waiting for the app to be ready..."
+        sleep 45
+
     - name: Run E2E cypress Tests
       run: |
         echo "Running e2e cypress tests..."
