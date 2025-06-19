@@ -44,7 +44,6 @@ env:
   COOKIE_SECRET: ${{ secrets.COOKIE_SECRET }}
   BASE_URL: ${{ secrets.BASE_URL }}
   API_URL: ${{ secrets.API_URL }}
-  frontendDomain: ${{ secrets.FRONTEND_DOMAIN }}
   PORT: ${{ secrets.PORT }}
  
 jobs:

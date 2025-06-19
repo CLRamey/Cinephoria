@@ -112,8 +112,6 @@ services:
         - JWT_EXPIRES_IN=${JWT_EXPIRES_IN}
         - CORS_ORIGIN=${CORS_ORIGIN}
         - COOKIE_SECRET=${COOKIE_SECRET}
-        - API_URL=${API_URL}
-        - frontendDomain=${FRONTENDDOMAIN}
         - PORT=${PORT}
         - BASE_URL=${BASE_URL}
       volumes:
