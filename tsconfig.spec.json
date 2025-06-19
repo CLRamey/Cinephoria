@@ -2,7 +2,7 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "./out-tsc/spec",
-    "types": ["node", "jest", "cypress"],
+    "types": ["node", "jest"],
     "allowJs": false,
     "sourceMap": true,
     "noEmit": true,
@@ -11,5 +11,7 @@
     "tests/*.ts",
     "tests/**/*.ts", 
     "projects/cinephoria-web/src/**/*",
+    "backend/src/**/*",
+    "backend/tests/**/*",
   ],
 }

@@ -22,9 +22,6 @@ services:
     image: mongo:8.0
     container_name: cinephoria-nosqldb
     restart: unless-stopped
-    env_file:
-      - path: .env
-        required: false
     environment:
       - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
       - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
@@ -50,9 +47,6 @@ services:
       - /app/node_modules
     ports:
       - "3001:3000"
-    env_file:
-      - path: .env
-        required: false
     environment:
       - MARIADB_DATABASE=${MARIADB_DATABASE}
       - MARIADB_USER=${MARIADB_USER}
@@ -86,9 +80,6 @@ services:
     restart: always
     ports:
       - "8081:80"
-    env_file:
-      - path: .env
-        required: false
     environment:
       - API_URL=${API_URL}
     depends_on:
@@ -106,9 +97,6 @@ services:
       volumes:
         - .:/app
         - /app/node_modules
-      env_file:
-      - path: .env
-        required: false
       depends_on:
         - cinephoria-back
         - cinephoria-front

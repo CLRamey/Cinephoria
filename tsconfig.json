@@ -30,7 +30,7 @@
     },
   "include": [
     "projects/cinephoria-web/**/*.ts",
-    "projects/cinephoria-web/**/*.{html,scss}"
+    "projects/cinephoria-web/**/*.{html,scss}",
   ],
   "exclude": [
     "**/node_modules",
