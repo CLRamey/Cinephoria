@@ -14,8 +14,6 @@
 .env.*
 **/.env
 **/.env.*
-**/environment.ts
-**/environment*.ts
 
 # Node modules
 **/node_modules
