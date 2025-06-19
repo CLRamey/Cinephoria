@@ -36,16 +36,5 @@ RUN npx ng analytics off -g
 # Copy all source code & test files to container
 COPY . .
 
-RUN npm run build:frontend
-
-WORKDIR /app/backend
-
-COPY backend/package.json ./backend/
-COPY backend/package-lock.json ./backend/
-
-RUN npm ci --prefix backend
-
-COPY backend ./backend/
-
 ENTRYPOINT ["/bin/sh"]
 CMD ["-c", "while true; do sleep 30; done"]
