@@ -71,29 +71,15 @@ services:
     stdin_open: true
     tty: true
 
-  cinephoria-front:
-    build:
-      context: .
-      dockerfile: projects/cinephoria-web/Dockerfile
-    image: app-frontend
-    container_name: cinephoria-front
-    restart: always
-    ports:
-      - "8081:80"
-    environment:
-      - API_URL=${API_URL}
-    depends_on:
-      - cinephoria-back
-    networks:
-      - cinephoria-network
-
   cinephoria-test:
       build:
         context: .
         dockerfile: Dockerfile
       image: app-test
       container_name: cinephoria-test
-      restart: on-failure
+      restart: always
+      ports:
+        - "4200:4200"
       environment:
         - MARIADB_DATABASE=${MARIADB_DATABASE}
         - MARIADB_USER=${MARIADB_USER}
@@ -113,15 +99,16 @@ services:
         - CORS_ORIGIN=${CORS_ORIGIN}
         - COOKIE_SECRET=${COOKIE_SECRET}
         - PORT=${PORT}
+        - API_URL=${API_URL}
         - BASE_URL=${BASE_URL}
       volumes:
         - .:/app
         - /app/node_modules
       depends_on:
         - cinephoria-back
-        - cinephoria-front
       networks:
         - cinephoria-network
+      working_dir: /app
       tty: true
       stdin_open: true
 

@@ -36,5 +36,7 @@ RUN npx ng analytics off -g
 # Copy all source code & test files to container
 COPY . .
 
+RUN npm run build:frontend
+
 ENTRYPOINT ["/bin/sh"]
 CMD ["-c", "while true; do sleep 30; done"]
