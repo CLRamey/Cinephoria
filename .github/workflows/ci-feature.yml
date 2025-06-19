@@ -85,60 +85,23 @@ jobs:
       run: |
         echo "Waiting for containers to be ready..."
         sleep 45
-    
-    - name: Check for test files
-      id: check_tests
-      run: |
-        UNIT_TESTS=$(find ./tests/unit ./backend/tests/unit -type f \( -name "*.spec.ts" -o -name "*.test.ts" \) | wc -l)
-        INTEGRATION_TESTS=$(find ./tests/integration ./backend/tests/integration -type f \( -name "*.spec.ts" -o -name "*.test.ts" \) | wc -l)
-        FUNCTIONAL_TESTS=$(find ./tests/functional ./backend/tests/functional -type f \( -name "*.spec.ts" -o -name "*.test.ts" \) | wc -l)
-        E2E_TESTS=$(find ./tests/cypress/e2e -type f \( -name "*.cy.ts" \) | wc -l)
-
-        if [ $UNIT_TESTS -gt 0 ]; then
-          echo "unit_tests=true" >> GITHUB_OUTPUT
-        else
-          echo "unit_tests=false" >> GITHUB_OUTPUT
-        fi
-
-        if [ $INTEGRATION_TESTS -gt 0 ]; then
-          echo "integration_tests=true" >> GITHUB_OUTPUT
-        else
-          echo "integration_tests=false" >> GITHUB_OUTPUT
-        fi
-
-        if [ $FUNCTIONAL_TESTS -gt 0 ]; then
-          echo "functional_tests=true" >> GITHUB_OUTPUT
-        else
-          echo "functional_tests=false" >> GITHUB_OUTPUT
-        fi
-
-        if [ $E2E_TESTS -gt 0 ]; then
-          echo "e2e_tests=true" >> GITHUB_OUTPUT
-        else
-          echo "e2e_tests=false" >> GITHUB_OUTPUT
-        fi
-      working-directory: ./
 
     - name: Run Unit Tests
-      if: steps.check_tests.outputs.unit_tests == 'true'
       run: |
         echo "Running unit tests..."
         docker compose -f docker-compose-test.yml exec -T cinephoria-test npm run test:unit:all:docker
 
     - name: Run Integration Tests
-      if: steps.check_tests.outputs.integration_tests == 'true'
       run: |
         echo "Running integration tests..."
         docker compose -f docker-compose-test.yml exec -T cinephoria-test npm run test:integration:all:docker
 
     - name: Run Functional Tests
-      if: steps.check_tests.outputs.functional_tests == 'true'
       run: |
         echo "Running functional tests..."
         docker compose -f docker-compose-test.yml exec -T cinephoria-test npm run test:functional:all:docker
 
     - name: Run E2E cypress Tests
-      if: steps.check_tests.outputs.e2e_tests == 'true'
       run: |
         echo "Running e2e cypress tests..."
         docker compose -f docker-compose-test.yml exec -T cinephoria-test npm run test:e2e:run:ci
