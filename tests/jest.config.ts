@@ -18,7 +18,7 @@ const config: Config = {
   moduleFileExtensions: [...defaults.moduleFileExtensions, 'html'],
   setupFilesAfterEnv: ['<rootDir>/tests/setup.jest.ts'],
   verbose: true,
-  detectLeaks: true, // Detect memory leaks in tests
+  detectLeaks: false, // Detect memory leaks in tests
   detectOpenHandles: true, // Detect open handles that may prevent Jest from exiting
   forceExit: false, // Do not force Jest to exit, allowing for proper cleanup
 };

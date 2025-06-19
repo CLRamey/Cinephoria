@@ -4,7 +4,7 @@
 @include mat.core();
 
 // Define custom color palettes
-$my-primary: mat.m2-define-palette(mat.$m2-green-palette, 600);
+$my-primary: mat.m2-define-palette(mat.$m2-green-palette, 400);
 $my-accent: mat.m2-define-palette(mat.$m2-light-green-palette, A200, A100, A400);
 $my-warn: mat.m2-define-palette(mat.$m2-red-palette);
 
@@ -21,10 +21,18 @@ $my-theme: mat.m2-define-light-theme(
   )
 );
 
+// Export individually if needed
+$my-primary: $my-primary !default;
+$my-accent: $my-accent !default;
+$my-warn: $my-warn !default;
+
 @include mat.all-component-themes($my-theme);
 
 $primary-background: white;
 $primary-text: black;
+
+// Export theme individually if needed
+$my-theme: $my-theme !default;
 
 //global scss
 :host {
@@ -51,7 +59,6 @@ body {
   font-family: "Inter", Roboto, "Helvetica", "Arial", "sans-serif";
   background-color: var(--background);
   color: var(--gray-900);
-  padding: 30px;
   height: 100vh;
 }
 
@@ -63,6 +70,17 @@ h1 {
   letter-spacing: -0.125rem;
   margin: 5% 0;
   font-family: "Inter", Roboto, "Helvetica", "Arial", "sans-serif";
+}
+
+main {
+  width: 100vw;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  box-sizing: inherit;
+  position: relative;
 }
 
 // html, body { height: 100%; }
