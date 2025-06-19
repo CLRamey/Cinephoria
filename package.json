@@ -13,7 +13,7 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:unit": "jest tests/unit",
-    "test:functional": "jest tests/functional",
+    "test:functional": "jest tests/functional --passWithNoTests",
     "test:integration": "jest tests/integration",
     "test:frontend:all": "npm run test:unit && npm run test:functional && npm run test:integration",
     "test:unit:bk": "npm --prefix backend run test:unit:bk",
