@@ -35,15 +35,65 @@ services:
     networks:
       - cinephoria-network
 
+  cinephoria-back:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    image: app-backend
+    container_name: cinephoria-back
+    restart: on-failure
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    ports:
+      - "3001:3000"
+    environment:
+      - MARIADB_DATABASE=${MARIADB_DATABASE}
+      - MARIADB_USER=${MARIADB_USER}
+      - MARIADB_PASSWORD=${MARIADB_PASSWORD}
+      - MARIADB_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD}
+      - MARIADB_HOST=${MARIADB_HOST}
+      - MARIADB_PORT=${MARIADB_PORT}
+      - DATABASE_URL=${DATABASE_URL}
+      - MONGO_NAME=${MONGO_NAME}
+      - MONGO_USERNAME=${MONGO_USERNAME}
+      - MONGO_PASSWORD=${MONGO_PASSWORD}
+      - MONGO_HOST=${MONGO_HOST}
+      - MONGO_PORT=${MONGO_PORT}
+      - MONGO_URI=${MONGO_URI}
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_EXPIRES_IN=${JWT_EXPIRES_IN}
+    depends_on:
+      - mariadb
+      - mongo
+    networks:
+      - cinephoria-network
+    stdin_open: true
+    tty: true
+
+  cinephoria-front:
+    build:
+      context: .
+      dockerfile: projects/cinephoria-web/Dockerfile
+    image: app-frontend
+    container_name: cinephoria-front
+    restart: always
+    ports:
+      - "8081:80"
+    environment:
+      - API_URL=${API_URL}
+    depends_on:
+      - cinephoria-back
+    networks:
+      - cinephoria-network
+
   cinephoria-test:
       build:
         context: .
         dockerfile: Dockerfile
       image: app-test
       container_name: cinephoria-test
-      restart: always
-      ports:
-        - "4200:4200"
+      restart: on-failure
       environment:
         - MARIADB_DATABASE=${MARIADB_DATABASE}
         - MARIADB_USER=${MARIADB_USER}
@@ -60,13 +110,18 @@ services:
         - MONGO_URI=${MONGO_URI}
         - JWT_SECRET=${JWT_SECRET}
         - JWT_EXPIRES_IN=${JWT_EXPIRES_IN}
-        - BASE_URL=${BASE_URL}
         - CORS_ORIGIN=${CORS_ORIGIN}
         - COOKIE_SECRET=${COOKIE_SECRET}
         - API_URL=${API_URL}
+        - frontendDomain=${FRONTEND_DOMAIN}
+        - PORT=${PORT}
+        - BASE_URL=${BASE_URL}
       volumes:
         - .:/app
         - /app/node_modules
+      depends_on:
+        - cinephoria-back
+        - cinephoria-front
       networks:
         - cinephoria-network
       tty: true

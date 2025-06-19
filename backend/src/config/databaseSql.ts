@@ -21,7 +21,12 @@ const dialectOptions = {
 };
 
 // Create Sequelize instance for SQL connection
-export const sequelize = new Sequelize(process.env['DATABASE_URL'] as string, {
+const databaseUrl = process.env['DATABASE_URL'];
+if (!databaseUrl) {
+  throw new Error('DATABASE_URL environment variable is not defined');
+}
+
+export const sequelize = new Sequelize(databaseUrl, {
   dialect: 'mariadb',
   logging: !isProduction ? console.log : false, // Enabled for development, disabled in production
   dialectOptions: dialectOptions,
