@@ -66,9 +66,13 @@ jobs:
         cache: 'npm'
         cache-dependency-path: '**/package-lock.json'
 
-    - name: Install dependencies
+    - name: Install frontend dependencies
       run: npm ci
       working-directory: ./
+
+    - name: Install backend dependencies
+      run: npm ci
+      working-directory: ./backend
 
     - name: Lint code
       run: npm run lint
@@ -81,6 +85,7 @@ jobs:
     - name: Launching the cinephoria test app
       run: |
         echo "Launching the cinephoria test app..."  
+        docker compose -f docker-compose-test.yml exec -T cinephoria-test npm run
         docker compose -f docker-compose-test.yml exec -T cinephoria-test npm run dev:test
       working-directory: ./
 

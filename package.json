@@ -41,7 +41,7 @@
     "frontend": "ng serve cinephoria-web",
     "backend": "npm run dev --prefix backend",
     "docker:frontend": "ng serve cinephoria-web",
-    "docker:backend": "npm run dev --prefix backend",
+    "docker:backend": "npm run start --prefix backend && npm run dev --prefix backend",
     "start:backend": "node backend/dist/server.js",
     "build:frontend": "ng build cinephoria-web",
     "build:backend": "npm run build --prefix backend",
