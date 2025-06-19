@@ -4,6 +4,8 @@
 name: CI Feature Branch
 
 on:
+  push:
+    branches: ["feature/**"]
   pull_request:
     branches: ["feature/**"]
 
