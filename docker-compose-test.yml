@@ -113,7 +113,7 @@ services:
         - CORS_ORIGIN=${CORS_ORIGIN}
         - COOKIE_SECRET=${COOKIE_SECRET}
         - API_URL=${API_URL}
-        - frontendDomain=${FRONTEND_DOMAIN}
+        - frontendDomain=${FRONTENDDOMAIN}
         - PORT=${PORT}
         - BASE_URL=${BASE_URL}
       volumes:
