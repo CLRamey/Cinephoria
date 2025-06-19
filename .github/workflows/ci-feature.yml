@@ -81,22 +81,6 @@ jobs:
       run: npm run docker:test
       working-directory: ./
 
-    - name: Check for test files inside container
-      id: check_tests
-      run: |
-        docker compose -f docker-compose-test.yml exec -T cinephoria-test bash -c '
-          UNIT_TESTS=$(find ./tests/unit ./backend/tests/unit -type f \( -name "*.spec.ts" -o -name "*.test.ts" \) | wc -l)
-          INTEGRATION_TESTS=$(find ./tests/integration ./backend/tests/integration -type f \( -name "*.spec.ts" -o -name "*.test.ts" \) | wc -l)
-          FUNCTIONAL_TESTS=$(find ./tests/functional ./backend/tests/functional -type f \( -name "*.spec.ts" -o -name "*.test.ts" \) | wc -l)
-          E2E_TESTS=$(find ./tests/cypress/e2e -type f \( -name "*.cy.ts" \) | wc -l)
-
-          echo "unit_tests=$([ $UNIT_TESTS -gt 0 ] && echo true || echo false)" >> /tmp/test_outputs
-          echo "integration_tests=$([ $INTEGRATION_TESTS -gt 0 ] && echo true || echo false)" >> /tmp/test_outputs
-          echo "functional_tests=$([ $FUNCTIONAL_TESTS -gt 0 ] && echo true || echo false)" >> /tmp/test_outputs
-          echo "e2e_tests=$([ $E2E_TESTS -gt 0 ] && echo true || echo false)" >> /tmp/test_outputs
-        '
-        cat /tmp/test_outputs >> "$GITHUB_OUTPUT"
-
     - name: Run Unit Tests
       run: |
         echo "Running unit tests..."
