@@ -86,4 +86,3 @@ docker-compose.yml
 
 # CI/CD file whilst in development
 **/ci-deploy.yml
-**/ci-development.yml
