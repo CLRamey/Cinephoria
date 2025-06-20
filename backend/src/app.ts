@@ -1,5 +1,5 @@
 import express from 'express';
-import helmet from 'helmet';
+import helmet, { contentSecurityPolicy } from 'helmet';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 
@@ -7,6 +7,17 @@ export const app = express();
 
 // Middlewares
 app.use(helmet());
+app.use(
+  contentSecurityPolicy({
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'"],
+      styleSrc: ["'self'", "'https:'"],
+      imgSrc: ["'self'", 'data:', 'https:'],
+      connectSrc: ["'self'", process.env['CORS_ORIGIN']].filter(Boolean) as string[], // Allow connections to the frontend
+    },
+  }),
+);
 app.use(
   cors({
     origin: process.env['CORS_ORIGIN'],

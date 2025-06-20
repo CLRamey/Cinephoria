@@ -1,0 +1,78 @@
+<header class="navbar-header">
+  <mat-toolbar
+    routerLinkActive="active"
+    [routerLinkActiveOptions]="{ exact: true }"
+    color="primary"
+    class="navbar"
+  >
+    <a routerLink="/accueil" class="logo" aria-label="Accueil Cinéphoria">
+      <img src="assets/img/cinephoria-logo.png" alt="Cinéphoria Logo" class="cinephoria-logo" />
+    </a>
+
+    <span class="spacer"></span>
+
+    <!-- Desktop navigation -->
+    <nav
+      class="nav-links desktop"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+      aria-label="Menu principal"
+    >
+      <a mat-button routerLink="/accueil">Accueil</a>
+      <a mat-button routerLink="/films">Films</a>
+      <a mat-button routerLink="/reservation">Réservation</a>
+      <a mat-button routerLink="/contact">Contact</a>
+
+      <!-- Desktop connexion dropdown -->
+      <button
+        mat-button
+        [matMenuTriggerFor]="connexionMenu"
+        aria-label="Ouvrir le menu de connexion"
+      >
+        Connexion
+      </button>
+      <mat-menu #connexionMenu="matMenu" class="connexion-menu">
+        <a mat-menu-item routerLink="/login-client">Espace Client</a>
+        <a mat-menu-item routerLink="/login-employee">Espace Employé</a>
+        <a mat-menu-item routerLink="/login-admin">Espace Administrateur</a>
+      </mat-menu>
+    </nav>
+
+    <!-- Mobile Toggle Icon -->
+    <button
+      mat-icon-button
+      class="mobile-toggle"
+      (click)="open()"
+      aria-label="Ouvrir le menu mobile"
+    >
+      <mat-icon>menu</mat-icon>
+    </button>
+  </mat-toolbar>
+
+  <!-- Mobile Nav Drawer -->
+  <mat-drawer-container class="mobile-drawer-container" autosize>
+    <mat-drawer #drawer mode="over" position="end" class="mobile-drawer">
+      <mat-drawer-content>
+        <mat-toolbar color="primary" class="navbar">
+          <button mat-icon-button (click)="close()" aria-label="Fermer le menu mobile">
+            <mat-icon>close</mat-icon>
+          </button>
+        </mat-toolbar>
+        <mat-nav-list
+          class="nav-links mobile"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+        >
+          <a mat-list-item routerLink="/accueil" (click)="close()">Accueil</a>
+          <a mat-list-item routerLink="/films" (click)="close()">Films</a>
+          <a mat-list-item routerLink="/reservation" (click)="close()">Réservation</a>
+          <a mat-list-item routerLink="/contact" (click)="close()">Contact</a>
+          <mat-divider></mat-divider>
+          <a mat-list-item routerLink="/login-client" (click)="close()">Espace Client</a>
+          <a mat-list-item routerLink="/login-employee" (click)="close()">Espace Employé</a>
+          <a mat-list-item routerLink="/login-admin" (click)="close()">Espace Administrateur</a>
+        </mat-nav-list>
+      </mat-drawer-content>
+    </mat-drawer>
+  </mat-drawer-container>
+</header>

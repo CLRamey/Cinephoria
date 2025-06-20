@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ApiService } from './core/api.service';
+import { ConfigService } from './core/services/config.service';
 
 @Component({
   selector: 'caw-root',
@@ -10,7 +10,7 @@ export class AppComponent implements OnInit {
   title = 'cinephoria-web';
   status = 'Loading...';
 
-  constructor(private api: ApiService) {}
+  constructor(private api: ConfigService) {}
 
   ngOnInit(): void {
     this.api.getHealth().subscribe({

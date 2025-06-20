@@ -78,8 +78,11 @@ projects/cinephoria-mobile/**
 projects/cinephoria-desktop/**
 
 # Priliminary Cypress files
-**/Cypress/
-cypress.config.ts
+**/cypress/downloads/
+**/cypress/fixtures/
+**/cypress/support/
+**/cypress/videos/
+**/cypress/screenshots/
 
 # Prettier and ESLint
 .prettierignore

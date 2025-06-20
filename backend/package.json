@@ -6,6 +6,7 @@
     "start": "node dist/server.js",
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
     "build": "tsc",
+    "docker:build": "npm run build && npm run start && npm run dev",
     "test": "jest --config tests/jest.config.ts",
     "test:watch": "jest --watch",
     "test:unit:bk": "jest --config tests/jest.config.ts --detectOpenHandles --testPathPattern=tests/unit",

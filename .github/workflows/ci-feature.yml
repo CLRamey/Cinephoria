@@ -1,4 +1,4 @@
-# This workflow will be triggered on every push/pull to the feature branches.
+# This workflow will be triggered on every pull to the feature branches.
 # It will run the build and test commands to ensure that the code is working correctly.
 
 name: CI Feature Branch
@@ -39,10 +39,11 @@ env:
   SMTP_FROM: ${{ secrets.SMTP_FROM }}
   # OTHER
   JWT_SECRET: ${{ secrets.JWT_SECRET }}
+  JWT_EXPIRES_IN: ${{ secrets.JWT_EXPIRES_IN }}
   CORS_ORIGIN: ${{ secrets.CORS_ORIGIN }}
   COOKIE_SECRET: ${{ secrets.COOKIE_SECRET }}
+  BASE_URL: ${{ secrets.BASE_URL }}
   API_URL: ${{ secrets.API_URL }}
-  frontendDomain: ${{ secrets.FRONTEND_DOMAIN }}
   PORT: ${{ secrets.PORT }}
  
 jobs:
@@ -64,9 +65,13 @@ jobs:
         cache: 'npm'
         cache-dependency-path: '**/package-lock.json'
 
-    - name: Install dependencies
+    - name: Install frontend dependencies
       run: npm ci
       working-directory: ./
+
+    - name: Install backend dependencies
+      run: npm ci
+      working-directory: ./backend
 
     - name: Lint code
       run: npm run lint
@@ -76,54 +81,35 @@ jobs:
       run: npm run docker:test
       working-directory: ./
 
-    - name: Wait for containers to be ready
-      run: |
-        echo "Waiting for containers to be ready..."
-        sleep 45
-    
-    - name: Check for test files
-      id: check_tests
-      run: |
-        UNIT_TESTS=$(find ./tests/unit ./backend/tests/unit -type f \( -name "*.spec.ts" -o -name "*.test.ts" \) | wc -l)
-        FUNCTIONAL_TESTS=$(find ./tests/functional ./backend/tests/functional -type f \( -name "*.spec.ts" -o -name "*.test.ts" \) | wc -l)
-        INTEGRATION_TESTS=$(find ./tests/integration ./backend/tests/integration -type f \( -name "*.spec.ts" -o -name "*.test.ts" \) | wc -l)
-
-        if [ $UNIT_TESTS -gt 0 ]; then
-          echo "unit_tests=true" >> GITHUB_OUTPUT
-        else
-          echo "unit_tests=false" >> GITHUB_OUTPUT
-        fi
-
-        if [ $FUNCTIONAL_TESTS -gt 0 ]; then
-          echo "functional_tests=true" >> GITHUB_OUTPUT
-        else
-          echo "functional_tests=false" >> GITHUB_OUTPUT
-        fi
-
-        if [ $INTEGRATION_TESTS -gt 0 ]; then
-          echo "integration_tests=true" >> GITHUB_OUTPUT
-        else
-          echo "integration_tests=false" >> GITHUB_OUTPUT
-        fi
-      working-directory: ./
-
     - name: Run Unit Tests
-      if: steps.check_tests.outputs.unit_tests == 'true'
       run: |
         echo "Running unit tests..."
-        docker compose -f docker-compose-test.yml exec -T cinephoria-test npm run test:unit:all
-
-    - name: Run Functional Tests
-      if: steps.check_tests.outputs.functional_tests == 'true'
-      run: |
-        echo "Running functional tests..."
-        docker compose -f docker-compose-test.yml exec -T cinephoria-test npm run test:functional:all
+        docker compose -f docker-compose-test.yml exec -T cinephoria-test npm run test:unit:all:docker
 
     - name: Run Integration Tests
-      if: steps.check_tests.outputs.integration_tests == 'true'
       run: |
         echo "Running integration tests..."
-        docker compose -f docker-compose-test.yml exec -T cinephoria-test npm run test:integration:all
+        docker compose -f docker-compose-test.yml exec -T cinephoria-test npm run test:integration:all:docker
+
+    - name: Run Functional Tests
+      run: |
+        echo "Running functional tests..."
+        docker compose -f docker-compose-test.yml exec -T cinephoria-test npm run test:functional:all:docker
+
+    - name: Launching the docker cinephoria test app
+      run: |
+        echo "Launching the cinephoria test app..."  
+        docker compose -f docker-compose-test.yml exec -T cinephoria-test nohup npm run dev:test > /dev/null 2>&1 &
+
+    - name: Wait for cinephoria test app to be ready
+      run: |
+        echo "Waiting for the app to be ready..."
+        sleep 45
+
+    - name: Run E2E cypress Tests
+      run: |
+        echo "Running e2e cypress tests..."
+        docker compose -f docker-compose-test.yml exec -T cinephoria-test npm run test:e2e:run:ci
     
     - name: Stop Docker containers
       if: always()

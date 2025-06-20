@@ -2,7 +2,7 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "./dist/tests",
-    "types": ["node", "jest", "cypress"],
+    "types": ["node", "jest"],
     "allowJs": false,
     "sourceMap": true,
     "noEmit": true

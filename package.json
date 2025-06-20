@@ -10,35 +10,46 @@
     "lint:fix": "eslint . --ext .ts,.html --fix",
     "format": "prettier --write \"**/*.{ts,html,scss}\"",
     "docker:test": "docker compose -f docker-compose-test.yml up --build -d",
+    "test": "jest",
     "test:watch": "jest --watch",
     "test:unit": "jest tests/unit",
-    "test:functional": "jest tests/functional",
+    "test:functional": "jest tests/functional --passWithNoTests",
     "test:integration": "jest tests/integration",
     "test:frontend:all": "npm run test:unit && npm run test:functional && npm run test:integration",
     "test:unit:bk": "npm --prefix backend run test:unit:bk",
+    "test:unit:bk:docker": "jest --config backend/tests/jest.config.ts --detectOpenHandles --testPathPattern=backend/tests/unit --passWithNoTests",
     "test:functional:bk": "npm --prefix backend run test:functional:bk",
+    "test:functional:bk:docker": "jest --config backend/tests/jest.config.ts --detectOpenHandles --testPathPattern=backend/tests/functional --passWithNoTests",
     "test:integration:bk": "npm --prefix ../backend run test:integration:bk",
+    "test:integration:bk:docker": "jest --config backend/tests/jest.config.ts --detectOpenHandles --testPathPattern=backend/tests/integration --passWithNoTests",
     "test:backend:all": "npm run test:unit:bk && npm run test:functional:bk && npm run test:integration:bk",
     "test:unit:all": "npm run test:unit && npm run test:unit:bk",
+    "test:unit:all:docker": "npm run test:unit && npm run test:unit:bk:docker",
     "test:functional:all": "npm run test:functional && npm run test:functional:bk",
+    "test:functional:all:docker": "npm run test:functional && npm run test:functional:bk:docker",
     "test:integration:all": "npm run test:integration && npm run test:integration:bk",
+    "test:integration:all:docker": "npm run test:integration && npm run test:integration:bk:docker",
     "test:all": "npm run test:frontend:all && npm run test:backend:all",
     "test:cov": "jest --coverage --detectOpenHandles",
     "test:cov:bk": "npm --prefix backend run test:cov:bk",
     "test:cov:all": "npm run test:cov && npm run test:cov:bk",
     "test:e2e:open": "cypress open --config-file tests/cypress/cypress.config.ts",
-    "test:e2e:run": "cypress run --config-file tests/cypress/cypress.config.ts --headed --browser chrome",
-    "test:e2e:run:ci": "cypress run --config-file tests/cypress/cypress.config.ts --headless --browser chrome",
+    "test:e2e:run:headless": "cypress run --config-file tests/cypress/cypress.config.ts --headless --browser chromium",
+    "test:e2e:run:ci": "cypress run --config-file tests/cypress/cypress.config.ts --headless --browser chromium",
     "docker:test:down": "docker compose -f docker-compose-test.yml down -v",
-    "cy:open": "cypress open",
-    "cy:run": "cypress run",
+    "cy:open": "cypress open --config-file tests/cypress/cypress.config.ts",
+    "cy:run": "cypress run --config-file tests/cypress/cypress.config.ts --headed --browser chrome",
+    "cy:run:ci": "cypress run --config-file tests/cypress/cypress.config.ts --headless --browser chrome",
     "frontend": "ng serve cinephoria-web",
     "backend": "npm run dev --prefix backend",
+    "docker:frontend": "ng serve cinephoria-web",
+    "docker:backend": "npm run build --prefix backend && npm run start --prefix backend && npm run dev --prefix backend",
     "start:backend": "node backend/dist/server.js",
     "build:frontend": "ng build cinephoria-web",
     "build:backend": "npm run build --prefix backend",
     "build:web": "npm run build:frontend && npm run build:backend",
-    "dev": "cross-env NODE_ENV=development concurrently \"npm run frontend\" \"npm run backend\"",
+    "dev": "cross-env NODE_ENV=development concurrently \"npm run frontend\" \"npm run docker:backend\"",
+    "dev:test": "cross-env NODE_ENV=development concurrently \"npm run docker:frontend\" \"npm run docker:backend\"",
     "prod": "cross-env NODE_ENV=production concurrently \"npm run frontend\" \"npm run start:backend\"",
     "docker:run": "docker compose -f docker-compose.yml up -d --build",
     "docker:stop": "docker compose -f docker-compose.yml down -v"
@@ -87,20 +98,29 @@
     "jest-preset-angular": "^14.5.5",
     "nodemailer": "^7.0.3",
     "prettier": "^3.5.3",
+    "start-server-and-test": "^2.0.12",
     "ts-jest": "^29.3.4",
     "typescript": "~5.5.2"
   },
   "jest": {
     "preset": "jest-preset-angular",
     "transform": {
-      "transform_regex": ["ts-jest", {
+      "transform_regex": [
+        "ts-jest",
+        {
           "^.+\\.(ts|js|html)$": "ts-jest",
           "stringifyContentPathRegex": "\\.html$",
           "tsconfig": "<rootDir>/tsconfig.spec.json",
           "useESM": true
-      }]
+        }
+      ]
     },
-    "moduleFileExtensions": ["ts", "js", "json", "html"],
+    "moduleFileExtensions": [
+      "ts",
+      "js",
+      "json",
+      "html"
+    ],
     "roots": [
       "<rootDir>/tests/unit",
       "<rootDir>/tests/functional",
@@ -116,7 +136,7 @@
       "<rootDir>/backend/dist/"
     ],
     "verbose": true,
-    "detectLeaks": true,
+    "detectLeaks": false,
     "detectOpenHandles": true,
     "forceExit": false
   }

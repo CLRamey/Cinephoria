@@ -5,6 +5,13 @@ dotenv.config();
 export default defineConfig({
   video: false,
   e2e: {
+    specPattern: 'tests/cypress/e2e/**/*.cy.{js,jsx,ts,tsx}',
+    supportFile: 'tests/cypress/support/e2e.{js,jsx,ts,tsx}',
+    fixturesFolder: false,
+    screenshotsFolder: 'tests/cypress/screenshots',
+    videosFolder: 'tests/cypress/videos',
+    downloadsFolder: 'tests/cypress/downloads',
+    baseUrl: process.env['BASE_URL'] || 'http://localhost:4200',
     setupNodeEvents(on, config) {
       // modify config here as required
       config.env = {

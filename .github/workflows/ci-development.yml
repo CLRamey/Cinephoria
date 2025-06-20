@@ -1,0 +1,114 @@
+# This workflow will be triggered on every pull to the development branch.
+# It will run the build and test commands to ensure that the code is working correctly.
+
+name: CI Development Branch
+
+on:
+  pull_request:
+    branches: ["development"]
+
+env: 
+  NODE_ENV: development
+  #SQL
+  MARIADB_DATABASE: ${{ secrets.MARIADB_DATABASE }}
+  MARIADB_USER: ${{ secrets.MARIADB_USER }}
+  MARIADB_PASSWORD: ${{ secrets.MARIADB_PASSWORD }}
+  MARIADB_ROOT_PASSWORD: ${{ secrets.MARIADB_ROOT_PASSWORD }}
+  MARIADB_HOST: ${{ secrets.MARIADB_HOST }}
+  MARIADB_PORT: ${{ secrets.MARIADB_PORT }}
+  DATABASE_URL: ${{ secrets.DATABASE_URL }}
+  DB_DIALECT: ${{ secrets.DB_DIALECT }}
+  # NoSQL
+  MONGO_INITDB_ROOT_USERNAME: ${{ secrets.MONGO_INITDB_ROOT_USERNAME }}
+  MONGO_INITDB_ROOT_PASSWORD: ${{ secrets.MONGO_INITDB_ROOT_PASSWORD }}
+  MONGO_INITDB_DATABASE: ${{ secrets.MONGO_INITDB_DATABASE }}
+  MONGO_NAME: ${{ secrets.MONGO_NAME }}
+  MONGO_USERNAME: ${{ secrets.MONGO_USERNAME }}
+  MONGO_PASSWORD: ${{ secrets.MONGO_PASSWORD }}
+  MONGO_HOST: ${{ secrets.MONGO_HOST }}
+  MONGO_PORT: ${{ secrets.MONGO_PORT }}
+  MONGO_URI: ${{ secrets.MONGO_URI }}
+  # Mail Service
+  SMTP_HOST: ${{ secrets.SMTP_HOST }}
+  SMTP_PORT: ${{ secrets.SMTP_PORT }}
+  SMTP_SECURE: ${{ secrets.SMTP_SECURE }}
+  SMTP_USER: ${{ secrets.SMTP_USER }}
+  SMTP_PASS: ${{ secrets.SMTP_PASS }}
+  SMTP_FROM: ${{ secrets.SMTP_FROM }}
+  # OTHER
+  JWT_SECRET: ${{ secrets.JWT_SECRET }}
+  JWT_EXPIRES_IN: ${{ secrets.JWT_EXPIRES_IN }}
+  CORS_ORIGIN: ${{ secrets.CORS_ORIGIN }}
+  COOKIE_SECRET: ${{ secrets.COOKIE_SECRET }}
+  BASE_URL: ${{ secrets.BASE_URL }}
+  API_URL: ${{ secrets.API_URL }}
+  PORT: ${{ secrets.PORT }}
+ 
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    environment: development
+    strategy:
+      matrix:
+        node-version: [22.x]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+        cache-dependency-path: '**/package-lock.json'
+
+    - name: Install frontend dependencies
+      run: npm ci
+      working-directory: ./
+
+    - name: Install backend dependencies
+      run: npm ci
+      working-directory: ./backend
+
+    - name: Lint code
+      run: npm run lint
+      working-directory: ./
+
+    - name: Start Docker containers
+      run: npm run docker:test
+      working-directory: ./
+
+    - name: Run Unit Tests
+      run: |
+        echo "Running unit tests..."
+        docker compose -f docker-compose-test.yml exec -T cinephoria-test npm run test:unit:all:docker
+
+    - name: Run Integration Tests
+      run: |
+        echo "Running integration tests..."
+        docker compose -f docker-compose-test.yml exec -T cinephoria-test npm run test:integration:all:docker
+
+    - name: Run Functional Tests
+      run: |
+        echo "Running functional tests..."
+        docker compose -f docker-compose-test.yml exec -T cinephoria-test npm run test:functional:all:docker
+
+    - name: Launching the docker cinephoria test app
+      run: |
+        echo "Launching the cinephoria test app..."  
+        docker compose -f docker-compose-test.yml exec -T cinephoria-test nohup npm run dev:test > /dev/null 2>&1 &
+
+    - name: Wait for cinephoria test app to be ready
+      run: |
+        echo "Waiting for the app to be ready..."
+        sleep 45
+
+    - name: Run E2E cypress Tests
+      run: |
+        echo "Running e2e cypress tests..."
+        docker compose -f docker-compose-test.yml exec -T cinephoria-test npm run test:e2e:run:ci
+    
+    - name: Stop Docker containers
+      if: always()
+      run: npm run docker:test:down
