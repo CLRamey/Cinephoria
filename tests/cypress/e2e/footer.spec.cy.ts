@@ -33,6 +33,7 @@ describe('Footer e2e Tests', () => {
   });
 
   it('should display the cinema information', () => {
+    cy.visit('/accueil');
     cy.get('footer').should('be.visible');
 
     cy.get('footer').within(() => {
