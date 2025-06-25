@@ -1,7 +1,5 @@
 /// <reference types="cypress" />
 
-import { getCinemaInfo } from "../../../backend/src/services/cinemaInfoService";
-
 describe('Footer e2e Tests', () => {
   beforeEach(() => {
     cy.visit('/accueil');
