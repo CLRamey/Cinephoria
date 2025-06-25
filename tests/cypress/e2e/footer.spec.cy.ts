@@ -1,7 +1,5 @@
 /// <reference types="cypress" />
 
-import { timeout } from "rxjs";
-
 describe('Footer e2e Tests', () => {
   beforeEach(() => {
     cy.visit('/accueil');
