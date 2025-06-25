@@ -34,10 +34,10 @@ describe('Footer e2e Tests', () => {
 
   it('should display the cinema information', () => {
     cy.intercept('GET', '/api/cinema-info').as('getCinemaInfo');
-    cy.wait('@getCinemaInfo').then(interception => {
-      console.log(interception);
-    });
-
+    cy.visit('/accueil?nocache=' + new Date().getTime()); // Force cache bypass');
+    cy.wait('@getCinemaInfo', { timeout: 10000 })
+      .its('response.statusCode')
+      .should('be.oneOf', [200, 304]);
     cy.get('footer', { timeout: 10000 }).should('be.visible');
 
     cy.get('footer').within(() => {
