@@ -1,0 +1,54 @@
+.footer {
+  width: 100vw;
+  padding: 0;
+}
+
+.footer-toolbar {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  padding: 1rem;
+  box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.25);
+  height: auto;
+
+  .footer-title-container {
+    width: 100vw;
+    display: flex;
+    justify-content: left;
+    padding: 0.5rem 0.5rem;
+    margin-top: 0.8rem;
+  }
+
+  .footer-title {
+    font-weight: bold;
+    font-size: 1rem;
+  }
+
+  .footer-content {
+    display: flex;
+    flex-wrap: wrap;
+    text-align: left;
+    justify-content: left;
+    gap: 0.5rem;
+  }
+
+  .cinema-item {
+    display: flex;
+    flex-direction: column;
+    font-size: 0.8rem;
+    margin: 0.5rem;
+
+    p {
+      margin: -4px 0;
+    }
+
+    .cinema-name {
+      font-weight: bold;
+    }
+  }
+
+  .copyright {
+    margin: 0.5rem 0;
+    font-size: 0.8rem;
+  }
+}

@@ -1,8 +1,12 @@
+// File: backend/src/config/databaseSql.ts
+// Database configuration for SQL (MariaDB) connection, sequelize and model initialization
 import { Sequelize } from 'sequelize';
 import { initModels } from '../models/init-models';
 
-const isProduction = process.env['NODE_ENV'] === 'production'; // Check if the environment is production
+// Determine if the environment is production or development
+const isProduction = process.env['NODE_ENV'] === 'production';
 
+// Define dialect options based on the environment
 const dialectOptions = {
   connectTimeout: 60000, // Connection timeout (ms)
   ...(isProduction
@@ -26,6 +30,7 @@ if (!databaseUrl) {
   throw new Error('DATABASE_URL environment variable is not defined');
 }
 
+// Sequelize instance configuration
 export const sequelize = new Sequelize(databaseUrl, {
   dialect: 'mariadb',
   logging: !isProduction ? console.log : false, // Enabled for development, disabled in production
@@ -38,10 +43,7 @@ export const sequelize = new Sequelize(databaseUrl, {
   },
 });
 
-// Initialize models
-export const models = initModels(sequelize);
-
-// Connection to the database
+// Connection to the database + sequelize authentication
 export const connectMariaDB = async () => {
   try {
     await sequelize.authenticate();
@@ -51,3 +53,8 @@ export const connectMariaDB = async () => {
     throw error;
   }
 };
+
+// Initialize models
+export const models = initModels(sequelize);
+console.log('Models initialized successfully.', Object.keys(models));
+// Export models for use in other parts of the application

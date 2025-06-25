@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 
-describe('Navbar functional/e2e Tests', () => {
+describe('Navbar e2e Tests', () => {
   beforeEach(() => {
     cy.visit('/accueil'); // Start on the home page before each test
   });

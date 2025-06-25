@@ -28,4 +28,4 @@ import { MatSidenavModule } from '@angular/material/sidenav';
   ],
   exports: [NavbarComponent],
 })
-export class HeaderModule {}
+export class NavbarModule {}

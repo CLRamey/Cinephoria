@@ -1,1 +1,22 @@
-<p>footer works!</p>
+<footer class="footer">
+  <mat-toolbar color="primary" class="footer-toolbar">
+    <div class="footer-title-container">
+      <span class="footer-title">Cinémas:</span>
+    </div>
+    <div class="footer-content">
+      <ng-container *ngFor="let cinemaData of cinemaInfo">
+        <li class="cinema-item">
+          <p class="cinema-name">
+            <strong>{{ cinemaData.cinemaName }}</strong>
+          </p>
+          <p>{{ cinemaData.cinemaAddress }}</p>
+          <p>{{ cinemaData.cinemaPostalCode }} {{ cinemaData.cinemaCity }}</p>
+          <p>{{ cinemaData.cinemaCountry }}</p>
+          <p>Téléphone : {{ cinemaData.cinemaTelNumber }}</p>
+          <p>{{ cinemaData.cinemaOpeningHours }}</p>
+        </li>
+      </ng-container>
+    </div>
+    <span class="copyright">&copy; {{ currentYear }} Cinéphoria. Tous droits réservés.</span>
+  </mat-toolbar>
+</footer>

@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NavbarComponent } from '../../projects/cinephoria-web/src/app/layout/header/navbar.component';
-import { HeaderModule } from '../../projects/cinephoria-web/src/app/layout/header/header.module';
+import { NavbarModule } from '../../projects/cinephoria-web/src/app/layout/header/navbar.module';
 import { RouterModule } from '@angular/router';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { describe, beforeEach, afterEach, expect, it } from '@jest/globals';
@@ -12,7 +12,7 @@ describe('NavbarComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [],
-      imports: [HeaderModule, RouterModule.forRoot([]), NoopAnimationsModule],
+      imports: [NavbarModule, RouterModule.forRoot([]), NoopAnimationsModule],
     }).compileComponents();
 
     fixture = TestBed.createComponent(NavbarComponent);

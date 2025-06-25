@@ -1,6 +1,6 @@
 export const environment = {
   production: false,
-  apiURL: 'http://cinephoria-back:3000/api',
+  apiURL: 'http://localhost:3000/api',
   frontendDomain: 'http://localhost:4200',
 };
-// 'http://localhost:3000/api', http://cinephoria-back:3000/api //
+// 'http://localhost:3000', http://cinephoria-back:3000 //

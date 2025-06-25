@@ -43,13 +43,13 @@ INSERT INTO Genre_Film (genre_id, film_id) VALUES
 
 -- Insert Cinemas
 INSERT INTO Cinema (cinema_name, cinema_email, cinema_address, cinema_postal_code, cinema_city, cinema_country, cinema_tel_number, cinema_opening_hours) VALUES
-('Cinéphoria Nantes', 'nantes@cinephoria.fr', '12 rue de la Loire', '44000', 'Nantes', 'France', '+33 2 40 00 00 01', '10h00 - 23h00'),
-('Cinéphoria Bordeaux', 'bordeaux@cinephoria.fr', '8 place du Palais', '33000', 'Bordeaux', 'France', '+33 5 56 00 00 02', '09h30 - 22h30'),
-('Cinéphoria Paris', 'paris@cinephoria.fr', '5 avenue des Champs', '75008', 'Paris', 'France', '+33 1 40 00 00 03', '10h00 - 00h00'),
-('Cinéphoria Toulouse', 'toulouse@cinephoria.fr', '3 rue du Capitole', '31000', 'Toulouse', 'France', '+33 5 61 00 00 04', '10h00 - 23h30'),
-('Cinéphoria Lille', 'lille@cinephoria.fr', '15 boulevard de la Liberté', '59000', 'Lille', 'France', '+33 3 20 00 00 05', '09h30 - 22h30'),
-('Cinéphoria Charleroi', 'charleroi@cinephoria.be', '10 rue de la Montagne', '6000', 'Charleroi', 'Belgique', '+32 71 00 00 06', '10h00 - 22h30'),
-('Cinéphoria Liège', 'liege@cinephoria.be', '7 quai de la Batte', '4000', 'Liège', 'Belgique', '+32 4 00 00 07', '09h30 - 23h00');
+('Cinéphoria Nantes', 'nantes@cinephoria.fr', '12 rue de la Loire', '44000', 'Nantes', 'France', '+33 2 40 00 00 01', 'Lundi - Samedi : 10h00 - 23h00'),
+('Cinéphoria Bordeaux', 'bordeaux@cinephoria.fr', '8 place du Palais', '33000', 'Bordeaux', 'France', '+33 5 56 00 00 02', 'Lundi - Samedi : 09h30 - 22h30'),
+('Cinéphoria Paris', 'paris@cinephoria.fr', '5 avenue des Champs', '75008', 'Paris', 'France', '+33 1 40 00 00 03', 'Lundi - Samedi : 10h00 - 00h00'),
+('Cinéphoria Toulouse', 'toulouse@cinephoria.fr', '3 rue du Capitole', '31000', 'Toulouse', 'France', '+33 5 61 00 00 04', 'Lundi - Samedi : 10h00 - 23h30'),
+('Cinéphoria Lille', 'lille@cinephoria.fr', '15 boulevard de la Liberté', '59000', 'Lille', 'France', '+33 3 20 00 00 05', 'Lundi - Samedi : 09h30 - 22h30'),
+('Cinéphoria Charleroi', 'charleroi@cinephoria.be', '10 rue de la Montagne', '6000', 'Charleroi', 'Belgique', '+32 71 00 00 06', 'Lundi - Samedi : 10h00 - 22h30'),
+('Cinéphoria Liège', 'liege@cinephoria.be', '7 quai de la Batte', '4000', 'Liège', 'Belgique', '+32 4 00 00 07', 'Lundi - Samedi : 09h30 - 23h00
 
 -- Insert Cinema_Film relationships
 INSERT INTO Cinema_Film (cinema_id, film_id) VALUES

@@ -31,7 +31,7 @@
     },
   "include": [
     "projects/cinephoria-web/**/*.ts",
-    "projects/cinephoria-web/**/*.{html,scss}",
+    "projects/cinephoria-web/**/*.{html,scss}", "tests/unit/footer.component.spec.ts", "tests/unit/cinema-info.service.spec.ts",
   ],
   "exclude": [
     "**/node_modules",
