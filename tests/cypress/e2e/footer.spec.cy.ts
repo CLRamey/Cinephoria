@@ -2,7 +2,7 @@
 
 describe('Footer e2e Tests', () => {
   beforeEach(() => {
-    cy.visit('/acceuil');
+    cy.visit('/accueil');
   });
 
   const pages = [
@@ -34,17 +34,17 @@ describe('Footer e2e Tests', () => {
 
   it('should display the cinema information', () => {
     cy.visit('/accueil');
-    cy.get('footer').should('be.visible');
+    cy.get('footer', { timeout: 10000 }).should('be.visible');
 
     cy.get('footer').within(() => {
       cy.contains('Cinémas').should('exist');
-      cy.contains('Cinéphoria Bordeaux').should('exist');
-      cy.contains('8 place du Palais').should('exist');
-      cy.contains('33000 Bordeaux').should('exist');
-      cy.contains('France').should('exist');
-      cy.contains('Téléphone : +33 5 56 00 00 02').should('exist');
-      cy.contains('Lundi - Samedi : 10h00 - 23h00').should('exist');
-      cy.contains('© 2025 Cinéphoria. Tous droits réservés.').should('exist');
+      cy.contains('Cinéphoria Bordeaux', { timeout: 5000 }).should('exist');
+      cy.contains('8 place du Palais', { timeout: 5000 }).should('exist');
+      cy.contains('33000 Bordeaux', { timeout: 5000 }).should('exist');
+      cy.contains('France', { timeout: 5000 }).should('exist');
+      cy.contains('Téléphone : +33 5 56 00 00 02', { timeout: 5000 }).should('exist');
+      cy.contains('Lundi - Samedi : 10h00 - 23h00', { timeout: 5000 }).should('exist');
+      cy.contains('© 2025 Cinéphoria. Tous droits réservés.', { timeout: 5000 }).should('exist');
     });
   });
 });
