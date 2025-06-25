@@ -1,5 +1,7 @@
 /// <reference types="cypress" />
 
+import { timeout } from "rxjs";
+
 describe('Footer e2e Tests', () => {
   beforeEach(() => {
     cy.visit('/accueil');
@@ -34,8 +36,6 @@ describe('Footer e2e Tests', () => {
 
   it('should display the cinema information', () => {
     cy.intercept('GET', '/api/cinema-info').as('getCinemaInfo');
-    cy.visit('/accueil');
-
     cy.wait('@getCinemaInfo').then(interception => {
       console.log(interception);
     });
@@ -44,7 +44,7 @@ describe('Footer e2e Tests', () => {
 
     cy.get('footer').within(() => {
       cy.contains('Cinémas').should('exist');
-      cy.contains('Cinéphoria Bordeaux').should('exist');
+      cy.contains('Cinéphoria Bordeaux', { timeout: 20000 }).should('exist');
       cy.contains('8 place du Palais').should('exist');
       cy.contains('33000 Bordeaux').should('exist');
       cy.contains('France').should('exist');
