@@ -1,27 +1,29 @@
 /// <reference types="cypress" />
 
+import { getCinemaInfo } from "../../../backend/src/services/cinemaInfoService";
+
 describe('Footer e2e Tests', () => {
   beforeEach(() => {
     cy.visit('/accueil');
   });
 
-  const pages = [
-    '/accueil',
-    '/films',
-    '/reservation',
-    '/contact',
-    '/login-client',
-    '/login-employee',
-    '/login-admin',
-  ];
-
-  const sizes = [
-    { device: 'mobile', width: 375, height: 667 },
-    { device: 'tablet', width: 768, height: 1024 },
-    { device: 'desktop', width: 1280, height: 800 },
-  ];
-
   it('The footer is responsive and visible on mobile, tablet, and desktop', () => {
+    const pages = [
+      '/accueil',
+      '/films',
+      '/reservation',
+      '/contact',
+      '/login-client',
+      '/login-employee',
+      '/login-admin',
+    ];
+
+    const sizes = [
+      { device: 'mobile', width: 375, height: 667 },
+      { device: 'tablet', width: 768, height: 1024 },
+      { device: 'desktop', width: 1280, height: 800 },
+    ];
+
     sizes.forEach(({ device: _device, width, height }) => {
       cy.viewport(width, height);
 
@@ -35,6 +37,11 @@ describe('Footer e2e Tests', () => {
   it('should display the cinema information', () => {
     cy.intercept('GET', '/api/cinema-info').as('getCinemaInfo');
     cy.visit('/accueil');
+
+    cy.wait('@getCinemaInfo').then(interception => {
+      console.log(interception);
+    });
+
     cy.get('footer', { timeout: 10000 }).should('be.visible');
 
     cy.get('footer').within(() => {
