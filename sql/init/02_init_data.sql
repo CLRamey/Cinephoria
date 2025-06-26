@@ -49,7 +49,7 @@ INSERT INTO Cinema (cinema_name, cinema_email, cinema_address, cinema_postal_cod
 ('Cinéphoria Toulouse', 'toulouse@cinephoria.fr', '3 rue du Capitole', '31000', 'Toulouse', 'France', '+33 5 61 00 00 04', 'Lundi - Samedi : 10h00 - 23h30'),
 ('Cinéphoria Lille', 'lille@cinephoria.fr', '15 boulevard de la Liberté', '59000', 'Lille', 'France', '+33 3 20 00 00 05', 'Lundi - Samedi : 09h30 - 22h30'),
 ('Cinéphoria Charleroi', 'charleroi@cinephoria.be', '10 rue de la Montagne', '6000', 'Charleroi', 'Belgique', '+32 71 00 00 06', 'Lundi - Samedi : 10h00 - 22h30'),
-('Cinéphoria Liège', 'liege@cinephoria.be', '7 quai de la Batte', '4000', 'Liège', 'Belgique', '+32 4 00 00 07', 'Lundi - Samedi : 09h30 - 23h00
+('Cinéphoria Liège', 'liege@cinephoria.be', '7 quai de la Batte', '4000', 'Liège', 'Belgique', '+32 4 00 00 07', 'Lundi - Samedi : 09h30 - 23h00');
 
 -- Insert Cinema_Film relationships
 INSERT INTO Cinema_Film (cinema_id, film_id) VALUES

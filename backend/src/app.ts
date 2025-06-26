@@ -11,6 +11,15 @@ import cinemaRoutes from './routes/cinemaRoutes';
 // Express
 export const app = express();
 
+app.use(
+  cors({
+    origin: [process.env['CORS_ORIGIN'] || 'http://localhost:4200'], // Allow requests from the frontend
+    credentials: true,
+    optionsSuccessStatus: 200,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  }),
+);
+
 // Helmet for security headers + Content Security Policy (CSP) to prevent XSS attacks
 app.use(helmet());
 app.use(
@@ -22,16 +31,6 @@ app.use(
       imgSrc: ["'self'", 'data:', 'https:'],
       connectSrc: ["'self'", process.env['CORS_ORIGIN']].filter(Boolean) as string[], // Allow connections to the frontend
     },
-  }),
-);
-
-// Enable CORS with specific origin and credentials
-app.use(
-  cors({
-    origin: process.env['CORS_ORIGIN'],
-    credentials: true,
-    optionsSuccessStatus: 200,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   }),
 );
 

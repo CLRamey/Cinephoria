@@ -15,10 +15,11 @@ export default defineConfig({
     setupNodeEvents(on, config) {
       // modify config here as required
       config.env = {
-        API_URL: process.env['API_URL'] || 'http://localhost:3000',
+        API_URL: process.env['API_URL'] || 'http://localhost:3000/api',
         FRONTEND_DOMAIN: process.env['FRONTEND_DOMAIN'] || 'http://localhost:4200',
       };
       return config;
     },
   },
 });
+// apiURL: 'http://localhost:3000/api' -local, http://localhost:3001/api - docker-test //

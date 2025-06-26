@@ -1,5 +1,5 @@
 export const environment = {
   production: true,
-  apiURL: 'http://cinephoria-back:3000',
+  apiURL: 'http://localhost:3001/api',
   frontendDomain: 'http://localhost:8081',
 };

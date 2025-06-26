@@ -33,9 +33,6 @@ describe('Footer e2e Tests', () => {
   });
 
   it('should display the cinema information', () => {
-    cy.visit('/accueil');
-    cy.get('footer', { timeout: 10000 }).should('be.visible');
-
     cy.get('footer').within(() => {
       cy.contains('Cinémas').should('exist');
       cy.contains('Cinéphoria Bordeaux', { timeout: 20000 }).should('exist');
