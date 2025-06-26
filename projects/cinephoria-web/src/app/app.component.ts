@@ -14,12 +14,15 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     this.api.getHealth().subscribe({
-      next: response => {
-        this.status = response.status;
+      next: data => {
+        this.status = data.status;
       },
-      error: error => {
-        console.error('Error fetching health status:', error);
+      error: err => {
+        console.error('Error fetching health status:', err);
         this.status = 'Error';
+      },
+      complete: () => {
+        console.log('Health check completed');
       },
     });
   }

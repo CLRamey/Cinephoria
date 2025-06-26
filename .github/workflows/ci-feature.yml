@@ -81,6 +81,11 @@ jobs:
       run: npm run docker:test
       working-directory: ./
 
+    - name: Launching the docker cinephoria test app
+      run: |
+        echo "Launching the cinephoria test app..."  
+        docker compose -f docker-compose-test.yml exec -T cinephoria-test nohup npm run dev:test > /dev/null 2>&1 &
+
     - name: Run Unit Tests
       run: |
         echo "Running unit tests..."
@@ -96,15 +101,10 @@ jobs:
         echo "Running functional tests..."
         docker compose -f docker-compose-test.yml exec -T cinephoria-test npm run test:functional:all:docker
 
-    - name: Launching the docker cinephoria test app
-      run: |
-        echo "Launching the cinephoria test app..."  
-        docker compose -f docker-compose-test.yml exec -T cinephoria-test nohup npm run dev:test > /dev/null 2>&1 &
-
     - name: Wait for cinephoria test app to be ready
       run: |
         echo "Waiting for the app to be ready..."
-        sleep 45
+        sleep 200
 
     - name: Run E2E cypress Tests
       run: |

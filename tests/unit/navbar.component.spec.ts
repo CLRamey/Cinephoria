@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { HeaderModule } from '../../projects/cinephoria-web/src/app/layout/header/header.module';
+import { NavbarModule } from '../../projects/cinephoria-web/src/app/layout/header/navbar.module';
 import { NavbarComponent } from '../../projects/cinephoria-web/src/app/layout/header/navbar.component';
 import { RouterModule } from '@angular/router';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
@@ -14,7 +14,7 @@ describe('NavbarComponent - Unit Tests', () => {
     await TestBed.configureTestingModule({
       declarations: [NavbarComponent],
       imports: [
-        HeaderModule,
+        NavbarModule,
         RouterModule.forRoot([]),
         NoopAnimationsModule, // Import NoopAnimationsModule to avoid animation errors in tests
       ],

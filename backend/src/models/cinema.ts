@@ -106,6 +106,9 @@ export class cinema
           allowNull: false,
           unique: 'cinema_email',
           field: 'cinema_email',
+          validate: {
+            isEmail: true,
+          },
         },
         cinemaAddress: {
           type: DataTypes.STRING(100),

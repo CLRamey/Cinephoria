@@ -1,13 +1,14 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
-import { HeaderModule } from './layout/header/header.module';
+import { NavbarModule } from './layout/header/navbar.module';
 import { FooterModule } from './layout/footer/footer.module';
+
 import { HomeModule } from './features/home/home.module';
 import { FilmsModule } from './features/films/films.module';
 import { ReservationModule } from './features/reservation/reservation.module';
@@ -25,7 +26,7 @@ import { InscriptionModule } from './features/auth/inscription/inscription.modul
   imports: [
     BrowserModule,
     AppRoutingModule,
-    HeaderModule,
+    NavbarModule,
     FooterModule,
     HomeModule,
     FilmsModule,
