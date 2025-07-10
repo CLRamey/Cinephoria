@@ -3,7 +3,7 @@
 import type { Request, Response } from 'express';
 import { getCinemaInfo } from '../services/cinemaInfoService';
 
-export async function cinemaInfoController(req: Request, res: Response) {
+export async function publicCinemaInfoController(req: Request, res: Response) {
   const result = await getCinemaInfo();
 
   if (result.success) {

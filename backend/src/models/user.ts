@@ -141,13 +141,11 @@ export class user extends Model<userAttributes, userCreationAttributes> implemen
         userCreatedAt: {
           type: DataTypes.DATE,
           allowNull: true,
-          defaultValue: Sequelize.Sequelize.fn('current_timestamp'),
           field: 'user_created_at',
         },
         userUpdatedAt: {
           type: DataTypes.DATE,
           allowNull: true,
-          defaultValue: Sequelize.Sequelize.fn('current_timestamp'),
           field: 'user_updated_at',
         },
         userRole: {

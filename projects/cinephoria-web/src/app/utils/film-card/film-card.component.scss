@@ -1,0 +1,101 @@
+.clickable {
+  cursor: pointer;
+  &:hover {
+    transform: scale(1.02);
+  }
+  transition: transform 0.2s ease-in-out;
+  margin-bottom: 4px;
+}
+
+mat-card {
+  max-width: 17rem;
+  min-height: 45rem;
+  margin: 1rem;
+  box-shadow: 4px 8px 8px rgba(0, 0, 0, 0.2);
+  border: rgb(215, 222, 218) 0.25px solid;
+
+  mat-card-title {
+    display: flex;
+    letter-spacing: 1px;
+    gap: 0.7rem;
+
+    mat-icon {
+      font-size: 24px;
+    }
+
+    .img {
+      cursor: pointer;
+    }
+  }
+
+  .favorite-badge {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    background-color: white;
+    padding: 0.125px 8px;
+    border-radius: 30px;
+    font-weight: 600;
+    font-size: 0.8rem;
+    font-family:
+      "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande", "Lucida Sans", Arial, sans-serif;
+    font-style: italic;
+    display: flex;
+    align-items: center;
+    user-select: none;
+    pointer-events: none;
+    box-shadow: 1px 1px rgba(0, 0, 0, 0.2);
+
+    mat-icon {
+      size: 10px;
+      margin-top: 6px;
+    }
+  }
+
+  .heart-icon {
+    font-size: 18px;
+    line-height: 18px;
+  }
+
+  .film-title {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .film-title:hover {
+    text-decoration: underline rgb(99, 164, 122) 1.5px solid;
+  }
+
+  .description {
+    margin-top: 0.5rem;
+  }
+
+  .age-divider {
+    margin: 1.5rem 0 0.5rem 0;
+  }
+
+  .rating-divider {
+    margin: 0.5rem 0;
+  }
+
+  strong {
+    font-weight: 500;
+    color: rgb(33, 32, 32);
+  }
+
+  .rating {
+    margin-top: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+
+    mat-icon {
+      font-size: 20px;
+    }
+    .no-rating-text {
+      font-size: 0.8rem;
+      color: rgb(60, 56, 56);
+      font-style: italic;
+    }
+  }
+}

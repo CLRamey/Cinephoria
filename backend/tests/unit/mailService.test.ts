@@ -4,6 +4,10 @@ import { jest, describe, it, expect, beforeEach } from '@jest/globals';
 
 jest.mock('nodemailer');
 
+afterEach(() => {
+  jest.clearAllMocks();
+});
+
 const mockSendMail = jest.fn(() => Promise.resolve({ messageId: '' }));
 
 // Tell nodemailer.createTransport to return an object with the mocked sendMail

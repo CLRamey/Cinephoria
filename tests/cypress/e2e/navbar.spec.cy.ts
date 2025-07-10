@@ -5,7 +5,7 @@ describe('Navbar e2e Tests', () => {
     cy.visit('/accueil'); // Start on the home page before each test
   });
 
-  it('Clicks on each link from the desktop menu and redirects to the correct page', () => {
+  it('clicks on each link from the desktop menu and redirects to the correct page', () => {
     const links = [
       { text: 'Accueil', url: '/accueil' },
       { text: 'Films', url: '/films' },
@@ -20,7 +20,7 @@ describe('Navbar e2e Tests', () => {
     });
   });
 
-  it('Uses the dropdown connection links correctly (desktop)', () => {
+  it('uses the dropdown connection links correctly (desktop)', () => {
     cy.viewport(1280, 800); // Desktop
 
     cy.get('button[aria-label*="connexion"]').click();
@@ -43,7 +43,7 @@ describe('Navbar e2e Tests', () => {
     });
   });
 
-  it('Has responsive menu displays and works correctly on mobile, tablet, and desktop', () => {
+  it('has responsive menu displays and works correctly on mobile, tablet, and desktop', () => {
     const sizes = [
       { device: 'mobile', width: 375, height: 667 },
       { device: 'tablet', width: 768, height: 1024 },
@@ -80,7 +80,7 @@ describe('Navbar e2e Tests', () => {
     });
   });
 
-  it('The navigation bar is displayed and functional on all pages', () => {
+  it('has the navigation bar displayed and functional on all pages', () => {
     const pages = [
       '/accueil',
       '/films',

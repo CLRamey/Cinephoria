@@ -5,7 +5,7 @@
 
 // Define custom color palettes
 $my-primary: mat.m2-define-palette(mat.$m2-green-palette, 300);
-$my-accent: mat.m2-define-palette(mat.$m2-light-green-palette, A200, A100, A400);
+$my-accent: mat.m2-define-palette(mat.$m2-orange-palette, A200, A100, A400);
 $my-warn: mat.m2-define-palette(mat.$m2-red-palette);
 
 // Define the theme using the custom palettes
@@ -52,6 +52,7 @@ $my-theme: $my-theme !default;
 html {
   height: 100vh;
   width: 100vw;
+  scroll-behavior: smooth;
 }
 
 body {
@@ -62,23 +63,17 @@ body {
   height: 100vh;
 }
 
-h1 {
-  font-size: 3.125rem;
-  color: var(--gray-900);
-  font-weight: 500;
-  line-height: 100%;
-  letter-spacing: -0.125rem;
-  margin: 5% 0;
-  font-family: "Inter", Roboto, "Helvetica", "Arial", "sans-serif";
-}
-
 main {
   width: 100vw;
   min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 1rem;
+  box-sizing: inherit;
   position: relative;
+  margin-top: 5rem;
+  color: var(--gray-900);
 }
 
 // html, body { height: 100%; }

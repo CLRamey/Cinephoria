@@ -5,9 +5,6 @@ import helmet, { contentSecurityPolicy } from 'helmet';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 
-// Import routes
-import cinemaRoutes from './routes/cinemaRoutes';
-
 // Express
 export const app = express();
 
@@ -41,8 +38,17 @@ app.use(express.urlencoded({ extended: true, limit: '2mb' }));
 // Parse cookies
 app.use(cookieParser(process.env['COOKIE_SECRET']));
 
+// Import routes
+import cinemaRoutes from './routes/cinemaRoutes';
+import filmRoutes from './routes/filmRoutes';
+import roomRoutes from './routes/roomRoutes';
+import genreRoutes from './routes/genreRoutes';
+
 // Routes
 app.use('/api', cinemaRoutes);
+app.use('/api', filmRoutes);
+app.use('/api', roomRoutes);
+app.use('/api', genreRoutes);
 
 // Health check route
 app.get('/api/health', (_req, res) => {

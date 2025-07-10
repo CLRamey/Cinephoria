@@ -1,0 +1,50 @@
+.film-page-intro {
+  width: 100vw;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  justify-content: left;
+  margin-top: 2rem;
+  margin-left: 2rem;
+  max-width: 90vw;
+
+  h1 {
+    font-size: 2.5rem;
+    font-family:
+      "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande", "Lucida Sans", Arial, sans-serif;
+    margin-bottom: 1rem;
+    color: rgb(31, 48, 37);
+  }
+}
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+  padding-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+.film-page-controllers {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  align-items: center;
+  margin: 2rem;
+}
+
+.p {
+  font-size: 1.25rem;
+  margin-top: 0.5rem;
+  max-width: 80rem;
+}
+
+.film-list-grid {
+  display: flex;
+  margin-left: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 2rem;
+  width: 87vw;
+}

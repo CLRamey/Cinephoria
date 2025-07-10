@@ -1,5 +1,3 @@
-import dotenv from 'dotenv';
-dotenv.config({ path: '../.env' });
 import nodemailer from 'nodemailer';
 
 export const sendEmail = async (to: string, subject: string, text: string) => {

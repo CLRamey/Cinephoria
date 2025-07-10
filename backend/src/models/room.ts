@@ -125,7 +125,6 @@ export class room extends Model<roomAttributes, roomCreationAttributes> implemen
           type: DataTypes.DATE,
           allowNull: true,
           field: 'deleted_at',
-          defaultValue: Sequelize.Sequelize.fn('current_timestamp'),
         },
       },
       {

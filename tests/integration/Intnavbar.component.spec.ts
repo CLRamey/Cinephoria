@@ -3,7 +3,6 @@ import { NavbarComponent } from '../../projects/cinephoria-web/src/app/layout/he
 import { NavbarModule } from '../../projects/cinephoria-web/src/app/layout/header/navbar.module';
 import { RouterModule } from '@angular/router';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { describe, beforeEach, afterEach, expect, it } from '@jest/globals';
 
 describe('NavbarComponent', () => {
   let component: NavbarComponent;
@@ -36,7 +35,7 @@ describe('NavbarComponent', () => {
   it('should render the logo image with correct alt text and have correct link to /accueil', () => {
     const logoImage: HTMLImageElement = fixture.nativeElement.querySelector('img');
     expect(logoImage).toBeTruthy();
-    expect(logoImage.src).toContain('/assets/img/cinephoria-logo.png');
+    expect(logoImage.src).toContain('/assets/cinephoria-logo.webp');
     expect(logoImage.alt).toBe('Cinéphoria Logo');
 
     const logoLink: HTMLAnchorElement = fixture.nativeElement.querySelector('a.logo');

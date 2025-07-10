@@ -1,4 +1,3 @@
-// src/interfaces/cinemaInfo.ts
 import type { cinemaAttributes } from '../models/init-models';
 
 // Readonly type CinemaInfo is used to ensure that the attributes of the cinema information are immutable.
@@ -6,6 +5,7 @@ export type CinemaInfo = ReadonlyArray<
   Readonly<
     Pick<
       cinemaAttributes,
+      | 'cinemaId'
       | 'cinemaName'
       | 'cinemaAddress'
       | 'cinemaPostalCode'

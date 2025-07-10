@@ -91,7 +91,6 @@ export class screening
           type: DataTypes.DATE,
           allowNull: true,
           field: 'deleted_at',
-          defaultValue: Sequelize.Sequelize.fn('current_timestamp'),
         },
         cinemaId: {
           type: DataTypes.INTEGER,

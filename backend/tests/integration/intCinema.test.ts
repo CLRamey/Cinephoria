@@ -9,7 +9,11 @@ app.use('/api', cinemaRoutes);
 
 jest.mock('../../src/services/cinemaInfoService');
 
-describe('GET /api/cinema-info integration test', () => {
+afterEach(() => {
+  jest.clearAllMocks();
+});
+
+describe('GET /api/cinema integration test', () => {
   it('should respond 200 and return cinema info', async () => {
     (service.getCinemaInfo as jest.Mock).mockResolvedValue({
       success: true,
@@ -25,9 +29,7 @@ describe('GET /api/cinema-info integration test', () => {
         },
       ],
     });
-
-    const response = await request(app).get('/api/cinema-info');
-
+    const response = await request(app).get('/api/cinema');
     expect(response.status).toBe(200);
     expect(response.body.success).toBe(true);
     expect(response.body.data[0].cinemaName).toBe('Cinéphoria');
@@ -38,9 +40,7 @@ describe('GET /api/cinema-info integration test', () => {
       success: false,
       error: { message: 'Not found', code: 'CINEMA_INFO_NOT_FOUND' },
     });
-
-    const response = await request(app).get('/api/cinema-info');
-
+    const response = await request(app).get('/api/cinema');
     expect(response.status).toBe(404);
     expect(response.body.success).toBe(false);
   });
@@ -50,9 +50,7 @@ describe('GET /api/cinema-info integration test', () => {
       success: false,
       error: { message: 'Internal error', code: 'CINEMA_INFO_SERVICE_ERROR' },
     });
-
-    const response = await request(app).get('/api/cinema-info');
-
+    const response = await request(app).get('/api/cinema');
     expect(response.status).toBe(500);
     expect(response.body.success).toBe(false);
   });

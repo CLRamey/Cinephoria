@@ -29,7 +29,6 @@ describe('CinemaInfoService', () => {
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
-      teardown: { destroyAfterEach: false },
     });
     service = TestBed.inject(CinemaInfoService);
     httpMock = TestBed.inject(HttpTestingController);
@@ -49,8 +48,7 @@ describe('CinemaInfoService', () => {
       expect(result?.CinemaInfo.length).toBe(1);
       expect(result?.CinemaInfo[0].cinemaName).toBe('Cinéphoria');
     });
-
-    const req = httpMock.expectOne(`${environment.apiURL}/cinema-info`);
+    const req = httpMock.expectOne(`${environment.apiURL}/cinema`);
     expect(req.request.method).toBe('GET');
     req.flush(mockResponse);
   });
@@ -61,8 +59,7 @@ describe('CinemaInfoService', () => {
     service.getCinemaInfo().subscribe(result => {
       expect(result).toBeNull();
     });
-
-    const req = httpMock.expectOne(`${environment.apiURL}/cinema-info`);
+    const req = httpMock.expectOne(`${environment.apiURL}/cinema`);
     expect(req.request.method).toBe('GET');
     req.flush(errorResponse);
   });
@@ -71,18 +68,16 @@ describe('CinemaInfoService', () => {
     service.getCinemaInfo().subscribe(result => {
       expect(result).toBeNull();
     });
-
-    const req = httpMock.expectOne(`${environment.apiURL}/cinema-info`);
+    const req = httpMock.expectOne(`${environment.apiURL}/cinema`);
     expect(req.request.method).toBe('GET');
-    req.error(new ErrorEvent('Network error'));
+    req.error(new ProgressEvent('error'));
   });
 
   it('should handle network error gracefully', () => {
     service.getCinemaInfo().subscribe(result => {
       expect(result).toBeNull();
     });
-
-    const req = httpMock.expectOne(`${environment.apiURL}/cinema-info`);
+    const req = httpMock.expectOne(`${environment.apiURL}/cinema`);
     expect(req.request.method).toBe('GET');
     req.error(new ProgressEvent('error'));
   });

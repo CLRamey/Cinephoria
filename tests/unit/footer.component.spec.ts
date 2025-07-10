@@ -31,7 +31,7 @@ describe('FooterComponent', () => {
     jest.restoreAllMocks();
   });
 
-  it('should create', () => {
+  it('should create the component', () => {
     expect(component).toBeTruthy();
   });
 
@@ -41,7 +41,7 @@ describe('FooterComponent', () => {
       of({
         CinemaInfo: [
           {
-            id: 1,
+            cinemaId: 1,
             cinemaName: 'Cinéphoria',
             cinemaAddress: '123 Rue du Cinéma',
             cinemaPostalCode: '75000',

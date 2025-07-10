@@ -1,6 +1,6 @@
-// File: cinema-info.ts
-// This file defines the interfaces for cinema information in the Cinephoria web application.
+// This file defines the interfaces for cinema information in the application.
 export interface CinemaInfo {
+  cinemaId: number;
   cinemaName: string;
   cinemaAddress: string;
   cinemaPostalCode: string;
