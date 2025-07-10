@@ -1,9 +1,13 @@
-import { cinemaInfoController } from '../../src/controllers/cinemaInfoController';
+import { publicCinemaInfoController } from '../../src/controllers/cinemaInfoController';
 import { getCinemaInfo } from '../../src/services/cinemaInfoService';
 
 jest.mock('../../src/services/cinemaInfoService');
 
 import { Request, Response } from 'express';
+
+afterEach(() => {
+  jest.clearAllMocks();
+});
 
 describe('cinemaInfoController', () => {
   let req: Partial<Request>;
@@ -22,9 +26,7 @@ describe('cinemaInfoController', () => {
       success: true,
       data: [{ cinemaName: 'Test Cinema' }],
     });
-
-    await cinemaInfoController(req as Request, res as Response);
-
+    await publicCinemaInfoController(req as Request, res as Response);
     expect(res.status).toHaveBeenCalledWith(200);
     expect(res.json).toHaveBeenCalledWith({
       success: true,
@@ -37,9 +39,7 @@ describe('cinemaInfoController', () => {
       success: false,
       error: { message: 'Not found', code: 'CINEMA_INFO_NOT_FOUND' },
     });
-
-    await cinemaInfoController(req as Request, res as Response);
-
+    await publicCinemaInfoController(req as Request, res as Response);
     expect(res.status).toHaveBeenCalledWith(404);
     expect(res.json).toHaveBeenCalledWith({
       success: false,
@@ -52,9 +52,7 @@ describe('cinemaInfoController', () => {
       success: false,
       error: { message: 'Error', code: 'CINEMA_INFO_SERVICE_ERROR' },
     });
-
-    await cinemaInfoController(req as Request, res as Response);
-
+    await publicCinemaInfoController(req as Request, res as Response);
     expect(res.status).toHaveBeenCalledWith(500);
     expect(res.json).toHaveBeenCalledWith({
       success: false,

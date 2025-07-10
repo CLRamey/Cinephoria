@@ -144,13 +144,11 @@ export class reservation
         reservationCreatedAt: {
           type: DataTypes.DATE,
           allowNull: false,
-          defaultValue: Sequelize.Sequelize.fn('current_timestamp'),
           field: 'reservation_created_at',
         },
         reservationUpdatedAt: {
           type: DataTypes.DATE,
           allowNull: true,
-          defaultValue: Sequelize.Sequelize.fn('current_timestamp'),
           field: 'reservation_updated_at',
         },
         reservationQrCode: {
@@ -163,7 +161,6 @@ export class reservation
           type: DataTypes.DATE,
           allowNull: true,
           field: 'deleted_at',
-          defaultValue: Sequelize.Sequelize.fn('current_timestamp'),
         },
       },
       {

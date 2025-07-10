@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -20,11 +21,16 @@ import { ContactModule } from './features/contact/contact.module';
 import { LoginEmployeeModule } from './features/auth/login-employee/login-employee.module';
 import { LoginAdminModule } from './features/auth/login-admin/login-admin.module';
 import { InscriptionModule } from './features/auth/inscription/inscription.module';
+import { FilmCardComponent } from './utils/film-card/film-card.component';
+import { ScreeningCardComponent } from './utils/screening-card/screening-card.component';
+
+import { LOCALE_ID } from '@angular/core';
 
 @NgModule({
   declarations: [AppComponent],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     AppRoutingModule,
     NavbarModule,
     FooterModule,
@@ -39,8 +45,14 @@ import { InscriptionModule } from './features/auth/inscription/inscription.modul
     EmployeeModule,
     ClientModule,
     ContactModule,
+    FilmCardComponent,
+    ScreeningCardComponent,
   ],
-  providers: [provideAnimationsAsync(), provideHttpClient(withInterceptorsFromDi())],
+  providers: [
+    { provide: LOCALE_ID, useValue: 'fr' },
+    provideAnimationsAsync(),
+    provideHttpClient(withInterceptorsFromDi()),
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

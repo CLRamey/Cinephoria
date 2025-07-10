@@ -1,1 +1,65 @@
-<p>films works!</p>
+<div class="film-page-intro">
+  <h1 class="title">Films</h1>
+  <p class="subtitle">Explorez notre collection de films.</p>
+</div>
+<div class="filters">
+  <mat-form-field appearance="fill">
+    <mat-label>Cinéma</mat-label>
+    <mat-select [(ngModel)]="selectedCinemaId" (selectionChange)="applyFilters()">
+      <mat-option [value]="null">Tous</mat-option>
+      <mat-option *ngFor="let cinema of cinemas" [value]="cinema.id">
+        {{ cinema.name }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Genre</mat-label>
+    <mat-select [(ngModel)]="selectedGenreId" (selectionChange)="applyFilters()">
+      <mat-option [value]="null">Tous</mat-option>
+      <mat-option *ngFor="let genre of genres" [value]="genre.id">{{ genre.name }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Jour</mat-label>
+    <input
+      matInput
+      [matDatepicker]="picker"
+      [(ngModel)]="selectedDate"
+      (dateChange)="applyFilters()"
+    />
+    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker #picker></mat-datepicker>
+  </mat-form-field>
+</div>
+
+<div class="film-page-controllers">
+  <ng-container *ngIf="isLoading; else notLoading">
+    <mat-spinner diameter="50"></mat-spinner>
+  </ng-container>
+
+  <ng-template #notLoading>
+    <ng-container *ngIf="hasError; else noError">
+      <p>Une erreur est survenue lors du chargement des films. Veuillez réessayer plus tard.</p>
+    </ng-container>
+
+    <ng-template #noError>
+      <ng-container *ngIf="films.length === 0">
+        <p>Aucun film à afficher.</p>
+      </ng-container>
+    </ng-template>
+
+    <ng-container *ngIf="filteredFilms.length === 0">
+      <p>Aucun film ne correspond à vos critères.</p>
+    </ng-container>
+  </ng-template>
+</div>
+
+<div class="film-list-grid">
+  <caw-film-card
+    *ngFor="let film of filteredFilms; trackBy: trackByFilmId"
+    [film]="film"
+    (filmClicked)="onFilmSelected($event)"
+  ></caw-film-card>
+</div>

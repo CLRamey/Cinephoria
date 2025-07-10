@@ -5,7 +5,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import '@testing-library/jest-dom';
 import { of } from 'rxjs';
 
-describe('FooterComponent (fonctionnel)', () => {
+describe('FooterComponent', () => {
   const mockCinemaInfoService = {
     getCinemaInfo: jest.fn().mockReturnValue(
       of({

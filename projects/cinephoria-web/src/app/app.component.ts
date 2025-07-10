@@ -7,7 +7,6 @@ import { ConfigService } from './core/services/config.service';
   styleUrl: './app.component.scss',
 })
 export class AppComponent implements OnInit {
-  title = 'cinephoria-web';
   status = 'Loading...';
 
   constructor(private api: ConfigService) {}

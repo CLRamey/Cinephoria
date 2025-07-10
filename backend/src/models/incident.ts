@@ -95,7 +95,6 @@ export class incident
           type: DataTypes.DATE,
           allowNull: true,
           field: 'deleted_at',
-          defaultValue: Sequelize.Sequelize.fn('current_timestamp'),
         },
         roomId: {
           type: DataTypes.INTEGER,

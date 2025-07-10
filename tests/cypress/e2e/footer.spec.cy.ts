@@ -5,7 +5,7 @@ describe('Footer e2e Tests', () => {
     cy.visit('/accueil');
   });
 
-  it('The footer is responsive and visible on mobile, tablet, and desktop', () => {
+  it('should have a responsive footer that is visible on mobile, tablet, and desktop', () => {
     const pages = [
       '/accueil',
       '/films',

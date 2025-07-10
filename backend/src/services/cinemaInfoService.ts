@@ -1,10 +1,11 @@
 // File: backend/src/services/cinemaInfoService.ts
 // This file contains the service logic for retrieving cinema information from the database.
-import { cinema } from '../models/cinema';
+import { cinema } from '../models/init-models';
 import { Op } from 'sequelize';
 import { CinemaInfo, CinemaInfoResponse, CinemaInfoErrorResponse } from '../interfaces/cinemaInfo';
 
 // This function retrieves cinema information from the database and returns it in a structured format + error handling.
+// Sequelize is used fetch the relevant attributes (selected so that not all are returned).
 export async function getCinemaInfo(): Promise<CinemaInfoResponse | CinemaInfoErrorResponse> {
   try {
     const cinemaData = await cinema.findAll({
@@ -14,6 +15,7 @@ export async function getCinemaInfo(): Promise<CinemaInfoResponse | CinemaInfoEr
         },
       },
       attributes: [
+        'cinemaId',
         'cinemaName',
         'cinemaAddress',
         'cinemaPostalCode',
@@ -22,7 +24,6 @@ export async function getCinemaInfo(): Promise<CinemaInfoResponse | CinemaInfoEr
         'cinemaTelNumber',
         'cinemaOpeningHours',
       ],
-      raw: true, // Use raw to get plain objects instead of Sequelize instances
       order: [['cinemaName', 'ASC']], // Optional: Order by cinema name
     });
 
@@ -36,18 +37,9 @@ export async function getCinemaInfo(): Promise<CinemaInfoResponse | CinemaInfoEr
         },
       };
     }
-
     return {
       success: true,
-      data: cinemaData.map(c => ({
-        cinemaName: c.cinemaName,
-        cinemaAddress: c.cinemaAddress,
-        cinemaPostalCode: c.cinemaPostalCode,
-        cinemaCity: c.cinemaCity,
-        cinemaCountry: c.cinemaCountry,
-        cinemaTelNumber: c.cinemaTelNumber,
-        cinemaOpeningHours: c.cinemaOpeningHours,
-      })) as CinemaInfo,
+      data: cinemaData.map(c => c.toJSON()) as CinemaInfo,
     };
   } catch (error) {
     console.error('Cinema information service error:', error);
@@ -60,8 +52,3 @@ export async function getCinemaInfo(): Promise<CinemaInfoResponse | CinemaInfoEr
     };
   }
 }
-// The function uses Sequelize to query the `cinema` model and fetches the relevant attributes (selected so that not all are returned).
-// If the cinema information is not found, it returns an error response with a specific error code.
-// If an error occurs during the database query, it catches the error and returns a generic error response.
-// The function returns a promise that resolves to either a successful response containing the cinema information or an error response.
-// This service can be used in the controller to handle requests for cinema information, ensuring that the data is retrieved and formatted correctly before being sent to the client.

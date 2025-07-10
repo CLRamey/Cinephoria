@@ -1,21 +1,24 @@
 import { Component } from '@angular/core';
 import { CinemaInfoService } from '../../services/cinema-info.service';
-import { OnInit } from '@angular/core';
-import { CinemaInfo } from '../../interfaces/cinema-info';
+import { OnInit, OnDestroy } from '@angular/core';
+import { CinemaInfo } from '../../interfaces/cinema';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'caw-footer',
   templateUrl: './footer.component.html',
   styleUrl: './footer.component.scss',
 })
-export class FooterComponent implements OnInit {
+export class FooterComponent implements OnInit, OnDestroy {
   cinemaInfo: CinemaInfo[] = [];
   currentYear: number = new Date().getFullYear();
 
-  constructor(private cinemaInfoService: CinemaInfoService) {}
+  constructor(private readonly cinemaInfoService: CinemaInfoService) {}
+
+  private readonly subscriptions: Subscription = new Subscription();
 
   ngOnInit(): void {
-    this.cinemaInfoService.getCinemaInfo().subscribe({
+    const cinSub = this.cinemaInfoService.getCinemaInfo().subscribe({
       next: data => {
         this.cinemaInfo = data && data.CinemaInfo ? data.CinemaInfo : [];
       },
@@ -28,9 +31,14 @@ export class FooterComponent implements OnInit {
         }
       },
     });
+    this.subscriptions.add(cinSub);
   }
 
   getCurrentYear(): number {
     return this.currentYear;
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
   }
 }

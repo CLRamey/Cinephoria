@@ -95,20 +95,17 @@ export class review
         reviewCreatedAt: {
           type: DataTypes.DATE,
           allowNull: true,
-          defaultValue: Sequelize.Sequelize.fn('current_timestamp'),
           field: 'review_created_at',
         },
         reviewUpdatedAt: {
           type: DataTypes.DATE,
           allowNull: true,
-          defaultValue: Sequelize.Sequelize.fn('current_timestamp'),
           field: 'review_updated_at',
         },
         deletedAt: {
           type: DataTypes.DATE,
           allowNull: true,
           field: 'deleted_at',
-          defaultValue: Sequelize.Sequelize.fn('current_timestamp'),
         },
         filmId: {
           type: DataTypes.INTEGER,

@@ -1,11 +1,15 @@
-<footer class="footer">
-  <mat-toolbar color="primary" class="footer-toolbar">
+<footer class="footer" aria-label="Pied de page du site Cinéphoria">
+  <mat-toolbar
+    color="primary"
+    class="footer-toolbar"
+    aria-label="Informations sur les cinémas et mentions légales"
+  >
     <div class="footer-title-container">
       <span class="footer-title">Cinémas:</span>
     </div>
-    <div class="footer-content">
+    <div class="footer-content" aria-label="Liste des cinémas Cinéphoria">
       <ng-container *ngFor="let cinemaData of cinemaInfo">
-        <li class="cinema-item">
+        <div class="cinema-item" aria-label="Détails du cinéma">
           <p class="cinema-name">
             <strong>{{ cinemaData.cinemaName }}</strong>
           </p>
@@ -14,9 +18,11 @@
           <p>{{ cinemaData.cinemaCountry }}</p>
           <p>Téléphone : {{ cinemaData.cinemaTelNumber }}</p>
           <p>{{ cinemaData.cinemaOpeningHours }}</p>
-        </li>
+        </div>
       </ng-container>
     </div>
-    <span class="copyright">&copy; {{ currentYear }} Cinéphoria. Tous droits réservés.</span>
+    <span class="copyright" aria-label="Droits d'auteur">
+      &copy; {{ currentYear }} Cinéphoria. Tous droits réservés.
+    </span>
   </mat-toolbar>
 </footer>
