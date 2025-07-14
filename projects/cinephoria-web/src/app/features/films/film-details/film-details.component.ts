@@ -91,7 +91,7 @@ export class FilmDetailsComponent implements OnInit, OnDestroy {
           const screenings = this.film.screenings ?? [];
           if (screenings && screenings.length > 0) {
             this.loadExtendedScreenings(screenings, this.film.filmDuration);
-            setTimeout(() => this.scrollToScreenings(), 3000);
+            setTimeout(() => this.scrollToScreenings(), 2000);
           } else {
             this.isLoading = false;
           }

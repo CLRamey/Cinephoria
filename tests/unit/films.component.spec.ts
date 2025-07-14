@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FilmsComponent } from '../../projects/cinephoria-web/src/app/features/films/films.component';
 import { FilmInfoService } from '../../projects/cinephoria-web/src/app/services/film-info.service';
-import { FilmInfo } from '../../projects/cinephoria-web/src/app/interfaces/film.ts';
+import { FilmInfo } from '../../projects/cinephoria-web/src/app/interfaces/film';
 import { CinemaInfoService } from '../../projects/cinephoria-web/src/app/services/cinema-info.service';
 import { GenreInfoService } from '../../projects/cinephoria-web/src/app/services/genre-info.service';
 import { Router } from '@angular/router';
@@ -17,7 +17,7 @@ describe('FilmsComponent', () => {
   let mockRouter: jest.Mocked<Router>;
 
   const mockActivatedRoute = {
-    params: of({ filmId: '123' }),
+    params: of({ filmId: 123 }),
     snapshot: {
       paramMap: {
         get: (_key: string) => '123',

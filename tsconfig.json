@@ -31,7 +31,7 @@
     },
   "include": [
     "projects/cinephoria-web/**/*.ts",
-    "projects/cinephoria-web/**/*.{html,scss}", "tests/unit/footer.component.spec.ts", "tests/unit/cinema-info.service.spec.ts", "tests/unit/film-info.service.spec.ts", "tests/unit/films.component.spec.ts", "tests/unit/film-card.component.spec.ts", "tests/unit/film-details.component.spec.ts", "tests/unit/film-list.component.spec.ts", "tests/unit/room-info.service.spec.ts", "tests/unit/screening-info.service.spec.ts", "tests/unit/quality-info.service.spec.ts", "tests/unit/genre-info.service.spec.ts", "projects/cinephoria-web/src/app/features/contact/contact.component.spec.ts", "tests/unit/screening-card.component.spec.ts",
+    "projects/cinephoria-web/**/*.{html,scss}", "tests/unit/footer.component.spec.ts", "tests/unit/cinema-info.service.spec.ts", "tests/unit/film-info.service.spec.ts", "tests/unit/films.component.spec.ts", "tests/unit/film-card.component.spec.ts", "tests/unit/film-details.component.spec.ts", "tests/unit/film-list.component.spec.ts", "tests/unit/room-info.service.spec.ts", "tests/unit/screening-info.service.spec.ts", "tests/unit/quality-info.service.spec.ts", "tests/unit/genre-info.service.spec.ts", "projects/cinephoria-web/src/app/features/contact/contact.component.spec.ts", "tests/unit/screening-card.component.spec.ts", "tests/unit/home.component.spec.ts",
   ],
   "exclude": [
     "**/node_modules",
