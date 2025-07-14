@@ -66,6 +66,7 @@ export const routes: Routes = [
       scrollPositionRestoration: 'enabled',
       anchorScrolling: 'enabled',
       scrollOffset: [0, 64], // Adjust offset for fixed header
+      onSameUrlNavigation: 'reload', // Reload component on same URL navigation
     }),
   ],
   exports: [RouterModule],

@@ -1,0 +1,104 @@
+.home-page-container {
+  display: flex;
+  flex-direction: column;
+  width: 90vw;
+  align-self: center;
+}
+
+.home-page-intro {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  justify-content: left;
+  margin-top: 2rem;
+  margin-left: 1.5rem;
+  margin-bottom: 1.5rem;
+  max-width: 90vw;
+
+  h1 {
+    font-size: 2.5rem;
+    font-family:
+      "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande", "Lucida Sans", Arial, sans-serif;
+    margin-bottom: 1rem;
+    color: rgb(31, 48, 37);
+  }
+  p {
+    max-width: 90%;
+  }
+}
+
+.carousel-container {
+  max-width: 80vw;
+  position: relative;
+  display: flex;
+  align-self: center;
+  margin-bottom: 2rem;
+
+  p {
+    margin-top: 6rem;
+    text-align: center;
+    font-style: italic;
+    font-size: 0.9rem;
+    border-top: 1px solid rgb(99, 164, 122, 0.4);
+    padding-top: 1rem;
+  }
+
+  mat-spinner {
+    margin-top: 6rem;
+    align-self: center;
+    margin-bottom: 6rem;
+  }
+}
+
+.carousel-scroll {
+  display: flex;
+  align-self: center;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  padding: 0.5rem;
+}
+
+.carousel-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.scroll-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgba(0, 0, 0, 0.5);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  border: rgb(99, 164, 122, 0.4) 1px solid;
+  color: white;
+  z-index: 10;
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.8);
+    border: rgb(99, 164, 122, 0.6) 1px solid;
+  }
+}
+
+.left {
+  left: 0.25rem;
+}
+
+.right {
+  right: 0.25rem;
+}
+
+caw-film-card {
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+}
+
+.films-button {
+  margin-top: 1rem;
+  margin-bottom: 2rem;
+  align-self: center;
+  width: 250px;
+  background-color: #f0f0ebeb;
+  &:hover {
+    background-color: rgb(135, 214, 148, 0.8);
+  }
+}
