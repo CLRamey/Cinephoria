@@ -8,7 +8,7 @@ export interface userAttributes {
   userId: number;
   userFirstName: string;
   userLastName: string;
-  userUsername?: string;
+  userUsername: string;
   userEmail: string;
   userPassword: string;
   userCreatedAt?: Date;
@@ -46,7 +46,7 @@ export class user extends Model<userAttributes, userCreationAttributes> implemen
   userId!: number;
   userFirstName!: string;
   userLastName!: string;
-  userUsername?: string;
+  userUsername!: string;
   userEmail!: string;
   userPassword!: string;
   userCreatedAt?: Date;
@@ -119,8 +119,8 @@ export class user extends Model<userAttributes, userCreationAttributes> implemen
           field: 'user_last_name',
         },
         userUsername: {
-          type: DataTypes.STRING(100),
-          allowNull: true,
+          type: DataTypes.STRING(30),
+          allowNull: false,
           unique: 'user_username',
           field: 'user_username',
         },

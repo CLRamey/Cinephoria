@@ -12,6 +12,7 @@ app.use('/api', filmRoutes);
 
 afterEach(() => {
   jest.clearAllMocks();
+  jest.resetAllMocks();
 });
 
 const baseMockFilmData = [
@@ -66,9 +67,7 @@ describe('GET /api/film', () => {
       success: true,
       data: baseMockFilmData,
     });
-
     const res = await request(app).get('/api/film');
-
     expect(res.status).toBe(200);
     expect(res.body.success).toBe(true);
     expect(res.body.data).toHaveLength(1);
@@ -83,9 +82,7 @@ describe('GET /api/film', () => {
         code: 'FILM_INFO_NOT_FOUND',
       },
     });
-
     const res = await request(app).get('/api/film');
-
     expect(res.status).toBe(404);
     expect(res.body.success).toBe(false);
     expect(res.body.error.code).toBe('FILM_INFO_NOT_FOUND');
@@ -99,9 +96,7 @@ describe('GET /api/film', () => {
         code: 'FILM_INFO_SERVICE_ERROR',
       },
     });
-
     const res = await request(app).get('/api/film');
-
     expect(res.status).toBe(500);
     expect(res.body.success).toBe(false);
     expect(res.body.error.code).toBe('FILM_INFO_SERVICE_ERROR');
@@ -110,15 +105,12 @@ describe('GET /api/film', () => {
 
 describe('GET /api/films/:filmId', () => {
   const filmId = 1;
-
   it('should return 200 with film info by ID', async () => {
     (service.getFilmInfoById as jest.Mock).mockResolvedValue({
       success: true,
       data: [baseMockFilmData[0]],
     });
-
     const res = await request(app).get(`/api/film/${filmId}`);
-
     expect(res.status).toBe(200);
     expect(res.body.success).toBe(true);
     expect(res.body.data).toHaveLength(1);
@@ -133,9 +125,7 @@ describe('GET /api/films/:filmId', () => {
         code: 'NOT_FOUND',
       },
     });
-
     const res = await request(app).get(`/api/film/${filmId}`);
-
     expect(res.status).toBe(404);
     expect(res.body.success).toBe(false);
     expect(res.body.error.code).toBe('NOT_FOUND');
@@ -149,9 +139,7 @@ describe('GET /api/films/:filmId', () => {
         code: 'FILM_INFO_SERVICE_ERROR',
       },
     });
-
     const res = await request(app).get(`/api/film/${filmId}`);
-
     expect(res.status).toBe(500);
     expect(res.body.success).toBe(false);
     expect(res.body.error.code).toBe('FILM_INFO_SERVICE_ERROR');

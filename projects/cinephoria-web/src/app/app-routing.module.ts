@@ -22,11 +22,6 @@ export const routes: Routes = [
       import('./features/auth/login-client/login-client.module').then(m => m.LoginClientModule),
   },
   {
-    path: 'inscription',
-    loadChildren: () =>
-      import('./features/auth/inscription/inscription.module').then(m => m.InscriptionModule),
-  },
-  {
     path: 'login-employee',
     loadChildren: () =>
       import('./features/auth/login-employee/login-employee.module').then(

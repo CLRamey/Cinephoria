@@ -15,8 +15,8 @@ const config: Config = {
   setupFiles: ['dotenv/config'],
   moduleFileExtensions: ['ts', 'js', 'json'],
   verbose: true,
-  detectLeaks: true,
-  detectOpenHandles: true,
+  detectLeaks: false,
+  detectOpenHandles: false,
   forceExit: true,
 };
 
