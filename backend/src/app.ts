@@ -44,11 +44,18 @@ import filmRoutes from './routes/filmRoutes';
 import roomRoutes from './routes/roomRoutes';
 import genreRoutes from './routes/genreRoutes';
 
+// Login and register routes
+import clientRoutes from './routes/clientRoutes';
+
 // Routes
 app.use('/api', cinemaRoutes);
 app.use('/api', filmRoutes);
 app.use('/api', roomRoutes);
 app.use('/api', genreRoutes);
+
+app.use('/api', clientRoutes);
+// app.use('/api/login-client', clientRoutes);
+// app.use('/api/client', clientRoutes);
 
 // Health check route
 app.get('/api/health', (_req, res) => {
@@ -68,11 +75,13 @@ app.use((_req, res) => {
 
 // Error handling
 app.use((err: Error, req: express.Request, res: express.Response, _next: express.NextFunction) => {
-  console.error(err.stack);
+  if (process.env.NODE_ENV !== 'production') {
+    console.error(err.stack);
+  }
   res.status(500).json({
     success: false,
     error: {
-      message: 'Internal Server Error',
+      message: 'An error has occurred. Please try again later.',
       code: 'INTERNAL_SERVER_ERROR',
     },
   });

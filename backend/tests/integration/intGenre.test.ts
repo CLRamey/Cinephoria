@@ -9,7 +9,7 @@ app.use('/api', genreRoutes);
 
 jest.mock('../../src/services/genreInfoService');
 
-afterEach(() => {
+afterEach(async () => {
   jest.clearAllMocks();
 });
 
@@ -28,7 +28,6 @@ describe('GET /api/genre integration test', () => {
         },
       ],
     });
-
     const response = await request(app).get('/api/genre');
     expect(response.status).toBe(200);
     expect(response.body.success).toBe(true);
@@ -41,7 +40,6 @@ describe('GET /api/genre integration test', () => {
       success: false,
       error: { message: 'Genre information not found', code: 'GENRE_INFO_NOT_FOUND' },
     });
-
     const response = await request(app).get('/api/genre');
     expect(response.status).toBe(404);
     expect(response.body.success).toBe(false);
@@ -56,7 +54,6 @@ describe('GET /api/genre integration test', () => {
         code: 'GENRE_INFO_SERVICE_ERROR',
       },
     });
-
     const response = await request(app).get('/api/genre');
     expect(response.status).toBe(500);
     expect(response.body.success).toBe(false);

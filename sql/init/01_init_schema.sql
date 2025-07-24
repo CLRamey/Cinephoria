@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS User (
     user_id INT AUTO_INCREMENT PRIMARY KEY,
     user_first_name VARCHAR(50) NOT NULL,
     user_last_name VARCHAR(50) NOT NULL,
-    user_username VARCHAR(100) UNIQUE,
+    user_username VARCHAR(30) UNIQUE NOT NULL,
     user_email VARCHAR(100) UNIQUE NOT NULL,
     user_password VARCHAR(60) NOT NULL,
     user_created_at DATETIME DEFAULT CURRENT_TIMESTAMP,

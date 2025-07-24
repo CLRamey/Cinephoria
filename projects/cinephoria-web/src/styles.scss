@@ -76,5 +76,13 @@ main {
   color: var(--gray-900);
 }
 
+.snackbar-success {
+  background-color: #f0f0ebeb !important;
+}
+
+.snackbar-error {
+  color: white !important;
+}
+
 // html, body { height: 100%; }
 // body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
