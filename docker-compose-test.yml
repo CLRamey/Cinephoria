@@ -68,10 +68,6 @@ services:
       volumes:
         - .:/app
         - /app/node_modules
-        - seeders/test_user_script.ts:/docker-entrypoint-initdb.d/test_user_script.ts:ro
-      command: >
-        sh -c "until nc -z mariadb 3306; do echo 'Waiting for SQL...'; sleep 1; done &&
-        echo 'SQL is up, running initialization script...' && npx ts-node seeders/test_user_script.ts"
       depends_on:
         - mariadb
         - mongo
