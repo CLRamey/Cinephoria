@@ -14,11 +14,12 @@ export const hashPassword = async (userPassword: string): Promise<string> => {
 // Password strength validation
 export const isPasswordStrong = (password: string): boolean => {
   const minLength = password.length >= 12;
+  const maxLength = password.length <= 64;
   const hasUpper = /[A-Z]/.test(password);
   const hasLower = /[a-z]/.test(password);
   const hasNumber = /\d/.test(password);
-  const hasSpecial = /[\W_]/.test(password);
-  const isValid = minLength && hasUpper && hasLower && hasNumber && hasSpecial;
+  const hasSpecial = /[@$!%*?&]/.test(password);
+  const isValid = minLength && maxLength && hasUpper && hasLower && hasNumber && hasSpecial;
   if (!isValid) {
     console.error('Password does not meet strength requirements');
   }
@@ -36,10 +37,13 @@ export const generateVerificationCodeExpires = (): Date => {
   return new Date(date.getTime() + 1 * 60 * 60 * 1000); // 1 hour from now
 };
 
-// Password comparison
+// Password comparison utility
 export const comparePasswords = async (
   userPassword: string,
   hashedPassword: string,
 ): Promise<boolean> => {
+  if (!userPassword || !hashedPassword) {
+    throw new Error('Invalid password comparison parameters');
+  }
   return await bcrypt.compare(userPassword, hashedPassword);
 };

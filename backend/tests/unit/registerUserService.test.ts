@@ -70,9 +70,7 @@ describe('registerUser', () => {
     (generateVerificationCode as jest.Mock).mockReturnValue('abc123');
     (generateVerificationCodeExpires as jest.Mock).mockReturnValue(new Date());
     (user.create as jest.Mock).mockRejectedValue(new Error('Database error'));
-
     const result = await registerUser({ ...mockUserInput });
-
     expect(result.success).toBe(false);
     if (!result.success) {
       expect(result.error?.code).toBe('REGISTRATION_ERROR');

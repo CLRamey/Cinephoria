@@ -3,7 +3,16 @@
   <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
     <mat-form-field appearance="fill" class="full-width">
       <mat-label>Adresse e-mail</mat-label>
-      <input matInput formControlName="email" type="email" required />
+      <input
+        matInput
+        formControlName="email"
+        type="email"
+        spellcheck="false"
+        autocomplete="email"
+        [attr.aria-label]="'Adresse e-mail'"
+        [attr.aria-required]="true"
+        required
+      />
       <mat-error *ngIf="loginForm.get('email')?.hasError('required')">
         Veuillez entrer une adresse e-mail.
       </mat-error>
@@ -19,6 +28,10 @@
         [type]="showPassword ? 'text' : 'password'"
         formControlName="password"
         type="password"
+        spellcheck="false"
+        autocomplete="current-password"
+        [attr.aria-label]="'Mot de passe'"
+        [attr.aria-required]="true"
         required
       />
       <button
@@ -34,6 +47,12 @@
         Veuillez entrer votre mot de passe.
       </mat-error>
     </mat-form-field>
+
+    <ng-container *ngIf="loginError" class="error-message">
+      <mat-error>
+        Nom d'utilisateur ou mot de passe incorrect, veuillez corriger les informations saisies.
+      </mat-error>
+    </ng-container>
 
     <button
       mat-raised-button

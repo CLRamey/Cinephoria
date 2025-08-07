@@ -2,6 +2,8 @@
 // Database configuration for SQL (MariaDB) connection, sequelize and model initialization
 import { Sequelize } from 'sequelize';
 import { initModels } from '../models/init-models';
+import dotenv from 'dotenv';
+dotenv.config({ path: '../.env' }); // Load environment variables FIRST safely
 
 // Determine if the environment is production or development
 const isProduction = process.env['NODE_ENV'] === 'production';

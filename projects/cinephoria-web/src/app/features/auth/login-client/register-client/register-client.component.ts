@@ -23,6 +23,9 @@ import { PrivacyPolicyComponent } from '../../../../utils/dialogs/privacy-policy
 export class RegisterClientComponent {
   registerForm: FormGroup;
   showPassword = false;
+
+  // Constructor that initializes the form and injects necessary services.
+  // It also sets up the form with validators for each field.
   constructor(
     private fb: FormBuilder,
     private readonly authService: AuthService,
@@ -71,18 +74,21 @@ export class RegisterClientComponent {
     );
   }
 
+  // Method to open the privacy policy dialog.
   openPrivacyPolicy(): void {
     this.dialog.open(PrivacyPolicyComponent, {
       data: {},
     });
   }
-
+  // Method to open the CGV/CGU dialog.
   openCguCgv(): void {
     this.dialog.open(CguCgvComponent, {
       data: {},
     });
   }
 
+  // Method to handle registration submission.
+  // It checks if the form is valid and then calls the authService to register the user.
   onRegister() {
     if (this.registerForm.invalid) {
       this.registerForm.markAllAsTouched();
@@ -140,7 +146,7 @@ export class RegisterClientComponent {
       console.error('Unexpected error during registration:', error);
     }
   }
-
+  // Method to toggle password visibility.
   togglePasswordVisibility(): void {
     this.showPassword = !this.showPassword;
   }

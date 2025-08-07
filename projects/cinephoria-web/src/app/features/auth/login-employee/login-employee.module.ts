@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 
 import { LoginEmployeeComponent } from './login-employee.component';
+import { EmployeeLoginComponent } from 'projects/auth/src/lib/shared/employee-login/employee-login.component';
 
 const routes: Routes = [
   {
@@ -13,7 +14,7 @@ const routes: Routes = [
 
 @NgModule({
   declarations: [LoginEmployeeComponent],
-  imports: [CommonModule, RouterModule.forChild(routes)],
+  imports: [CommonModule, RouterModule.forChild(routes), EmployeeLoginComponent],
   exports: [LoginEmployeeComponent],
 })
 export class LoginEmployeeModule {}

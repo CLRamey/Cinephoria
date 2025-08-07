@@ -1,10 +1,11 @@
-import { NgModule } from '@angular/core';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 // Layout modules
 import { NavbarModule } from './layout/header/navbar.module';
@@ -30,6 +31,11 @@ import { environment } from '../environments/environment';
 import { CguCgvComponent } from './utils/dialogs/cgu-cgv/cgu-cgv.component';
 import { PrivacyPolicyComponent } from './utils/dialogs/privacy-policy/privacy-policy.component';
 
+// Interceptor
+import { authInterceptorInterceptor } from '../../../auth/src/lib/interceptor/auth-interceptor.interceptor';
+import { authInitializer } from '../../../auth/src/lib/guards/auth-initializer';
+import { AuthService } from 'projects/auth/src/lib/services/auth.service';
+
 @NgModule({
   declarations: [AppComponent],
   imports: [
@@ -52,12 +58,17 @@ import { PrivacyPolicyComponent } from './utils/dialogs/privacy-policy/privacy-p
     ScreeningCardComponent,
     CguCgvComponent,
     PrivacyPolicyComponent,
+    MatProgressSpinnerModule,
   ],
   providers: [
+    AuthService,
+    { provide: 'AuthService', useExisting: AuthService },
     { provide: LOCALE_ID, useValue: 'fr' },
     { provide: 'API_URL', useValue: environment.apiURL },
     provideAnimationsAsync(),
     provideHttpClient(withInterceptorsFromDi()),
+    { provide: 'HTTP_INTERCEPTORS', useValue: authInterceptorInterceptor, multi: true },
+    { provide: APP_INITIALIZER, useFactory: authInitializer, deps: ['AuthService'], multi: true },
   ],
   bootstrap: [AppComponent],
 })

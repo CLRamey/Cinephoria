@@ -14,11 +14,13 @@ export class VerificationService {
 
   // Method to initiate email verification.
   verifyEmail(code: string): Observable<unknown> {
-    return this.http.post(`${this.baseUrl}/verify-email`, { code }, { responseType: 'json' }).pipe(
-      catchError(err => {
-        console.error('Network or server error while verifying email:', err);
-        return of(null);
-      }),
-    );
+    return this.http
+      .post(`${this.baseUrl}/verify-email?code=${code}`, null, { responseType: 'json' })
+      .pipe(
+        catchError(err => {
+          console.error('Network or server error while verifying email:', err);
+          return of(null);
+        }),
+      );
   }
 }

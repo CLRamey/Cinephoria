@@ -16,10 +16,10 @@ export interface userAttributes {
   userRole: 'admin' | 'employee' | 'client';
   mustChangePassword?: boolean;
   isVerified?: boolean;
-  verificationCode?: string;
-  verificationCodeExpires?: Date;
-  resetToken?: string;
-  resetTokenExpires?: Date;
+  verificationCode?: string | null;
+  verificationCodeExpires?: Date | null;
+  resetToken?: string | null;
+  resetTokenExpires?: Date | null;
   agreedPolicy: boolean;
   agreedCgvCgu: boolean;
 }
@@ -54,10 +54,10 @@ export class user extends Model<userAttributes, userCreationAttributes> implemen
   userRole!: 'admin' | 'employee' | 'client';
   mustChangePassword?: boolean;
   isVerified?: boolean;
-  verificationCode?: string;
-  verificationCodeExpires?: Date;
-  resetToken?: string;
-  resetTokenExpires?: Date;
+  verificationCode?: string | null;
+  verificationCodeExpires?: Date | null;
+  resetToken?: string | null;
+  resetTokenExpires?: Date | null;
   agreedPolicy!: boolean;
   agreedCgvCgu!: boolean;
 

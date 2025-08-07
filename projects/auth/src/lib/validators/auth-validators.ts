@@ -33,15 +33,22 @@ export function passwordStrengthValidator(): ValidatorFn {
     const value = control.value;
     if (!value) return null;
     const minLength = 12;
+    const maxLength = 64;
     const hasUpper = /[A-Z]/.test(value);
     const hasLower = /[a-z]/.test(value);
     const hasNumber = /\d/.test(value);
-    const hasSpecial = /[\W_]/.test(value);
-    const valid = value.length >= minLength && hasUpper && hasLower && hasNumber && hasSpecial;
-
+    const hasSpecial = /[@$!%*?&]/.test(value);
+    const valid =
+      value.length >= minLength &&
+      value.length <= maxLength &&
+      hasUpper &&
+      hasLower &&
+      hasNumber &&
+      hasSpecial;
     return valid ? null : { passwordStrength: true };
   };
 }
+
 export function passwordMatchValidator(passwordControlName: string): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
     const passwordControl = control.get(passwordControlName);

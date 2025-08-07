@@ -1,4 +1,10 @@
-import { validateRegisterInput, Role, RegisterInput } from '../../src/validators/userValidator';
+import {
+  validateRegisterInput,
+  validateLoginInput,
+  Role,
+  RegisterInput,
+  LoginUserInput,
+} from '../../src/validators/userValidator';
 import { user } from '../../src/models/init-models';
 import { isPasswordStrong } from '../../src/utils/userPassword';
 
@@ -20,6 +26,11 @@ const validInput: RegisterInput = {
   userRole: Role.CLIENT,
   agreedPolicy: true,
   agreedCgvCgu: true,
+};
+
+const validLoginInput: LoginUserInput = {
+  userEmail: 'john@example.com',
+  userPassword: 'StrongP@ssw0rd!',
 };
 
 describe('validateRegisterInput', () => {
@@ -95,6 +106,66 @@ describe('validateRegisterInput', () => {
         userPassword: 'Password format incorrect.',
         agreedPolicy: 'To proceed, you must agree to the privacy policy.',
         agreedCgvCgu: 'To proceed, you must accept the CGU/CGV.',
+      },
+    });
+  });
+});
+
+describe('validateLoginInput', () => {
+  it('should return sanitized input on valid data', async () => {
+    (user.findOne as jest.Mock).mockResolvedValueOnce({});
+    (isPasswordStrong as jest.Mock).mockReturnValue(true);
+
+    const result = await validateLoginInput(validLoginInput);
+
+    expect(result.userEmail).toBe('john@example.com');
+    expect(result.userPassword).toBe('StrongP@ssw0rd!');
+  });
+
+  it('should throw validation error on invalid email format', async () => {
+    const invalidEmailInput = { ...validLoginInput, userEmail: 'bademail' };
+    (isPasswordStrong as jest.Mock).mockReturnValue(true);
+
+    await expect(validateLoginInput(invalidEmailInput)).rejects.toMatchObject({
+      status: 400,
+      details: { userEmail: 'A valid email address is required.' },
+    });
+  });
+
+  it('should throw validation error on weak password', async () => {
+    (isPasswordStrong as jest.Mock).mockReturnValue(false);
+
+    await expect(validateLoginInput(validLoginInput)).rejects.toMatchObject({
+      status: 400,
+      details: { userPassword: 'Password format incorrect.' },
+    });
+  });
+
+  it('should throw validation error if email not found in DB', async () => {
+    (isPasswordStrong as jest.Mock).mockReturnValue(true);
+    (user.findOne as jest.Mock).mockResolvedValue(null);
+
+    await expect(validateLoginInput(validLoginInput)).rejects.toMatchObject({
+      status: 400,
+      details: { general: 'Access denied. Invalid email or password.' },
+    });
+  });
+
+  it('should throw multiple errors if both email and password are invalid', async () => {
+    const badInput = {
+      userEmail: 'invalid',
+      userPassword: 'weak',
+    };
+
+    (isPasswordStrong as jest.Mock).mockReturnValue(false);
+    (user.findOne as jest.Mock).mockResolvedValue(null);
+
+    await expect(validateLoginInput(badInput)).rejects.toMatchObject({
+      status: 400,
+      details: {
+        userEmail: 'A valid email address is required.',
+        userPassword: 'Password format incorrect.',
+        general: 'Access denied. Invalid email or password.',
       },
     });
   });
