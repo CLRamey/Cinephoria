@@ -44,8 +44,12 @@ import filmRoutes from './routes/filmRoutes';
 import roomRoutes from './routes/roomRoutes';
 import genreRoutes from './routes/genreRoutes';
 
-// Login and register routes
+// Register, login and protected routes
 import clientRoutes from './routes/clientRoutes';
+import employeeRoutes from './routes/employeeRoutes';
+import adminRoutes from './routes/adminRoutes';
+
+// Protect routes with authentication middleware
 
 // Routes
 app.use('/api', cinemaRoutes);
@@ -54,8 +58,8 @@ app.use('/api', roomRoutes);
 app.use('/api', genreRoutes);
 
 app.use('/api', clientRoutes);
-// app.use('/api/login-client', clientRoutes);
-// app.use('/api/client', clientRoutes);
+app.use('/api', employeeRoutes);
+app.use('/api', adminRoutes);
 
 // Health check route
 app.get('/api/health', (_req, res) => {

@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { LoginEmployeeComponent } from './login-employee.component';
+import { LoginEmployeeComponent } from '../../projects/cinephoria-web/src/app/features/auth/login-employee/login-employee.component';
 
 describe('LoginEmployeeComponent', () => {
   let component: LoginEmployeeComponent;
@@ -16,7 +16,11 @@ describe('LoginEmployeeComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('should create the employee login component', () => {
     expect(component).toBeTruthy();
   });
 });

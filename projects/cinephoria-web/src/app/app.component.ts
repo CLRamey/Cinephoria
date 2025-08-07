@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ConfigService } from './core/services/config.service';
+import { ApiService } from './services/api.service';
 
 @Component({
   selector: 'caw-root',
@@ -9,20 +9,14 @@ import { ConfigService } from './core/services/config.service';
 export class AppComponent implements OnInit {
   status = 'Loading...';
 
-  constructor(private api: ConfigService) {}
+  constructor(private api: ApiService) {}
 
   ngOnInit(): void {
-    this.api.getHealth().subscribe({
+    this.api.getStatus().subscribe({
       next: data => {
         this.status = data.status;
       },
-      error: err => {
-        console.error('Error fetching health status:', err);
-        this.status = 'Error';
-      },
-      complete: () => {
-        console.log('Health check completed');
-      },
+      error: () => (this.status = 'Error'),
     });
   }
 }

@@ -1,21 +1,39 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NavbarComponent } from '../../projects/cinephoria-web/src/app/layout/header/navbar.component';
 import { NavbarModule } from '../../projects/cinephoria-web/src/app/layout/header/navbar.module';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { MatSidenav } from '@angular/material/sidenav';
+import { AuthService } from '../../projects/auth/src/lib/services/auth.service';
+import { of } from 'rxjs';
 
 describe('NavbarComponent', () => {
   let component: NavbarComponent;
   let fixture: ComponentFixture<NavbarComponent>;
+  let authServiceMock: Partial<AuthService>;
+  let router: Router;
 
   beforeEach(async () => {
+    authServiceMock = {
+      isAuthenticated$: of(false),
+      userRole$: of(null),
+      logout: jest.fn(),
+    } as unknown as AuthService;
+
     await TestBed.configureTestingModule({
       declarations: [],
       imports: [NavbarModule, RouterModule.forRoot([]), NoopAnimationsModule],
+      providers: [{ provide: AuthService, useValue: authServiceMock }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(NavbarComponent);
     component = fixture.componentInstance;
+    component.drawer = {
+      open: jest.fn(),
+      close: jest.fn(),
+    } as unknown as MatSidenav;
+    router = TestBed.inject(Router);
+    jest.spyOn(router, 'navigate');
     fixture.detectChanges();
   });
 
@@ -65,11 +83,9 @@ describe('NavbarComponent', () => {
       'button[aria-label="Ouvrir le menu de connexion"]',
     );
     expect(triggerButton).toBeTruthy();
-
     // Click to open the mat-menu
     triggerButton.click();
     fixture.detectChanges();
-
     await fixture.whenStable(); // Wait for the menu to stabilize
 
     const menuItems: NodeListOf<HTMLAnchorElement> = document.querySelectorAll('a[mat-menu-item]');

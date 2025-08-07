@@ -1,10 +1,12 @@
 import { Request } from 'express';
 import { registerUser } from '../services/registerUserService';
 import { asyncHandler } from '../middlewares/asyncHandler';
+import { sanitizeRegisterInput } from '../utils/sanitize';
 import { validateRegisterInput } from '../validators/userValidator';
 import { sendVerificationEmail } from '../utils/verificationEmail';
 import { errorResponse } from '../interfaces/serviceResponse';
 import { user } from '../models/init-models';
+import { Role } from '../validators/userValidator';
 
 export const registerUserController = asyncHandler(registerUserHandler);
 export const verifyEmailController = asyncHandler(verifyEmailHandler);
@@ -17,6 +19,7 @@ export async function registerUserHandler(req: Request) {
       userUsername,
       userEmail,
       userPassword,
+      userRole = Role.CLIENT,
       agreedPolicy,
       agreedCgvCgu,
     } = req.body;
@@ -26,13 +29,15 @@ export async function registerUserHandler(req: Request) {
       !userUsername ||
       !userEmail ||
       !userPassword ||
+      !userRole ||
       !agreedPolicy ||
       !agreedCgvCgu
     ) {
       return errorResponse('All fields are required', 'BAD_REQUEST');
     }
     // 1. Validate input
-    const validatedData = await validateRegisterInput(req.body);
+    const sanitized = sanitizeRegisterInput(req.body);
+    const validatedData = await validateRegisterInput(sanitized);
 
     // 2. Create user in DB
     const response = await registerUser(validatedData);
@@ -79,31 +84,43 @@ export async function registerUserHandler(req: Request) {
   }
 }
 
+// This function handles email verification
 export async function verifyEmailHandler(req: Request) {
   try {
     const code = req.query.code as string;
-    if (!code) {
-      return errorResponse('Invalid verification code', 'CODE_BAD_REQUEST');
+    const codeValidated = code?.trim() ?? '';
+    const isValidCode = (codeValidated: string) => /^[a-f0-9]{64}$/.test(codeValidated);
+    // Validate the code
+    if (!code || !isValidCode(codeValidated)) {
+      return errorResponse('Invalid verification code', 'BAD_REQUEST');
     }
-    const existingUser = await user.findOne({
-      where: { verificationCode: code, isVerified: false },
+    // Find user by verification code
+    const userToVerify = await user.findOne({
+      where: { verificationCode: codeValidated, isVerified: false },
+      attributes: ['userId', 'verificationCode', 'verificationCodeExpires', 'isVerified'],
     });
-    if (!existingUser) {
-      return errorResponse('User not found or already verified', 'USER_NOT_FOUND');
+    if (!userToVerify) {
+      return errorResponse('User not found or already verified', 'NOT_FOUND');
     }
-    if (existingUser.verificationCodeExpires && new Date() > existingUser.verificationCodeExpires) {
+    if (userToVerify.verificationCodeExpires && userToVerify.verificationCodeExpires < new Date()) {
       return errorResponse('Verification code has expired', 'CODE_EXPIRED');
     }
-    existingUser.isVerified = true;
-    existingUser.verificationCode = undefined; // Clear the verification code
-    existingUser.verificationCodeExpires = undefined; // Clear the expiration date
-    await existingUser.save();
+    // Update user to set isVerified to true and clear verification code
+    await userToVerify.update({
+      isVerified: true,
+      verificationCode: null,
+      verificationCodeExpires: null,
+      userUpdatedAt: new Date(),
+    });
     return {
       success: true,
       data: { message: 'Email verified successfully' },
     };
   } catch (error) {
-    console.error('Verification error:', error);
-    return errorResponse('An error occurred during email verification', 'VERIFICATION_ERROR');
+    console.error('Email verification error:', error);
+    return {
+      success: false,
+      error: { message: 'An error occurred during email verification', code: 'VERIFICATION_ERROR' },
+    };
   }
 }

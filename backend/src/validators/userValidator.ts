@@ -1,5 +1,6 @@
 import { user } from '../models/init-models';
 import { isPasswordStrong } from '../utils/userPassword';
+import validator from 'validator';
 
 export interface RegisterInput {
   userFirstName: string;
@@ -10,6 +11,11 @@ export interface RegisterInput {
   userRole: Role.CLIENT;
   agreedPolicy: boolean;
   agreedCgvCgu: boolean;
+}
+
+export interface LoginUserInput {
+  userEmail: string;
+  userPassword: string;
 }
 
 export enum Role {
@@ -43,15 +49,24 @@ export async function validateRegisterInput(data: RegisterInput): Promise<Regist
     errors.userLastName = 'Last name required >2 characters.';
   }
 
-  if (!username || !/^[a-zA-Z0-9]{3,30}$/.test(username)) {
+  if (!username || !validator.isAlphanumeric(username) || !/^[a-zA-Z0-9]{3,30}$/.test(username)) {
     errors.userUsername = 'Username required - alphanumeric.';
   }
 
-  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+  if (
+    !email ||
+    email.length >= 100 ||
+    !validator.isEmail(email) ||
+    !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+  ) {
     errors.userEmail = 'A valid email address is required.';
   }
 
-  if (!password || !isPasswordStrong(password)) {
+  if (
+    !password ||
+    !isPasswordStrong(password) ||
+    !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{12,64}$/.test(password)
+  ) {
     errors.userPassword = 'Password format incorrect.';
   }
 
@@ -92,5 +107,47 @@ export async function validateRegisterInput(data: RegisterInput): Promise<Regist
     userRole: Role.CLIENT, // force client role here
     agreedPolicy: policy,
     agreedCgvCgu: cgvCgu,
+  };
+}
+
+export async function validateLoginInput(data: LoginUserInput): Promise<LoginUserInput> {
+  const errors: Record<string, string> = {};
+
+  const email = data.userEmail?.trim().toLowerCase();
+  const password = data.userPassword?.trim();
+
+  if (
+    !email ||
+    email.length >= 100 ||
+    !validator.isEmail(email) ||
+    !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+  ) {
+    errors.userEmail = 'A valid email address is required.';
+  }
+
+  if (
+    !password ||
+    !isPasswordStrong(password) ||
+    !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{12,64}$/.test(password)
+  ) {
+    errors.userPassword = 'Password format incorrect.';
+  }
+
+  // Check if the email exists in the database
+  const userExists = await user.findOne({ where: { userEmail: email } });
+  if (!userExists) {
+    errors.general = 'Access denied. Invalid email or password.';
+  }
+
+  if (Object.keys(errors).length > 0) {
+    const error: ValidationError = new Error('Validation failed');
+    error.status = 400;
+    error.details = errors;
+    throw error;
+  }
+
+  return {
+    userEmail: email,
+    userPassword: password,
   };
 }

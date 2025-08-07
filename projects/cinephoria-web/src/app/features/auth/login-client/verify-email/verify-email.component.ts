@@ -19,7 +19,9 @@ export class VerifyEmailComponent implements OnInit, OnDestroy {
     private readonly router: Router,
     private readonly verificationService: VerificationService,
   ) {
-    // Initialization logic can go here if needed
+    // Initialize loading and success states
+    this.isLoading = true;
+    this.isSuccess = false;
   }
 
   // Subscription to manage observables
@@ -27,8 +29,6 @@ export class VerifyEmailComponent implements OnInit, OnDestroy {
 
   // Lifecycle hook to handle email verification when the component initializes
   ngOnInit(): void {
-    this.isLoading = true;
-    this.isSuccess = false;
     const code = this.route.snapshot.queryParamMap.get('code');
     if (code) {
       const verifySub = this.verificationService.verifyEmail(code).subscribe({

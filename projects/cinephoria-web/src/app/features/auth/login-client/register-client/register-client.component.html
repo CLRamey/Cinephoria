@@ -3,7 +3,13 @@
   <form [formGroup]="registerForm" (ngSubmit)="onRegister()">
     <mat-form-field appearance="fill" class="full-width">
       <mat-label>Prénom</mat-label>
-      <input matInput formControlName="firstName" />
+      <input
+        matInput
+        formControlName="firstName"
+        [attr.aria-label]="'Prénom'"
+        [attr.aria-required]="true"
+        required
+      />
       <mat-error *ngIf="registerForm.get('firstName')?.hasError('required')">
         Veuillez entrer votre prénom.
       </mat-error>
@@ -14,7 +20,13 @@
 
     <mat-form-field appearance="fill" class="full-width">
       <mat-label>Nom</mat-label>
-      <input matInput formControlName="lastName" />
+      <input
+        matInput
+        formControlName="lastName"
+        [attr.aria-label]="'Nom'"
+        [attr.aria-required]="true"
+        required
+      />
       <mat-error *ngIf="registerForm.get('lastName')?.hasError('required')">
         Veuillez entrer votre nom.
       </mat-error>
@@ -25,7 +37,13 @@
 
     <mat-form-field appearance="fill" class="full-width">
       <mat-label>Nom d'utilisateur</mat-label>
-      <input matInput formControlName="username" />
+      <input
+        matInput
+        formControlName="username"
+        [attr.aria-label]="'Nom d`\'utilisateur'"
+        [attr.aria-required]="true"
+        required
+      />
       <mat-error *ngIf="registerForm.get('username')?.hasError('required')">
         Veuillez entrer un nom d'utilisateur.
       </mat-error>
@@ -36,7 +54,16 @@
 
     <mat-form-field appearance="fill" class="full-width">
       <mat-label>Adresse e-mail</mat-label>
-      <input matInput formControlName="email" type="email" />
+      <input
+        matInput
+        formControlName="email"
+        autocomplete="email"
+        [attr.aria-label]="'Adresse e-mail'"
+        [attr.aria-required]="true"
+        required
+        spellcheck="false"
+        type="email"
+      />
       <mat-error *ngIf="registerForm.get('email')?.hasError('required')">
         Veuillez entrer une adresse e-mail.
       </mat-error>
@@ -52,6 +79,9 @@
         [type]="showPassword ? 'text' : 'password'"
         formControlName="password"
         autocomplete="new-password"
+        spellcheck="false"
+        [attr.aria-label]="'Mot de passe'"
+        [attr.aria-required]="true"
         type="password"
       />
       <button
@@ -78,6 +108,9 @@
         [type]="showPassword ? 'text' : 'password'"
         formControlName="confirmPassword"
         autocomplete="new-password"
+        spellcheck="false"
+        [attr.aria-label]="'Confirmer le mot de passe'"
+        [attr.aria-required]="true"
         type="password"
       />
       <button

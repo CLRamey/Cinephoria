@@ -5,10 +5,9 @@ import { Role } from '../interfaces/auth-interfaces';
 // It includes standard fields like exp (expiration time) and custom fields like email and role.
 export interface JwtPayload {
   userId: number;
-  userRole?: Role;
-  isVerified?: boolean;
-  iat?: number;
-  exp?: number;
+  userRole: Role;
+  iat: number;
+  exp: number;
 }
 
 // This service manages the JWT token used for authentication in the application.
@@ -18,25 +17,40 @@ export interface JwtPayload {
 })
 export class TokenService {
   private readonly TOKEN_KEY: string = 'auth_cinephoria_token';
-  // Sets the token in local storage.
+  // Sets the token in session storage.
   setToken(token: string): void {
-    localStorage.setItem(this.TOKEN_KEY, token);
+    sessionStorage.setItem(this.TOKEN_KEY, token);
   }
 
-  // Retrieves the token from local storage.
+  // Retrieves the token from session storage.
   getToken(): string | null {
-    return localStorage.getItem(this.TOKEN_KEY);
+    return sessionStorage.getItem(this.TOKEN_KEY);
   }
 
-  // Clears the token from local storage.
-  clearToken(): void {
-    localStorage.removeItem(this.TOKEN_KEY);
-  }
-
-  // Checks if a valid token exists in local storage.
+  // Checks if a valid token exists in session storage.
   hasToken(): boolean {
-    const payload = this.getPayload();
-    return !!payload && typeof payload.exp === 'number' && payload.exp > Date.now() / 1000; // Validates the token by checking if it has not expired.
+    const token = this.getToken();
+    return !!token && !this.isTokenExpired(token);
+  }
+
+  // Checks if the token is expired.
+  isTokenExpired(token?: string): boolean {
+    try {
+      if (!token) {
+        token = this.getToken() ?? undefined;
+        if (!token) {
+          return true;
+        }
+      }
+      const payload = this.getPayload();
+      if (!payload || typeof payload.exp !== 'number') {
+        return true;
+      }
+      return payload.exp < Math.floor(Date.now() / 1000);
+    } catch (error) {
+      console.error('Token exp error', error);
+      return true;
+    }
   }
 
   // Retrieves the payload from the JWT token.
@@ -44,15 +58,26 @@ export class TokenService {
   getPayload(): JwtPayload | null {
     const token = this.getToken();
     if (!token) {
+      this.clearToken();
       return null;
     }
     try {
       const payloadBase64 = token.split('.')[1];
       const payloadJson = atob(payloadBase64);
-      return JSON.parse(payloadJson) as JwtPayload;
+      const payload = JSON.parse(payloadJson) as JwtPayload;
+      if (!payload) {
+        this.clearToken();
+        return null;
+      }
+      return payload;
     } catch (error) {
       console.error('Token decoding failed', error);
       return null;
     }
+  }
+
+  // Clears the token from session storage.
+  clearToken(): void {
+    sessionStorage.removeItem(this.TOKEN_KEY);
   }
 }

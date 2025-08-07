@@ -4,12 +4,16 @@ export interface RegisterUser {
   userLastName: string;
   userUsername: string;
   userPassword: string;
-  userRole?: Role;
+  userRole: Role;
   agreedPolicy: boolean;
   agreedCgvCgu: boolean;
 }
 
 export interface RegisterResponse {
+  success: boolean;
+}
+
+export interface LoginResponse {
   success: boolean;
 }
 
@@ -19,9 +23,11 @@ export interface LoginUser {
 }
 
 export interface AuthResponse {
-  accessToken: string;
-  refreshToken?: string;
-  message?: string;
+  success: boolean;
+  data: {
+    accessToken: string;
+    userRole: Role;
+  };
 }
 
 export enum Role {

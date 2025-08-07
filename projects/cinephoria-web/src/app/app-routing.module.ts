@@ -1,5 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { Role } from 'projects/auth/src/lib/interfaces/auth-interfaces';
+import { AuthGuard } from 'projects/auth/src/lib/guards/auth-guard.guard';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'accueil', pathMatch: 'full' },
@@ -22,6 +24,13 @@ export const routes: Routes = [
       import('./features/auth/login-client/login-client.module').then(m => m.LoginClientModule),
   },
   {
+    path: 'client',
+    loadChildren: () => import('./features/client/client.module').then(m => m.ClientModule),
+    canActivate: [AuthGuard],
+    canActivateChild: [AuthGuard],
+    data: { roles: [Role.CLIENT] },
+  },
+  {
     path: 'login-employee',
     loadChildren: () =>
       import('./features/auth/login-employee/login-employee.module').then(
@@ -29,24 +38,23 @@ export const routes: Routes = [
       ),
   },
   {
+    path: 'employe',
+    loadChildren: () => import('./features/employee/employee.module').then(m => m.EmployeeModule),
+    canActivate: [AuthGuard],
+    canActivateChild: [AuthGuard],
+    data: { roles: [Role.EMPLOYEE] },
+  },
+  {
     path: 'login-admin',
     loadChildren: () =>
       import('./features/auth/login-admin/login-admin.module').then(m => m.LoginAdminModule),
   },
   {
-    path: 'client',
-    loadChildren: () => import('./features/client/client.module').then(m => m.ClientModule),
-    //canActivate: [() => import('./core/guards/client-auth.guard').then(m => m.ClientAuthGuard)],
-  },
-  {
-    path: 'employe',
-    loadChildren: () => import('./features/employee/employee.module').then(m => m.EmployeeModule),
-    //canActivate: [() => import('./core/guards/employee-auth.guard').then(m => m.EmployeeAuthGuard)],
-  },
-  {
     path: 'admin',
     loadChildren: () => import('./features/admin/admin.module').then(m => m.AdminModule),
-    //canActivate: [() => import('./core/guards/admin-auth.guard').then(m => m.AdminAuthGuard)],
+    canActivate: [AuthGuard],
+    canActivateChild: [AuthGuard],
+    data: { roles: [Role.ADMIN] },
   },
   {
     path: 'contact',

@@ -24,20 +24,32 @@
       <a mat-button routerLink="/contact">Contact</a>
 
       <!-- Desktop connexion dropdown -->
-      <button
-        mat-button
-        [matMenuTriggerFor]="connexionMenu"
-        aria-label="Ouvrir le menu de connexion"
-      >
-        Connexion
-      </button>
-      <mat-menu #connexionMenu="matMenu" class="connexion-menu">
-        <a mat-menu-item routerLink="/login-client">Espace Client</a>
-        <mat-divider></mat-divider>
-        <a mat-menu-item routerLink="/login-employee">Espace Employé</a>
-        <mat-divider></mat-divider>
-        <a mat-menu-item routerLink="/login-admin">Espace Administrateur</a>
-      </mat-menu>
+      <ng-container *ngIf="(isAuthenticated$ | async) === false">
+        <button
+          mat-button
+          [matMenuTriggerFor]="connexionMenu"
+          aria-label="Ouvrir le menu de connexion"
+        >
+          Connexion
+        </button>
+        <mat-menu #connexionMenu="matMenu" class="connexion-menu">
+          <a mat-menu-item routerLink="/login-client">Espace Client</a>
+          <mat-divider></mat-divider>
+          <a mat-menu-item routerLink="/login-employee">Espace Employé</a>
+          <mat-divider></mat-divider>
+          <a mat-menu-item routerLink="/login-admin">Espace Administrateur</a>
+        </mat-menu>
+      </ng-container>
+      <ng-container *ngIf="(isAuthenticated$ | async) === true && (userRole$ | async) !== null">
+        <button mat-button [matMenuTriggerFor]="accountMenu" aria-label="Ouvrir le menu de compte">
+          Mon Compte
+        </button>
+        <mat-menu #accountMenu="matMenu" class="account-menu">
+          <a mat-menu-item [routerLink]="profileUrl">Mon espace</a>
+          <mat-divider></mat-divider>
+          <button mat-menu-item (click)="logout()" aria-label="Déconnexion">Déconnexion</button>
+        </mat-menu>
+      </ng-container>
     </nav>
 
     <!-- Mobile Toggle Icon -->
@@ -74,12 +86,22 @@
           <mat-divider></mat-divider>
           <a mat-list-item routerLink="/contact" (click)="close()">Contact</a>
           <mat-divider></mat-divider>
-          <a mat-list-item routerLink="/login-client" (click)="close()">Espace Client</a>
-          <mat-divider></mat-divider>
-          <a mat-list-item routerLink="/login-employee" (click)="close()">Espace Employé</a>
-          <mat-divider></mat-divider>
-          <a mat-list-item routerLink="/login-admin" (click)="close()">Espace Administrateur</a>
-          <mat-divider></mat-divider>
+          <ng-container *ngIf="(isAuthenticated$ | async) === false">
+            <a mat-list-item routerLink="/login-client" (click)="close()">Espace Client</a>
+            <mat-divider></mat-divider>
+            <a mat-list-item routerLink="/login-employee" (click)="close()">Espace Employé</a>
+            <mat-divider></mat-divider>
+            <a mat-list-item routerLink="/login-admin" (click)="close()">Espace Administrateur</a>
+            <mat-divider></mat-divider>
+          </ng-container>
+          <ng-container *ngIf="(isAuthenticated$ | async) === true && (userRole$ | async) !== null">
+            <a mat-list-item [routerLink]="profileUrl" (click)="close()">Mon Espace</a>
+            <mat-divider></mat-divider>
+            <button mat-menu-item (click)="logout(); close()" aria-label="Déconnexion">
+              Déconnexion
+            </button>
+            <mat-divider></mat-divider>
+          </ng-container>
         </mat-nav-list>
       </mat-drawer-content>
     </mat-drawer>

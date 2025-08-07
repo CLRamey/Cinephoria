@@ -1,19 +1,26 @@
-import { Request, Response, NextFunction } from 'express';
-import { verifyToken, TokenPayload } from '../utils/tokenManagement';
+import { Request, Response, NextFunction, RequestHandler } from 'express';
+import { verifyToken, VerificationTokenPayload } from '../utils/tokenManagement';
+import { Role } from '../validators/userValidator';
+import { user } from '../models/init-models';
 
 export interface AuthenticatedRequest extends Request {
-  user?: TokenPayload;
+  user?: VerificationTokenPayload;
 }
 
-export const authenticate = (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+// Middleware method to authenticate the user based on JWT token
+export const authenticate = async (
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction,
+) => {
   const authHeader = req.header('Authorization');
-
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return res.status(401).json({ message: 'Missing or malformed token' });
+    res.status(401).json({ message: 'Missing or malformed token' });
+    return;
   }
   try {
     const token = authHeader.slice(7); // skip "Bearer "
-    const payload = verifyToken(token);
+    const payload: VerificationTokenPayload = verifyToken(token);
     req.user = payload;
     next();
   } catch (error) {
@@ -22,29 +29,55 @@ export const authenticate = (req: AuthenticatedRequest, res: Response, next: Nex
   }
 };
 
-export const authorize = (roles: string[]) => {
+// Middleware method to restrict access based on user roles
+export const authorize = (...allowedRoles: Role[]) => {
   return (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
-    if (!req.user || typeof req.user.userRole !== 'string' || !roles.includes(req.user.userRole)) {
+    if (!req.user || !allowedRoles.includes(req.user.userRole as Role)) {
       return res.status(403).json({ message: 'Forbidden' });
     }
     next();
   };
 };
 
-export const isAuthenticated = (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
-  if (!req.user) {
-    return res.status(401).json({ message: 'Unauthorized' });
-  }
-  next();
-};
-
-export const requireVerification = (
+// Middleware method to check if the user is verified
+export const checkUserVerified = async (
   req: AuthenticatedRequest,
   res: Response,
   next: NextFunction,
 ) => {
-  if (!req.user?.isVerified) {
-    return res.status(403).json({ message: 'Account not verified' });
+  if (!req.user) {
+    res.status(401).json({ message: 'Unauthorized' });
+    return;
   }
-  next();
+  try {
+    const currentUser = await user.findByPk(req.user.userId, {
+      attributes: ['isVerified'],
+    });
+    if (!currentUser || !currentUser.isVerified) {
+      res.status(403).json({ message: 'Unauthorized access' });
+      return;
+    }
+    next();
+  } catch (error) {
+    console.error('DB error:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
 };
+
+// Combined middleware factory for authenticated and authorized access
+export const authMiddleware = (...allowedRoles: Role[]) => {
+  return [authenticate, authorize(...allowedRoles), checkUserVerified];
+};
+
+// Client specific middleware that ensures the user is authenticated, authorized (secure check that they are a CLIENT) and verified.
+export const clientAuthMiddleware: RequestHandler[] = authMiddleware(
+  Role.CLIENT,
+) as RequestHandler[];
+
+// Employee specific middleware that ensures the user is authenticated, authorized (secure check that they are an EMPLOYEE) and verified.
+export const employeeAuthMiddleware: RequestHandler[] = authMiddleware(
+  Role.EMPLOYEE,
+) as RequestHandler[];
+
+// Admin specific middleware that ensures the user is authenticated, authorized (secure check that they are an ADMIN) and verified.
+export const adminAuthMiddleware: RequestHandler[] = authMiddleware(Role.ADMIN) as RequestHandler[];
