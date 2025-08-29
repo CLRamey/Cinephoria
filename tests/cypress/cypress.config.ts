@@ -13,8 +13,10 @@ export default defineConfig({
     downloadsFolder: 'tests/cypress/downloads',
     baseUrl: process.env['BASE_URL'] || 'http://localhost:4200',
     env: {
-      CYPRESS_TEST_USER_EMAIL: process.env['TEST_USER_EMAIL'],
-      CYPRESS_TEST_USER_PASSWORD: process.env['TEST_USER_PASSWORD'],
+      CYPRESS_TEST_USER_PASSWORD: 'Passw0rd4312!Now',
+      CYPRESS_CLIENT_TEST_USER_EMAIL: 'test-client-email-address01@fortesting.com',
+      CYPRESS_EMPLOYEE_TEST_USER_EMAIL: 'test-employee-email-address01@fortesting.com',
+      CYPRESS_ADMIN_TEST_USER_EMAIL: 'test-admin-email-address01@fortesting.com',
     },
     setupNodeEvents(on, config) {
       // modify config here as required

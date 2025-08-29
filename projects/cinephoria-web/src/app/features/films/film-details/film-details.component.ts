@@ -1,15 +1,12 @@
-import { Component, OnInit, OnDestroy, Input, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ViewportScroller } from '@angular/common';
 import { Subscription, forkJoin, of } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { catchError } from 'rxjs/operators';
 
 import { FilmInfoService } from '../../../services/film-info.service';
 import { FilmInfo, Screening } from '../../../interfaces/film';
 import { ExtendedScreening } from '../../../interfaces/screening';
-import { QualityInfo } from '../../../interfaces/quality';
-import { RoomInfoService } from '../../../services/room-info.service';
-import { RoomInfo } from '../../../interfaces/room';
+import { ReservationService } from '../../../services/reservation.service';
 
 @Component({
   selector: 'caw-film-details',
@@ -17,9 +14,9 @@ import { RoomInfo } from '../../../interfaces/room';
   styleUrls: ['./film-details.component.scss'],
 })
 export class FilmDetailsComponent implements OnInit, OnDestroy {
-  // Inputs to control loading state and error messages
-  @Input() isLoading: boolean = false;
-  @Input() hasError: string | null = null;
+  // Loading state and error messages
+  isLoading: boolean = false;
+  hasError: string | null = null;
 
   // Film details, screenings and reviews
   film?: FilmInfo;
@@ -32,9 +29,8 @@ export class FilmDetailsComponent implements OnInit, OnDestroy {
   constructor(
     private readonly route: ActivatedRoute,
     private readonly filmInfoService: FilmInfoService,
-    private readonly roomInfoService: RoomInfoService,
+    private readonly reservationService: ReservationService,
     private readonly router: Router,
-    private viewportScroller: ViewportScroller,
   ) {}
 
   // Subscription to manage multiple observables
@@ -63,7 +59,6 @@ export class FilmDetailsComponent implements OnInit, OnDestroy {
           if (id) {
             this.filmId = +id; // convert string to number
             this.loadFilm(this.filmId);
-            console.log('Film ID from route:', this.filmId);
           }
         }),
       );
@@ -105,7 +100,7 @@ export class FilmDetailsComponent implements OnInit, OnDestroy {
   // Method to load extended screenings with room information and film duration
   private loadExtendedScreenings(screenings: Screening[], filmDuration: number): void {
     const extendedScreenings$ = screenings.map(screening =>
-      this.getExtendedScreening(screening, filmDuration),
+      this.reservationService.getExtendedScreening(screening, filmDuration),
     );
 
     forkJoin(extendedScreenings$)
@@ -117,58 +112,15 @@ export class FilmDetailsComponent implements OnInit, OnDestroy {
         }),
       )
       .subscribe(extendedScreenings => {
-        this.seances = (extendedScreenings as (ExtendedScreening | null)[]).filter(
-          (screening): screening is ExtendedScreening => screening !== null,
-        );
+        this.seances = (extendedScreenings as (ExtendedScreening | null)[])
+          .filter((screening): screening is ExtendedScreening => screening !== null)
+          .filter(screening => screening.screeningDate >= new Date())
+          .sort((a, b) => a.screeningDate.getTime() - b.screeningDate.getTime());
         this.isLoading = false;
       });
   }
 
-  // Method to get extended screening information including room quality and timings
-  getExtendedScreening(screening: Screening, filmDuration: number) {
-    const startDate = new Date(screening.screeningDate);
-    const endDate = new Date(startDate.getTime() + filmDuration * 60000);
-
-    return this.roomInfoService.getRoomById(screening.roomId).pipe(
-      map((rooms: RoomInfo[] | null) => {
-        const room = Array.isArray(rooms) && rooms.length > 0 ? rooms[0] : null;
-        if (!room || !room.quality) return null;
-
-        return this.createExtendedScreening(screening, startDate, endDate, room.quality);
-      }),
-      catchError(() => of(null)),
-    );
-  }
-
-  // Method to create an extended screening object with all necessary details
-  createExtendedScreening(
-    screening: Screening,
-    startDate: Date,
-    endDate: Date,
-    quality: QualityInfo,
-  ): ExtendedScreening {
-    return {
-      screeningId: screening.screeningId,
-      screeningDate: new Date(screening.screeningDate),
-      screeningStatus: screening.screeningStatus ?? 'active',
-      cinemaId: screening.cinemaId,
-      filmId: screening.filmId,
-      roomId: screening.roomId,
-      startTime: startDate.toLocaleTimeString(['fr-FR'], {
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: false,
-      }),
-      endTime: endDate.toLocaleTimeString(['fr-FR'], {
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: false,
-      }),
-      quality: quality.qualityProjectionType ?? '',
-      price: quality.qualityProjectionPrice ?? 0,
-    };
-  }
-
+  // Method to scroll to the screenings section after loading
   scrollToScreenings(): void {
     if (this.screeningsSection?.nativeElement) {
       this.screeningsSection.nativeElement.scrollIntoView({
@@ -177,21 +129,11 @@ export class FilmDetailsComponent implements OnInit, OnDestroy {
       });
     }
   }
+
   // Method to handle navigation to the reservation page for a selected film screening
   onReserveScreening(screening: ExtendedScreening) {
-    this.router.navigate(['/reservation'], {
-      queryParams: {
-        screeningId: screening.screeningId,
-        screeningDate: screening.screeningDate.toISOString(),
-        filmId: screening.filmId,
-        cinemaId: screening.cinemaId,
-        roomId: screening.roomId,
-        startTime: screening.startTime,
-        endTime: screening.endTime,
-        quality: screening.quality,
-        price: screening.price,
-      },
-    });
+    this.reservationService.setSelectedScreening(screening);
+    this.router.navigate(['/reservation']);
   }
 
   // Method to handle the subscription cleanup to avoid memory leaks

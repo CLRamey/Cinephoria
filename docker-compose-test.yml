@@ -6,6 +6,7 @@ services:
     container_name: cinephoria-sqldb
     restart: unless-stopped
     environment:
+      - TZ=Europe/Paris
       - MARIADB_DATABASE=${MARIADB_DATABASE}
       - MARIADB_USER=${MARIADB_USER}
       - MARIADB_PASSWORD=${MARIADB_PASSWORD}

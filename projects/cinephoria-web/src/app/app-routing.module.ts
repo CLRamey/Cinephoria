@@ -38,7 +38,7 @@ export const routes: Routes = [
       ),
   },
   {
-    path: 'employe',
+    path: 'employee',
     loadChildren: () => import('./features/employee/employee.module').then(m => m.EmployeeModule),
     canActivate: [AuthGuard],
     canActivateChild: [AuthGuard],

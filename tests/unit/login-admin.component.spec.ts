@@ -150,6 +150,8 @@ describe('LoginAdminComponent', () => {
       userEmail: 'test@example.com',
       userPassword: 'StrongPassword123!',
     });
+    await fixture.whenStable();
+    expect(component.loginError).toBe(false);
   });
 
   it('should have the show password set to false on initialisation', () => {

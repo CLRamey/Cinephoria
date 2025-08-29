@@ -6,11 +6,13 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MatSidenav } from '@angular/material/sidenav';
 import { AuthService } from '../../projects/auth/src/lib/services/auth.service';
 import { of } from 'rxjs';
+import { ReservationService } from '../../projects/cinephoria-web/src/app/services/reservation.service';
 
 describe('NavbarComponent', () => {
   let component: NavbarComponent;
   let fixture: ComponentFixture<NavbarComponent>;
   let authServiceMock: Partial<AuthService>;
+  let reservationServiceMock: Partial<ReservationService>;
   let router: Router;
 
   beforeEach(async () => {
@@ -20,10 +22,17 @@ describe('NavbarComponent', () => {
       logout: jest.fn(),
     } as unknown as AuthService;
 
+    reservationServiceMock = {
+      clearStoredReservation: jest.fn(),
+    } as unknown as ReservationService;
+
     await TestBed.configureTestingModule({
       declarations: [],
       imports: [NavbarModule, RouterModule.forRoot([]), NoopAnimationsModule],
-      providers: [{ provide: AuthService, useValue: authServiceMock }],
+      providers: [
+        { provide: AuthService, useValue: authServiceMock },
+        { provide: ReservationService, useValue: reservationServiceMock },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(NavbarComponent);

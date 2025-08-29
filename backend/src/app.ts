@@ -8,12 +8,24 @@ import cookieParser from 'cookie-parser';
 // Express
 export const app = express();
 
+// Allowed origins for CORS
+const corsOriginEnv = process.env.CORS_ORIGIN;
+if (!corsOriginEnv) {
+  throw new Error('CORS_ORIGIN is not defined');
+}
+const allowedOrigins: string[] = corsOriginEnv
+  .split(',')
+  .map(origin => origin.trim())
+  .filter(Boolean);
+
+// CORS configuration
 app.use(
   cors({
-    origin: [process.env['CORS_ORIGIN'] || 'http://localhost:4200'], // Allow requests from the frontend
+    origin: allowedOrigins, // Allow requests from the frontend
     credentials: true,
     optionsSuccessStatus: 200,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
   }),
 );
 
@@ -26,7 +38,7 @@ app.use(
       scriptSrc: ["'self'"],
       styleSrc: ["'self'", "'https:'"],
       imgSrc: ["'self'", 'data:', 'https:'],
-      connectSrc: ["'self'", process.env['CORS_ORIGIN']].filter(Boolean) as string[], // Allow connections to the frontend
+      connectSrc: ["'self'", ...allowedOrigins], // Allow connections to the frontend
     },
   }),
 );
@@ -49,7 +61,9 @@ import clientRoutes from './routes/clientRoutes';
 import employeeRoutes from './routes/employeeRoutes';
 import adminRoutes from './routes/adminRoutes';
 
-// Protect routes with authentication middleware
+// Import reservation routes
+import reservationRoutes from './routes/reservationRoutes';
+import { generalRateLimiter } from './middlewares/rateLimiter';
 
 // Routes
 app.use('/api', cinemaRoutes);
@@ -61,9 +75,16 @@ app.use('/api', clientRoutes);
 app.use('/api', employeeRoutes);
 app.use('/api', adminRoutes);
 
+app.use('/api', reservationRoutes);
+
 // Health check route
 app.get('/api/health', (_req, res) => {
   res.status(200).json({ status: 'ok' });
+});
+
+// General test rate limiter route
+app.get('/api/general-test', generalRateLimiter, generalRateLimiter, (req, res) => {
+  res.status(200).send('OK');
 });
 
 // 404 not found Error handler

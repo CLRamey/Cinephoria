@@ -9,6 +9,7 @@ import {
   RegisterResponse,
   Role,
 } from '../interfaces/auth-interfaces';
+import { API_URL } from '../shared/utils/api-url.token';
 
 @Injectable({
   providedIn: 'root',
@@ -18,6 +19,7 @@ export class AuthService {
   private readonly isAuthenticatedSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(
     false,
   );
+  // User role observable (role of the authenticated user or null)
   private readonly userRoleSubject: BehaviorSubject<Role | null> = new BehaviorSubject<Role | null>(
     null,
   );
@@ -34,7 +36,7 @@ export class AuthService {
   constructor(
     private readonly http: HttpClient,
     private readonly tokenService: TokenService,
-    @Inject('API_URL') private readonly baseUrl: string,
+    @Inject(API_URL) private readonly baseUrl: string,
   ) {}
 
   // Method to register a new user, POST request to the API, saving the token if successful.
@@ -117,7 +119,8 @@ export class AuthService {
     this.refreshAuthState();
   }
 
-  async refreshAuthState(): Promise<void> {
+  // Method to refresh the authentication state and user role.
+  refreshAuthState(): Promise<void> {
     return new Promise<void>(resolve => {
       const isAuth = this.tokenService.hasToken();
       this.isAuthenticatedSubject.next(!!isAuth);

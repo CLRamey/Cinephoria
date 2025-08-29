@@ -53,7 +53,8 @@ export const checkUserVerified = async (
     const currentUser = await user.findByPk(req.user.userId, {
       attributes: ['isVerified'],
     });
-    if (!currentUser || !currentUser.isVerified) {
+    const isVerified = currentUser?.get('isVerified') === true;
+    if (!currentUser || !isVerified) {
       res.status(403).json({ message: 'Unauthorized access' });
       return;
     }

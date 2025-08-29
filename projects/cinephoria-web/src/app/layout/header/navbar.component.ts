@@ -4,6 +4,7 @@ import { AuthService } from '../../../../../../projects/auth/src/lib/services/au
 import { Observable, Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 import { Role } from '../../../../../../projects/auth/src/lib/interfaces/auth-interfaces';
+import { ReservationService } from '../../services/reservation.service';
 
 @Component({
   selector: 'caw-navbar',
@@ -28,6 +29,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   constructor(
     private readonly authService: AuthService,
     private readonly router: Router,
+    private readonly reservationService: ReservationService,
   ) {
     this.isAuthenticated$ = this.authService.isAuthenticated$;
     this.userRole$ = this.authService.userRole$;
@@ -71,8 +73,11 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   // Method to log out the user
   logout(): void {
+    this.reservationService.clearStoredReservation();
     this.authService.logout();
-    this.router.navigate(['/accueil']);
+    this.router.navigate(['/accueil']).then(() => {
+      window.location.reload();
+    });
   }
 
   // Lifecycle hook that runs when the component is destroyed to clean up subscriptions.

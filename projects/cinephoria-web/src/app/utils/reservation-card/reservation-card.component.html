@@ -1,0 +1,30 @@
+<div class="reservation-card">
+  <mat-card>
+    <mat-card-title>
+      {{ screening.screeningDate | date: "fullDate" | titlecase }}
+    </mat-card-title>
+    <mat-card-content>
+      <p>
+        <strong>Salle:</strong>
+        {{ screening.room?.roomNumber }}
+      </p>
+      <p>
+        <strong>Début:</strong>
+        {{ screening.startTime }} -
+        <strong>Fin:</strong>
+        {{ screening.endTime }}
+      </p>
+      <p>
+        <strong>Qualité:</strong>
+        {{ screening.quality }}
+      </p>
+      <p>
+        <strong>Prix:</strong>
+        {{ screening.price | currency: "EUR" }}
+      </p>
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-raised-button (click)="reserve()">Réserver</button>
+    </mat-card-actions>
+  </mat-card>
+</div>

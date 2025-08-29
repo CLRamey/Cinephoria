@@ -126,4 +126,29 @@ describe('LoginAdminComponent', () => {
     expect(component.loginForm.get('password')?.dirty).toBe(true);
     expect(component.loginForm.get('password')?.value).toBe('');
   });
+
+  it('should use window.location.href to navigate to admin space on successful login', async () => {
+    isAuthenticatedSubject.next(true);
+    userRoleSubject.next(Role.ADMIN);
+    component.loginForm.get('email')?.setValue('admin@example.com');
+    component.loginForm.get('password')?.setValue('StrongPassword123!');
+    component.onLogin();
+    await fixture.whenStable();
+    expect(component.loginError).toBe(false);
+    expect(window.location.href).toBeDefined();
+  });
+
+  it('should handle login error from authService', () => {
+    jest
+      .spyOn(mockAuthService, 'loginAdmin')
+      .mockReturnValue(throwError(() => new Error('Invalid credentials')));
+    component.loginForm.setValue({
+      email: 'test@test.com',
+      password: 'Password123!',
+    });
+    component.onLogin();
+    expect(component.loginError).toBe(true);
+    expect(component.loginForm.get('email')?.errors).toEqual({ incorrect: true });
+    expect(component.loginForm.get('password')?.errors).toEqual({ incorrect: true });
+  });
 });

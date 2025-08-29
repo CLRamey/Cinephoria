@@ -1,0 +1,72 @@
+.reservations-container {
+  width: 100vw;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  justify-content: left;
+  margin-top: 2rem;
+  align-self: center;
+  max-width: 88vw;
+  margin-bottom: 3rem;
+
+  h1 {
+    font-size: 2.5rem;
+    font-family:
+      "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande", "Lucida Sans", Arial, sans-serif;
+    color: rgb(31, 48, 37);
+  }
+
+  p {
+    max-width: 95%;
+    margin-bottom: 2rem;
+  }
+}
+
+.reservation-list {
+  margin-top: 1rem;
+  max-width: 90vw;
+}
+
+.bottom-section {
+  flex-direction: column;
+  align-self: center;
+}
+
+mat-expansion-panel {
+  margin-left: 0;
+  margin-bottom: 0.5rem;
+  border-radius: 8px;
+  box-sizing: border-box;
+  max-width: 85vw;
+  border: rgb(215, 222, 218) 0.25px solid;
+
+  mat-expansion-panel-header {
+    flex-wrap: wrap;
+    min-height: fit-content;
+  }
+}
+
+mat-divider {
+  border-top-color: #80c683;
+  max-width: 85vw;
+}
+
+.reservation-note {
+  font-style: italic;
+  font-size: smaller;
+  color: #f49100;
+  margin-left: 15px;
+}
+
+@media (max-width: 768px) {
+  .reservations-container {
+    max-width: 90vw;
+
+    .top-section {
+      margin-left: 2rem;
+    }
+    h1 {
+      font-size: 1.75rem;
+    }
+  }
+}

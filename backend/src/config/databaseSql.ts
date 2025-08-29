@@ -36,6 +36,7 @@ if (!databaseUrl) {
 export const sequelize = new Sequelize(databaseUrl, {
   dialect: 'mariadb',
   logging: !isProduction ? console.log : false, // Enabled for development, disabled in production
+  timezone: 'Europe/Paris',
   dialectOptions: dialectOptions,
   pool: {
     max: 5, // Max open connections

@@ -16,6 +16,7 @@ export interface JwtPayload {
   providedIn: 'root',
 })
 export class TokenService {
+  // Key used to store the token in session storage.
   private readonly TOKEN_KEY: string = 'auth_cinephoria_token';
   // Sets the token in session storage.
   setToken(token: string): void {
@@ -71,6 +72,7 @@ export class TokenService {
       }
       return payload;
     } catch (error) {
+      // this.clearToken();
       console.error('Token decoding failed', error);
       return null;
     }

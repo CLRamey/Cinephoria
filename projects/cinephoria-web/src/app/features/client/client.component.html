@@ -1,1 +1,67 @@
-<p>client works!</p>
+<div class="reservations-container">
+  <div class="top-section">
+    <h1>Commande</h1>
+    <p>Voici la liste de toutes vos commandes récentes.</p>
+
+    <ng-container *ngIf="isLoading">
+      <p>Chargement de vos commandes...</p>
+      <mat-spinner diameter="50"></mat-spinner>
+    </ng-container>
+
+    <ng-container *ngIf="hasError">
+      <p class="error-text">
+        Erreur lors du chargement des réservations. Veuillez réessayer plus tard.
+      </p>
+    </ng-container>
+
+    <ng-container *ngIf="!isLoading && !hasError && reservations.length === 0">
+      <p>Vous n'avez aucune réservation pour le moment.</p>
+    </ng-container>
+  </div>
+
+  <div class="bottom-section">
+    <ng-container *ngIf="!isLoading && !hasError && reservations.length > 0">
+      <mat-accordion class="reservation-list" multi>
+        <mat-expansion-panel *ngFor="let r of reservations">
+          <mat-expansion-panel-header>
+            <mat-panel-title>Réservation #{{ r.reservationCode }}</mat-panel-title>
+            <mat-panel-description>
+              {{ r.filmName }} -
+              {{ r.screeningDate }}
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+          <mat-divider></mat-divider>
+          <mat-list>
+            <mat-list-item>
+              <strong>Cinéma:</strong>
+              {{ r.cinemaName }}
+            </mat-list-item>
+            <mat-list-item>
+              <strong>Salle:</strong>
+              {{ r.roomNumber }}
+            </mat-list-item>
+            <mat-list-item>
+              <strong>Nombre de places:</strong>
+              {{ r.quantity }}
+            </mat-list-item>
+            <mat-list-item>
+              <strong>Sièges sélectionnés:</strong>
+              {{ r.seatLabels }}
+            </mat-list-item>
+            <mat-list-item>
+              <strong>Total:</strong>
+              {{ r.reservationTotalPrice | currency: "EUR" : "symbol" }}
+            </mat-list-item>
+            <mat-list-item>
+              <strong>Statut:</strong>
+              {{ r.reservationStage }}
+            </mat-list-item>
+            <div *ngIf="r.reservationStage === 'Réservé'" class="reservation-note">
+              Paiement à régler au cinéma avant la séance.
+            </div>
+          </mat-list>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </ng-container>
+  </div>
+</div>

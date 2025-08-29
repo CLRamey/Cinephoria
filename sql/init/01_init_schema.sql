@@ -2,6 +2,10 @@
 CREATE DATABASE IF NOT EXISTS cinephoriasqldb;
 USE cinephoriasqldb;
 
+--
+SET GLOBAL time_zone = 'Europe/Paris';
+SET time_zone = 'Europe/Paris';
+
 -- Drop existing tables if they exist already (for development purposes)
 DROP TABLE IF EXISTS User, Genre, Film, Genre_Film, Cinema, Cinema_Film, Quality, Room, Seat, Screening, Reservation, Reservation_Seat, Review, Incident;
 
@@ -135,7 +139,7 @@ CREATE TABLE IF NOT EXISTS Reservation (
     reservation_status ENUM('pending', 'reserved', 'cancelled', 'paid') DEFAULT 'pending',
     reservation_created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     reservation_updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    reservation_qr_code VARCHAR(255) DEFAULT (UUID()), -- UUID or file path (e.g., 'qrcodes/uuid.png')
+    reservation_qr_code VARCHAR(36) NOT NULL DEFAULT (UUID()),
     deleted_at DATETIME,
     FOREIGN KEY (user_id) REFERENCES User(user_id) ON DELETE CASCADE,
     FOREIGN KEY (screening_id) REFERENCES Screening(screening_id) ON DELETE CASCADE

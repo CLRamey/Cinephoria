@@ -6,6 +6,7 @@ import { RoomInfo } from '../../projects/cinephoria-web/src/app/interfaces/room'
 import { ExtendedScreening } from '../../projects/cinephoria-web/src/app/interfaces/screening';
 import { ActivatedRoute, Router } from '@angular/router';
 import { of } from 'rxjs';
+import { ReservationService } from '../../projects/cinephoria-web/src/app/services/reservation.service';
 
 // Patch the ExtendedScreening type for test to include full RoomInfo
 type ExtendedScreeningWithRoom = Omit<ExtendedScreening, 'room'> & { room?: RoomInfo };
@@ -16,6 +17,7 @@ describe('FilmDetailsComponent (Functional)', () => {
 
   let mockRoomInfoService: Partial<RoomInfoService>;
   let mockFilmInfoService: Partial<FilmInfoService>;
+  let mockReservationService: Partial<ReservationService>;
 
   const mockFilmData = [
     {
@@ -79,6 +81,20 @@ describe('FilmDetailsComponent (Functional)', () => {
     },
   ];
 
+  const mockExtendedScreening: ExtendedScreening = {
+    screeningId: 10,
+    screeningDate: new Date(Date.now() + 1000 * 60 * 60),
+    screeningStatus: 'active',
+    cinemaId: 1,
+    filmId: 12,
+    roomId: 5,
+    startTime: '17:00',
+    endTime: '19:00',
+    quality: 'IMAX',
+    price: 15.5,
+    room: { roomId: 5, roomNumber: 1 },
+  };
+
   beforeEach(async () => {
     mockFilmInfoService = {
       getFilmById: jest.fn().mockReturnValue(of(mockFilmData)),
@@ -88,6 +104,12 @@ describe('FilmDetailsComponent (Functional)', () => {
       getRoomById: jest.fn().mockReturnValue(of(mockRoomData)),
     } as Partial<RoomInfoService> as RoomInfoService;
 
+    mockReservationService = {
+      getExtendedScreening: jest.fn().mockReturnValue(of([])),
+      createExtendedScreening: jest.fn().mockReturnValue(of({})),
+      setSelectedScreening: jest.fn(),
+    } as Partial<ReservationService> as ReservationService;
+
     await TestBed.configureTestingModule({
       declarations: [FilmDetailsComponent],
       providers: [
@@ -95,6 +117,7 @@ describe('FilmDetailsComponent (Functional)', () => {
         { provide: RoomInfoService, useValue: mockRoomInfoService },
         { provide: Router, useValue: { navigate: jest.fn() } },
         { provide: ActivatedRoute, useValue: { paramMap: of({ get: () => '12' }) } },
+        { provide: ReservationService, useValue: mockReservationService },
       ],
     }).compileComponents();
     fixture = TestBed.createComponent(FilmDetailsComponent);
@@ -106,18 +129,32 @@ describe('FilmDetailsComponent (Functional)', () => {
     jest.clearAllMocks();
   });
 
+  it('should be created', () => {
+    expect(component).toBeTruthy();
+  });
+
   it('should fetch film and screening data on init', () => {
+    (mockReservationService.getExtendedScreening as jest.Mock).mockReturnValue(
+      of(mockExtendedScreening),
+    );
     component.ngOnInit();
+    fixture.detectChanges();
     expect(mockFilmInfoService.getFilmById).toHaveBeenCalledWith(12);
     expect(component.film?.filmId).toEqual(12);
     expect(component.seances.length).toBeGreaterThan(0);
   });
 
   it('should correctly create an extended screening with full room, quality, and calculated times', () => {
+    mockReservationService.getExtendedScreening = jest
+      .fn()
+      .mockReturnValue(of(mockExtendedScreening));
     component.ngOnInit();
+    fixture.detectChanges();
     const seance = component.seances[0] as ExtendedScreeningWithRoom;
     expect(seance.screeningId).toBe(10);
-    expect(seance.screeningDate.toISOString()).toBe('2025-07-10T15:00:00.000Z');
+    expect(seance.screeningDate.toISOString()).toBe(
+      mockExtendedScreening.screeningDate.toISOString(),
+    );
     expect(seance.cinemaId).toBe(1);
     expect(seance.filmId).toBe(12);
     expect(seance.roomId).toBe(5);

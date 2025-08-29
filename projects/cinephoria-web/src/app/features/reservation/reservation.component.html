@@ -1,1 +1,127 @@
-<p>reservation works!</p>
+<div class="reservation-page-intro">
+  <h2 class="title">Réservations</h2>
+  <p class="subtitle">
+    Réservez vos places et profitez des meilleurs moments partager sur le grand écran.
+  </p>
+
+  <p>Veuillez sélectionner le cinéma et le film souhaités :</p>
+</div>
+<div class="filters">
+  <mat-form-field appearance="fill">
+    <mat-label>Cinéma</mat-label>
+    <mat-select [(ngModel)]="selectedCinemaId" (selectionChange)="onFilterChange()">
+      <mat-option [value]="null">Sélectionner un cinéma</mat-option>
+      <mat-option *ngFor="let cinema of cinemas" [value]="cinema.id">
+        {{ cinema.name }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Films</mat-label>
+    <mat-select [(ngModel)]="selectedFilmId" (selectionChange)="onFilterChange()">
+      <mat-option [value]="null">Sélectionner un film</mat-option>
+      <mat-option *ngFor="let film of filteredFilms" [value]="film.id">
+        {{ film.name }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
+
+<section class="screenings-container scroll-target" #screeningsSection>
+  <div class="screening-title">
+    <h3>Séances disponibles</h3>
+  </div>
+  <div class="screenings-grid">
+    <ng-container *ngIf="isLoading">
+      <mat-spinner diameter="50"></mat-spinner>
+    </ng-container>
+    <ng-container *ngIf="hasError">
+      <p>Une erreur est survenue lors du chargement des séances. Veuillez réessayer plus tard.</p>
+    </ng-container>
+    <ng-container *ngIf="filtersNeeded && !isLoading && !hasError">
+      <p>Veuillez sélectionner un cinéma et un film pour afficher les séances disponibles.</p>
+    </ng-container>
+    <ng-container *ngIf="seances?.length && !filtersNeeded">
+      <caw-reservation-card
+        *ngFor="let screening of seances"
+        [screening]="screening"
+        (reserveScreening)="onSelectedScreening($event)"
+      ></caw-reservation-card>
+    </ng-container>
+    <ng-container *ngIf="!seances?.length && !isLoading && !hasError && !filtersNeeded">
+      <p>Aucune séance disponible pour l'instant.</p>
+    </ng-container>
+  </div>
+</section>
+
+<section class="seat-count-section scroll-target" #seatCountSection *ngIf="screeningSelected">
+  <div class="container">
+    <h4>Réservation des places</h4>
+    <p>Veuillez sélectionner le nombre de places que vous souhaitez réserver :</p>
+  </div>
+  <div class="filters">
+    <mat-form-field appearance="fill">
+      <mat-label>Nombre de personnes</mat-label>
+      <mat-select [(ngModel)]="selectedSeatCount" (selectionChange)="onSeatCountChange()">
+        <mat-option *ngFor="let count of seatCountOptions" [value]="count">
+          {{ count }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+</section>
+
+<section
+  class="seating-plan-section scroll-target"
+  #seatingPlanSection
+  *ngIf="showSeatingPlan && !hasSeatingError"
+>
+  <div class="container">
+    <p>Veuillez sélectionner vos sièges :</p>
+  </div>
+  <caw-seat-selection
+    [seats]="seats"
+    [maxSeats]="selectedSeatCount"
+    [preSelectedSeats]="selectedSeats"
+    (seatSelectionChange)="onSeatsSelected($event)"
+  ></caw-seat-selection>
+</section>
+
+<section
+  class="price-summary-section scroll-target"
+  #priceSummarySection
+  *ngIf="selectedSeats.length === selectedSeatCount"
+>
+  <div class="container">
+    <mat-divider></mat-divider>
+    <h4 class="recap">Récapitulatif :</h4>
+    <br />
+    <p>Cinéma : {{ recapDetails.cinema }}</p>
+    <p>Film : {{ recapDetails.film }}</p>
+    <p>Date : {{ recapDetails.seance }}</p>
+    <p>Début : {{ recapDetails.startTime }} - Fin : {{ recapDetails.endTime }}</p>
+    <p>Nombre de places : {{ selectedSeats.length }}</p>
+    <p>Sièges sélectionnés : {{ selectedSeatLabels }}</p>
+    <p>Qualité : {{ recapDetails.quality }}</p>
+    <p>Prix total : {{ totalPrice | currency: "EUR" }}</p>
+    <br />
+    <ng-container *ngIf="isAuthenticated === true; else loginPrompt">
+      <button mat-raised-button color="primary" class="validate" (click)="confirmReservation()">
+        Valider la réservation
+      </button>
+    </ng-container>
+    <ng-template #loginPrompt>
+      <br />
+      <p>
+        Vous devez être connecté pour valider votre réservation. Veuillez vous connecter ou créer un
+        compte pour continuer :
+      </p>
+      <br />
+      <button mat-stroked-button color="accent" (click)="redirectToLogin()">Se connecter</button>
+      <button mat-stroked-button color="accent" (click)="redirectToSignup()">
+        Créer un compte
+      </button>
+    </ng-template>
+  </div>
+</section>

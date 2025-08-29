@@ -6,6 +6,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ViewportScroller } from '@angular/common';
 import { ElementRef } from '@angular/core';
 import { of } from 'rxjs';
+import { ReservationService } from '../../projects/cinephoria-web/src/app/services/reservation.service';
+import { ExtendedScreening } from '../../projects/cinephoria-web/src/app/interfaces/screening';
 
 class SubFilmInfoService {
   getFilmById() {
@@ -89,6 +91,7 @@ describe('FilmDetailsComponent (Integration)', () => {
         { provide: ActivatedRoute, useValue: { paramMap: of({ get: () => '1' }) } },
         { provide: Router, useValue: { navigate: jest.fn() } },
         { provide: ViewportScroller, useValue: { scrollToPosition: jest.fn() } },
+        { provide: ReservationService, useValue: { setSelectedScreening: jest.fn() } },
       ],
     }).compileComponents();
     fixture = TestBed.createComponent(FilmDetailsComponent);
@@ -96,7 +99,23 @@ describe('FilmDetailsComponent (Integration)', () => {
   });
 
   it('should load film + extended screenings and update seances', () => {
+    const mockExtendedScreening: ExtendedScreening = {
+      screeningId: 10,
+      screeningDate: new Date(Date.now() + 1000 * 60 * 60),
+      screeningStatus: 'active',
+      cinemaId: 1,
+      filmId: 12,
+      roomId: 5,
+      startTime: '17:00',
+      endTime: '19:00',
+      quality: 'IMAX',
+      price: 15.5,
+      room: { roomId: 5, roomNumber: 1 },
+    };
+    const reservationService = TestBed.inject(ReservationService) as ReservationService;
+    reservationService.getExtendedScreening = jest.fn().mockReturnValue(of(mockExtendedScreening));
     component.ngOnInit();
+    fixture.detectChanges();
     expect(component.film?.filmId).toBe(1);
     expect(component.seances.length).toBe(1);
     expect(component.isLoading).toBe(false);

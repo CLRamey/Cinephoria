@@ -1,22 +1,26 @@
-import { HttpInterceptorFn } from '@angular/common/http';
+import { HttpRequest, HttpHandler, HttpEvent, HttpInterceptor } from '@angular/common/http';
+import { Observable } from 'rxjs';
 import { TokenService } from '../services/token.service';
-import { inject, InjectionToken } from '@angular/core';
+import { Injectable, Inject } from '@angular/core';
+import { API_URL } from '../shared/utils/api-url.token';
 
-// API URL injection token for the base URL of the API.
-export const API_URL = new InjectionToken<string>('API_URL');
-
+@Injectable()
 // This interceptor adds the JWT token to outgoing HTTP requests if it exists and is not expired.
-export const authInterceptorInterceptor: HttpInterceptorFn = (req, next) => {
-  const tokenService = inject(TokenService);
-  const token = tokenService.getToken();
-  const baseUrl = inject(API_URL);
-  if (token && !tokenService.isTokenExpired() && req.url.startsWith(baseUrl)) {
-    const authreq = req.clone({
-      setHeaders: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    return next(authreq);
+export class AuthInterceptor implements HttpInterceptor {
+  constructor(
+    private tokenService: TokenService,
+    @Inject(API_URL) private baseUrl: string,
+  ) {}
+  intercept(req: HttpRequest<unknown>, handler: HttpHandler): Observable<HttpEvent<unknown>> {
+    const token = this.tokenService.getToken();
+    if (token && !this.tokenService.isTokenExpired(token) && req.url.startsWith(this.baseUrl)) {
+      const authreq = req.clone({
+        setHeaders: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return handler.handle(authreq);
+    }
+    return handler.handle(req);
   }
-  return next(req);
-};
+}

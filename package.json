@@ -41,6 +41,8 @@
     "cy:run": "cypress run --config-file tests/cypress/cypress.config.ts --headed --browser chrome",
     "cy:run:headless": "cypress run --config-file tests/cypress/cypress.config.ts --headless --browser chrome",
     "frontend": "ng serve cinephoria-web",
+    "backend:seeder": "npm run seeder:add:users --prefix backend",
+    "backend:seeder:remove": "npm run seeder:remove:users --prefix backend",
     "backend": "npm run dev --prefix backend",
     "docker:frontend": "ng serve cinephoria-web",
     "docker:backend": "npm run build --prefix backend && npm run start --prefix backend && npm run dev --prefix backend",
