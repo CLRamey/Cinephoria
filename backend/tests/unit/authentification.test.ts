@@ -124,8 +124,9 @@ describe('authMiddleware unit tests', () => {
 
     it('should return 403 if user is not verified', async () => {
       req.user = { userId: 1, userRole: Role.CLIENT, iat: 0, exp: 0 };
-      (user.findByPk as jest.Mock).mockResolvedValue({ isVerified: false });
+      (user.findByPk as jest.Mock).mockResolvedValue({ get: jest.fn().mockResolvedValue(false) });
       await checkUserVerified(req as AuthenticatedRequest, res as Response, next);
+      expect(user.findByPk).toHaveBeenCalledWith(1, { attributes: ['isVerified'] });
       expect(res.status).toHaveBeenCalledWith(403);
       expect(res.json).toHaveBeenCalledWith({ message: 'Unauthorized access' });
       expect(next).not.toHaveBeenCalled();
@@ -133,8 +134,9 @@ describe('authMiddleware unit tests', () => {
 
     it('should call next if user is verified', async () => {
       req.user = { userId: 1, userRole: Role.CLIENT, iat: 0, exp: 0 };
-      (user.findByPk as jest.Mock).mockResolvedValue({ isVerified: true });
+      (user.findByPk as jest.Mock).mockResolvedValue({ get: jest.fn().mockReturnValue(true) });
       await checkUserVerified(req as AuthenticatedRequest, res as Response, next);
+      expect(user.findByPk).toHaveBeenCalledWith(1, { attributes: ['isVerified'] });
       expect(next).toHaveBeenCalled();
       expect(res.status).not.toHaveBeenCalled();
     });

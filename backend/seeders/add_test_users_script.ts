@@ -4,26 +4,30 @@ import { sequelize } from '../src/config/databaseSql';
 import { hashPassword } from '../src/utils/userPassword';
 import { Role } from '../src/validators/userValidator';
 
+const ClientEmail = process.env['CLIENT_TEST_USER_EMAIL'];
+const EmployeeEmail = process.env['EMPLOYEE_TEST_USER_EMAIL'];
+const AdminEmail = process.env['ADMIN_TEST_USER_EMAIL'];
+
 const TEST_USERS = [
   {
     userFirstName: 'Test',
     userLastName: 'Client',
     userUsername: 'testclient',
-    userEmail: 'test-client@cinephoria.com',
+    userEmail: ClientEmail,
     userRole: 'client',
   },
   {
     userFirstName: 'Test',
     userLastName: 'Employee',
     userUsername: 'testemployee',
-    userEmail: 'test-employee@cinephoria.com',
+    userEmail: EmployeeEmail,
     userRole: 'employee',
   },
   {
     userFirstName: 'Test',
     userLastName: 'Admin',
     userUsername: 'testadmin',
-    userEmail: 'test-admin@cinephoria.com',
+    userEmail: AdminEmail,
     userRole: 'admin',
   },
 ];
@@ -47,6 +51,13 @@ const insertTestUsers = async () => {
     console.log('Connected to DB');
 
     for (const userData of TEST_USERS) {
+      if (!userData.userEmail) {
+        console.error(
+          `User email for role ${userData.userRole} is not set in environment variables.`,
+        );
+        continue;
+      }
+
       const existing = await user.findOne({ where: { userEmail: userData.userEmail } });
 
       if (existing) {
@@ -58,6 +69,7 @@ const insertTestUsers = async () => {
 
       await user.create({
         ...userData,
+        userEmail: userData.userEmail as string,
         userRole: userData.userRole as Role,
         userPassword: hashed,
         ...defaultFlags,

@@ -14,6 +14,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDivider } from '@angular/material/divider';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { ReservationService } from '../../projects/cinephoria-web/src/app/services/reservation.service';
 
 describe('LoginClientComponent', () => {
   let component: LoginClientComponent;
@@ -22,6 +24,7 @@ describe('LoginClientComponent', () => {
   let mockAuthService: Partial<AuthService>;
   let mockSnackBar: Partial<MatSnackBar>;
   let mockRouter: Partial<Router>;
+  let mockReservationService: Partial<ReservationService>;
 
   let userRoleSubject: BehaviorSubject<Role | null>;
   let isAuthenticatedSubject: BehaviorSubject<boolean>;
@@ -41,8 +44,12 @@ describe('LoginClientComponent', () => {
       open: jest.fn(),
     };
     mockRouter = {
-      navigate: jest.fn(),
+      navigate: jest.fn().mockReturnValue(Promise.resolve(true)),
     };
+    mockReservationService = {
+      getSelectedScreening: jest.fn().mockReturnValue(of(null)),
+    } as Partial<ReservationService> as ReservationService;
+
     await TestBed.configureTestingModule({
       declarations: [LoginClientComponent],
       imports: [
@@ -60,6 +67,8 @@ describe('LoginClientComponent', () => {
         { provide: AuthService, useValue: mockAuthService },
         { provide: MatSnackBar, useValue: mockSnackBar },
         { provide: Router, useValue: mockRouter },
+        { provide: ReservationService, useValue: mockReservationService },
+        provideHttpClientTesting(),
       ],
     }).compileComponents();
 
@@ -81,6 +90,7 @@ describe('LoginClientComponent', () => {
     expect(component.showPassword).toBe(false);
     expect(component.loginError).toBe(false);
     expect(component.loginForm).toBeDefined();
+    expect(component.loginForm.valid).toBe(false);
   });
 
   it('should initialize the login form with empty values', () => {
@@ -149,6 +159,8 @@ describe('LoginClientComponent', () => {
       userEmail: 'test@example.com',
       userPassword: 'StrongPassword123!',
     });
+    await fixture.whenStable();
+    expect(component.loginError).toBe(false);
   });
 
   it('should have the show password set to false on initialisation', () => {

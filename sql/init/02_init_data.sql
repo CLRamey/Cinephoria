@@ -18,10 +18,10 @@ INSERT INTO Genre (genre_type) VALUES
 
 -- Insert Films --- error in the original code: film_active_date should be a DATE, not a DATETIME
 INSERT INTO Film (film_title, film_description, film_img, film_duration, film_favorite, film_minimum_age, film_active_date, film_publishing_state, film_average_rating) VALUES
-('Les Ombres du Passé', 'Un voyage aventureux à travers des secrets oubliés.', 'assets/img/les_ombres_du_passe.webp', 115, FALSE, 12, '2025-08-06', 'active', 4.2),                   -- Film example 1
-('Échos de la Ville', 'Une course effrénée mêlant action et suspense urbain.', 'assets/img/echos_de_la_ville.webp', 105, FALSE, 12, '2025-08-06', 'active', 3.9),                     -- Film example 2
-('Murmures dans la Forêt', 'Une histoire de peur et de survie dans un environnement hostile.', 'assets/img/murmures_dans_la_foret.webp', 95, FALSE, 16, '2025-08-06', 'active', 4.5), -- Film example 3
-('Les Couleurs de l''Innocence', 'Une comédie touchante sur les relations humaines.', 'assets/img/les_couleurs_de_l_innocence.webp', 110, FALSE, 0, '2025-06-25', 'active', 0),     -- Film example 4
+('Les Ombres du Passé', 'Un voyage aventureux à travers des secrets oubliés.', 'assets/img/les_ombres_du_passe.webp', 115, FALSE, 12, '2025-08-27', 'active', 4.2),                   -- Film example 1
+('Échos de la Ville', 'Une course effrénée mêlant action et suspense urbain.', 'assets/img/echos_de_la_ville.webp', 105, FALSE, 12, '2025-08-27', 'active', 3.9),                     -- Film example 2
+('Murmures dans la Forêt', 'Une histoire de peur et de survie dans un environnement hostile.', 'assets/img/murmures_dans_la_foret.webp', 95, FALSE, 16, '2025-08-27', 'active', 4.5), -- Film example 3
+('Les Couleurs de l''Innocence', 'Une comédie touchante sur les relations humaines.', 'assets/img/les_couleurs_de_l_innocence.webp', 110, FALSE, 0, '2025-06-27', 'active', 0),     -- Film example 4
 ('Nuits Blanches à Lyon', 'Un thriller comique mêlant mystère et rires.', 'assets/img/nuits_blanches_a_lyon.webp', 100, FALSE, 12, '2025-06-16', 'active', 3.8),                      -- Film example 5
 ('Le Chant des Étoiles', 'Un voyage fantastique à travers l''univers.', 'assets/img/le_chant_des_etoiles.webp', 120, TRUE, 10, '2025-07-23', 'active', 4.7),                         -- Film example 6
 ('Sous le Vent', 'Un drame familial explorant les liens invisibles.', 'assets/img/sous_le_vent.webp', 120, FALSE, 10, '2025-06-16', 'active', 4.1),                                   -- Film example 7
@@ -89,7 +89,7 @@ INSERT INTO Seat (seat_row, seat_number, pmr_seat, room_id)
 SELECT
     CHAR(64 + seat_map.row_num) AS seat_row,
     seat_map.col_num AS seat_number,
-    CASE WHEN seat_map.col_num = 1 THEN 1 ELSE 0 END AS pmr_seat,
+    CASE WHEN seat_map.row_num = 1 AND seat_map.col_num IN (1, 2) THEN 1 ELSE 0 END AS pmr_seat,
     r.room_id
 FROM Room r
 CROSS JOIN (
@@ -114,53 +114,53 @@ WHERE (seat_map.row_num - 1) * 10 + seat_map.col_num <= r.room_capacity;
 -- Insert Screenings over a weekly period
 INSERT INTO Screening (screening_date, screening_status, deleted_at, cinema_id, film_id, room_id)
 VALUES
--- ==== FILM 1 (active: 2025-06-14) ==== Shown in: Nantes (1), Paris (3), Lille (5), Liège (7)
-('2025-07-14 10:00:00', 'ended', NULL, 1, 1, 1),
-('2025-07-15 13:00:00', 'ended', NULL, 3, 1, 3),
-('2025-07-17 16:00:00', 'ended', NULL, 5, 1, 6),
-('2025-07-18 19:30:00', 'active', NULL, 7, 1, 8),
+-- FILM 1 - Shown in: Nantes (1), Paris (3), Lille (5), Liège (7)
+('2025-08-14 10:00:00', 'ended', NULL, 1, 1, 1),
+('2025-09-15 13:00:00', 'ended', NULL, 3, 1, 3),
+('2025-09-17 16:00:00', 'ended', NULL, 5, 1, 6),
+('2025-09-18 19:30:00', 'active', NULL, 7, 1, 8),
 
--- ==== FILM 2 (active: 2025-06-21) ==== Shown in: Nantes (1), Bordeaux (2), Toulouse (4), Lille (5), Liège (7)
-('2025-07-21 11:00:00', 'active', NULL, 2, 2, 2),
-('2025-07-22 14:30:00', 'active', NULL, 4, 2, 5),
-('2025-07-23 17:30:00', 'active', NULL, 5, 2, 6),
-('2025-07-24 20:00:00', 'active', NULL, 7, 2, 8),
+-- FILM 2 - Shown in: Nantes (1), Bordeaux (2), Toulouse (4), Lille (5), Liège (7)
+('2025-09-21 11:00:00', 'active', NULL, 2, 2, 2),
+('2025-09-22 14:30:00', 'active', NULL, 4, 2, 5),
+('2025-09-23 17:30:00', 'active', NULL, 5, 2, 6),
+('2025-09-24 20:00:00', 'active', NULL, 7, 2, 8),
 
--- ==== FILM 3 (active: 2025-06-21) ==== Shown in: Nantes (1), Paris (3), Charleroi (6)
-('2025-07-21 10:30:00', 'active', NULL, 3, 3, 3),
-('2025-07-22 13:00:00', 'active', NULL, 1, 3, 1), 
-('2025-07-24 15:30:00', 'active', NULL, 6, 3, 7),
-('2025-07-25 18:30:00', 'active', NULL, 6, 3, 7),
+-- FILM 3 - Shown in: Nantes (1), Paris (3), Charleroi (6)
+('2025-09-21 10:30:00', 'active', NULL, 3, 3, 3),
+('2025-09-22 13:00:00', 'active', NULL, 1, 3, 1), 
+('2025-09-24 15:30:00', 'active', NULL, 6, 3, 7),
+('2025-09-25 18:30:00', 'active', NULL, 6, 3, 7),
 
--- ==== FILM 4 (active: 2025-06-25) ==== Shown in: Bordeaux (2), Paris (3), Lille (5), Charleroi (6), Liège (7)
-('2025-07-25 10:00:00', 'active', NULL, 2, 4, 2),
-('2025-07-26 13:00:00', 'active', NULL, 3, 4, 3),
-('2025-07-27 16:00:00', 'active', NULL, 5, 4, 6),
-('2025-07-28 19:00:00', 'active', NULL, 7, 4, 8),
+-- FILM 4 - Shown in: Bordeaux (2), Paris (3), Lille (5), Charleroi (6), Liège (7)
+('2025-09-25 10:00:00', 'active', NULL, 2, 4, 2),
+('2025-09-26 13:00:00', 'active', NULL, 3, 4, 3),
+('2025-09-27 16:00:00', 'active', NULL, 5, 4, 6),
+('2025-09-28 19:00:00', 'active', NULL, 7, 4, 8),
 
--- ==== FILM 5 (active: 2025-06-16) ==== Shown in: Bordeaux (2), Paris (3), Lille (5)
-('2025-07-16 11:00:00', 'ended', NULL, 2, 5, 2),
-('2025-07-17 14:00:00', 'ended', NULL, 3, 5, 3),
-('2025-07-18 17:00:00', 'active', NULL, 5, 5, 6),
-('2025-07-19 20:00:00', 'active', NULL, 3, 5, 4),
+-- FILM 5 - Shown in: Bordeaux (2), Paris (3), Lille (5)
+('2025-09-16 11:00:00', 'ended', NULL, 2, 5, 2),
+('2025-09-17 14:00:00', 'ended', NULL, 3, 5, 3),
+('2025-09-18 17:00:00', 'active', NULL, 5, 5, 6),
+('2025-09-19 20:00:00', 'active', NULL, 3, 5, 4),
 
--- ==== FILM 6 (active: 2025-06-16) ==== Shown in: Bordeaux (2), Toulouse (4), Charleroi (6)
-('2025-07-16 12:00:00', 'ended', NULL, 2, 6, 2),
-('2025-07-17 15:00:00', 'ended', NULL, 4, 6, 5),
-('2025-07-19 18:00:00', 'active', NULL, 6, 6, 7),
-('2025-07-20 21:00:00', 'active', NULL, 6, 6, 7),
+-- FILM 6 - Shown in: Bordeaux (2), Toulouse (4), Charleroi (6)
+('2025-09-16 12:00:00', 'ended', NULL, 2, 6, 2),
+('2025-09-17 15:00:00', 'ended', NULL, 4, 6, 5),
+('2025-09-19 18:00:00', 'active', NULL, 6, 6, 7),
+('2025-09-20 20:30:00', 'active', NULL, 6, 6, 7),
 
--- ==== FILM 7 (active: 2025-06-16) ==== Shown in: Nantes (1), Toulouse (4), Charleroi (6)
-('2025-07-16 13:00:00', 'ended', NULL, 1, 7, 1),
-('2025-07-17 16:00:00', 'ended', NULL, 4, 7, 5),
-('2025-07-18 19:30:00', 'active', NULL, 6, 7, 7),
-('2025-07-20 10:30:00', 'active', NULL, 1, 7, 1),
+-- FILM 7 - Shown in: Nantes (1), Toulouse (4), Charleroi (6)
+('2025-09-16 13:00:00', 'ended', NULL, 1, 7, 1),
+('2025-09-17 16:00:00', 'ended', NULL, 4, 7, 5),
+('2025-09-18 19:30:00', 'active', NULL, 6, 7, 7),
+('2025-09-20 10:30:00', 'active', NULL, 1, 7, 1),
 
--- ==== FILM 8 (active: 2025-06-16) ==== Shown in: Toulouse (4), Liège (7)
-('2025-07-16 10:00:00', 'ended', NULL, 4, 8, 5),
-('2025-07-17 13:00:00', 'ended', NULL, 7, 8, 8),
-('2025-07-19 16:00:00', 'active', NULL, 4, 8, 5),
-('2025-07-21 19:00:00', 'active', NULL, 7, 8, 8);
+-- FILM 8 - Shown in: Toulouse (4), Liège (7)
+('2025-09-16 10:00:00', 'ended', NULL, 4, 8, 5),
+('2025-09-17 13:00:00', 'ended', NULL, 7, 8, 8),
+('2025-09-19 16:00:00', 'active', NULL, 4, 8, 5),
+('2025-09-21 19:00:00', 'active', NULL, 7, 8, 8);
 
 -- Reservation data example
 INSERT INTO Reservation (user_id, screening_id, reservation_total_price, reservation_status, reservation_created_at, reservation_qr_code, deleted_at)

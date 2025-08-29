@@ -14,6 +14,7 @@ import {
   errorForm,
 } from '../../../../../../../projects/auth/src/lib/shared/utils/shared-responses';
 import { Role } from '../../../../../../../projects/auth/src/lib/interfaces/auth-interfaces';
+import { ReservationService } from '../../../services/reservation.service';
 
 @Component({
   selector: 'caw-login-client',
@@ -32,6 +33,7 @@ export class LoginClientComponent {
     private readonly authService: AuthService,
     private readonly router: Router,
     private readonly snackBar: MatSnackBar,
+    private readonly reservationService: ReservationService,
   ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -79,6 +81,14 @@ export class LoginClientComponent {
             this.loginError = false;
             resetForm(this.loginForm);
             loginSuccessSnackBar(this.snackBar);
+            // Check if there is a reservation in progress
+            const reserving = this.reservationService.getSelectedScreening();
+            if (reserving !== null) {
+              this.router.navigate(['/reservation']).then(() => {
+                window.location.reload();
+              });
+              return;
+            }
             // Navigate to dashboard with full refreshed state
             setTimeout(() => {
               window.location.href = '/client';

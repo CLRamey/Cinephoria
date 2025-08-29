@@ -19,7 +19,7 @@ export interface ScreeningInfo {
   };
   room?: {
     roomId: number;
-    roomNumber: string;
+    roomNumber: number;
   };
 }
 
@@ -44,4 +44,8 @@ export interface ExtendedScreening extends ScreeningInfo {
   endTime: string;
   quality: string;
   price: number;
+  room?: {
+    roomId: number;
+    roomNumber: number;
+  };
 }

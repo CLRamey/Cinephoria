@@ -35,11 +35,11 @@ export async function registerUserHandler(req: Request) {
     ) {
       return errorResponse('All fields are required', 'BAD_REQUEST');
     }
-    // 1. Validate input
+    // Validate input
     const sanitized = sanitizeRegisterInput(req.body);
     const validatedData = await validateRegisterInput(sanitized);
 
-    // 2. Create user in DB
+    // Create user in DB
     const response = await registerUser(validatedData);
     if (!response.success || !response.data) {
       return {
@@ -51,21 +51,21 @@ export async function registerUserHandler(req: Request) {
       };
     }
 
-    // 3. Check the newUser creation and create the verification code
+    // Check the newUser creation and create the verification code
     const newUser = response.data;
     if (!newUser) {
       return errorResponse('User creation failed', 'USER_CREATION_ERROR');
     }
     const emailVerificationLink = `${process.env.FRONTEND_URL}/login-client/verify-email?code=${newUser.verificationCode}`;
 
-    // 4. Send email confirmation with verification link
+    // Send email confirmation with verification link
     try {
       await sendVerificationEmail(newUser.userEmail, newUser.userFirstName, emailVerificationLink);
     } catch (emailError) {
       console.error('Email failed:', emailError);
     }
 
-    // 5. Always return success to frontend if user is created
+    // Always return success to frontend if user is created
     return {
       success: true,
       data: {

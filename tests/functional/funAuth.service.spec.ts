@@ -4,6 +4,7 @@ import { provideHttpClientTesting, HttpTestingController } from '@angular/common
 import { of } from 'rxjs';
 import { AuthService } from '../../projects/auth/src/lib/services/auth.service';
 import { TokenService } from '../../projects/auth/src/lib/services/token.service';
+import { API_URL } from '../../projects/auth/src/lib/shared/utils/api-url.token';
 import { environment } from '../../projects/cinephoria-web/src/environments/environment';
 import { Role } from '../../projects/auth/src/lib/interfaces/auth-interfaces';
 
@@ -19,7 +20,7 @@ describe('AuthService', () => {
         TokenService,
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
-        { provide: 'API_URL', useValue: mockApiUrl },
+        { provide: API_URL, useValue: mockApiUrl },
       ],
     });
     service = TestBed.inject(AuthService);

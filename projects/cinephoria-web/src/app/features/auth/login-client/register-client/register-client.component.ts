@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { AuthService } from '../../../../../../../auth/src/lib/services/auth.service';
 import {
   nameValidator,
@@ -31,6 +32,7 @@ export class RegisterClientComponent {
     private readonly authService: AuthService,
     private readonly dialog: MatDialog,
     private readonly snackBar: MatSnackBar,
+    private readonly router: Router,
   ) {
     this.registerForm = this.fb.group(
       {
@@ -132,6 +134,7 @@ export class RegisterClientComponent {
               control?.markAsPristine();
               control?.markAsUntouched();
             });
+            this.router.navigate(['/login-client']);
           },
           error: error => {
             console.error('Registration failed:', error);

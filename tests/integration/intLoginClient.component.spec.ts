@@ -15,6 +15,9 @@ import { MatCardModule } from '@angular/material/card';
 import { MatDividerModule } from '@angular/material/divider';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { throwError } from 'rxjs';
+import { ReservationService } from '../../projects/cinephoria-web/src/app/services/reservation.service';
+import { Screening } from '../../projects/cinephoria-web/src/app/interfaces/film';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 
 describe('LoginClientComponent', () => {
   let component: LoginClientComponent;
@@ -23,9 +26,19 @@ describe('LoginClientComponent', () => {
   let mockAuthService: Partial<AuthService>;
   let mockSnackBar: Partial<MatSnackBar>;
   let mockRouter: Partial<Router>;
+  let mockReservationService: Partial<ReservationService>;
 
   let userRoleSubject: BehaviorSubject<Role | null>;
   let isAuthenticatedSubject: BehaviorSubject<boolean>;
+
+  const mockScreening: Screening = {
+    screeningId: 10,
+    screeningDate: '2025-08-27T17:00:00Z',
+    screeningStatus: 'active',
+    cinemaId: 1,
+    filmId: 12,
+    roomId: 5,
+  };
 
   beforeEach(async () => {
     userRoleSubject = new BehaviorSubject<Role | null>(null);
@@ -42,8 +55,11 @@ describe('LoginClientComponent', () => {
       open: jest.fn(),
     };
     mockRouter = {
-      navigate: jest.fn(),
+      navigate: jest.fn().mockReturnValue(Promise.resolve(true)),
     };
+    mockReservationService = {
+      getSelectedScreening: jest.fn().mockReturnValue(of(null)),
+    } as Partial<ReservationService> as ReservationService;
 
     await TestBed.configureTestingModule({
       declarations: [LoginClientComponent],
@@ -62,6 +78,8 @@ describe('LoginClientComponent', () => {
         { provide: AuthService, useValue: mockAuthService },
         { provide: MatSnackBar, useValue: mockSnackBar },
         { provide: Router, useValue: mockRouter },
+        { provide: ReservationService, useValue: mockReservationService },
+        provideHttpClientTesting(),
       ],
     }).compileComponents();
 
@@ -129,5 +147,52 @@ describe('LoginClientComponent', () => {
     expect(component.loginForm.get('email')?.dirty).toBe(true);
     expect(component.loginForm.get('password')?.dirty).toBe(true);
     expect(component.loginForm.get('password')?.value).toBe('');
+  });
+
+  it('should navigate to reservation if there is a reservation in progress', async () => {
+    (mockReservationService.getSelectedScreening as jest.Mock).mockReturnValue(mockScreening);
+    component.loginForm.get('email')?.setValue('client@example.com');
+    component.loginForm.get('password')?.setValue('StrongPassword123!');
+    component.onLogin();
+    expect(mockAuthService.loginClient).toHaveBeenCalledWith({
+      userEmail: 'client@example.com',
+      userPassword: 'StrongPassword123!',
+    });
+    isAuthenticatedSubject.next(true);
+    userRoleSubject.next(Role.CLIENT);
+    await fixture.whenStable();
+    expect(component.loginError).toBe(false);
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/reservation']);
+  });
+
+  it('should use window.location.href to the client space on successful login', async () => {
+    (mockReservationService.getSelectedScreening as jest.Mock).mockReturnValue(null);
+    component.loginForm.get('email')?.setValue('client@example.com');
+    component.loginForm.get('password')?.setValue('StrongPassword123!');
+    component.onLogin();
+    expect(mockAuthService.loginClient).toHaveBeenCalledWith({
+      userEmail: 'client@example.com',
+      userPassword: 'StrongPassword123!',
+    });
+    isAuthenticatedSubject.next(true);
+    userRoleSubject.next(Role.CLIENT);
+    await fixture.whenStable();
+    expect(component.loginError).toBe(false);
+    expect(mockRouter.navigate).not.toHaveBeenCalled();
+    expect(window.location.href).toBeDefined();
+  });
+
+  it('should handle login error from authService', () => {
+    jest
+      .spyOn(mockAuthService, 'loginClient')
+      .mockReturnValue(throwError(() => new Error('Invalid credentials')));
+    component.loginForm.setValue({
+      email: 'test@test.com',
+      password: 'Password123!',
+    });
+    component.onLogin();
+    expect(component.loginError).toBe(true);
+    expect(component.loginForm.get('email')?.errors).toEqual({ incorrect: true });
+    expect(component.loginForm.get('password')?.errors).toEqual({ incorrect: true });
   });
 });

@@ -3,6 +3,7 @@ import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
 import { AuthService } from '../../projects/auth/src/lib/services/auth.service';
 import { TokenService } from '../../projects/auth/src/lib/services/token.service';
+import { API_URL } from '../../projects/auth/src/lib/shared/utils/api-url.token';
 import { RegisterUser, Role } from '../../projects/auth/src/lib/interfaces/auth-interfaces';
 import { environment } from '../../projects/cinephoria-web/src/environments/environment';
 
@@ -18,7 +19,7 @@ describe('AuthService', () => {
         TokenService,
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
-        { provide: 'API_URL', useValue: mockApiUrl },
+        { provide: API_URL, useValue: mockApiUrl },
       ],
     });
     service = TestBed.inject(AuthService);
@@ -198,6 +199,17 @@ describe('AuthService', () => {
     service.updateUserRoleFromToken();
     service.userRole$.subscribe(role => {
       expect(role).toBe(mockRole);
+    });
+  });
+
+  it('should refresh the Authentication state', () => {
+    service.refreshAuthState().then(() => {
+      service.isAuthenticated$.subscribe(value => {
+        expect(value).toBe(false);
+      });
+      service.userRole$.subscribe(role => {
+        expect(role).toBe(null);
+      });
     });
   });
 

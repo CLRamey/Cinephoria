@@ -1,11 +1,9 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpRequest, HttpEvent } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import {
-  authInterceptorInterceptor,
-  API_URL,
-} from '../../projects/auth/src/lib/interceptor/auth-interceptor.interceptor';
+import { AuthInterceptor } from '../../projects/auth/src/lib/interceptor/auth-interceptor.interceptor';
 import { TokenService } from '../../projects/auth/src/lib/services/token.service';
+import { API_URL } from '../../projects/auth/src/lib/shared/utils/api-url.token';
 
 describe('authInterceptorInterceptor', () => {
   let tokenServiceMock: jest.Mocked<TokenService>;
@@ -14,7 +12,11 @@ describe('authInterceptorInterceptor', () => {
   const interceptor = (
     req: HttpRequest<unknown>,
     next: (req: HttpRequest<unknown>) => Observable<HttpEvent<unknown>>,
-  ) => TestBed.runInInjectionContext(() => authInterceptorInterceptor(req, next));
+  ) =>
+    TestBed.runInInjectionContext(() => {
+      const instance = TestBed.inject(AuthInterceptor);
+      return instance.intercept(req, { handle: next });
+    });
 
   beforeEach(() => {
     tokenServiceMock = {
@@ -26,6 +28,7 @@ describe('authInterceptorInterceptor', () => {
       providers: [
         { provide: TokenService, useValue: tokenServiceMock },
         { provide: API_URL, useValue: BASE_URL },
+        AuthInterceptor,
       ],
     });
   });

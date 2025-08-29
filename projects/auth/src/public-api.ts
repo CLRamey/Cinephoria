@@ -12,3 +12,6 @@ export * from './lib/interceptor/auth-interceptor.interceptor';
 export * from './lib/shared/employee-login/employee-login.component';
 export * from './lib/guards/auth-initializer';
 export * from './lib/shared/utils/shared-responses';
+export * from './lib/services/clientReservations.service';
+export * from './lib/interfaces/user-interfaces';
+export * from './lib/shared/utils/api-url.token';

@@ -1,0 +1,34 @@
+<div class="seat-container">
+  <div class="screen-indicator"></div>
+  <div class="seat-grid">
+    <div class="seat-row" *ngFor="let row of seatRows">
+      <div
+        *ngFor="let seat of row"
+        class="seat"
+        [ngClass]="getSeatClassification(seat)"
+        (click)="toggleSeat(seat)"
+        [title]="seat.label"
+      >
+        <ng-container *ngIf="seat.pmrSeat">
+          <mat-icon class="pmr-icon" aria-hidden="true">wheelchair_pickup</mat-icon>
+        </ng-container>
+        <span *ngIf="!seat.pmrSeat">{{ seat.label }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="seat-legend">
+    <div class="legend-item">
+      <div class="seat reserved"></div>
+      <span>Réservé</span>
+    </div>
+    <div class="legend-item">
+      <div class="seat selected"></div>
+      <span>Sélectionné</span>
+    </div>
+    <div class="legend-item">
+      <div class="seat"></div>
+      <span>Disponible</span>
+    </div>
+  </div>
+</div>

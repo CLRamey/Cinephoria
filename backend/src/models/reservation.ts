@@ -152,9 +152,9 @@ export class reservation
           field: 'reservation_updated_at',
         },
         reservationQrCode: {
-          type: DataTypes.STRING(255),
-          allowNull: true,
-          defaultValue: Sequelize.Sequelize.fn('uuid'),
+          type: DataTypes.STRING(36),
+          allowNull: false,
+          defaultValue: Sequelize.literal('UUID()'),
           field: 'reservation_qr_code',
         },
         deletedAt: {
@@ -175,7 +175,7 @@ export class reservation
         paranoid: true,
         defaultScope: {
           attributes: {
-            exclude: ['deletedAt', 'reservationQrCode'],
+            exclude: ['deletedAt'],
           },
         },
         indexes: [

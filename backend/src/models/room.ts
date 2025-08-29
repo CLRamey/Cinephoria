@@ -132,7 +132,7 @@ export class room extends Model<roomAttributes, roomCreationAttributes> implemen
         tableName: 'Room',
         modelName: 'room',
         underscored: true,
-        timestamps: true,
+        timestamps: false,
         deletedAt: 'deletedAt',
         paranoid: true,
         defaultScope: {

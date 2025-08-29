@@ -8,6 +8,7 @@ import { of, throwError } from 'rxjs';
 import { ExtendedScreening } from '../../projects/cinephoria-web/src/app/interfaces/screening';
 import { FilmInfo } from '../../projects/cinephoria-web/src/app/interfaces/film';
 import { RoomInfo } from '../../projects/cinephoria-web/src/app/interfaces/room';
+import { ReservationService } from '../../projects/cinephoria-web/src/app/services/reservation.service';
 
 describe('FilmDetailsComponent', () => {
   let component: FilmDetailsComponent;
@@ -16,6 +17,7 @@ describe('FilmDetailsComponent', () => {
   let mockFilmInfoService: jest.Mocked<FilmInfoService>;
   let mockRoomInfoService: jest.Mocked<RoomInfoService>;
   let mockRouter: jest.Mocked<Router>;
+  let mockReservationService: jest.Mocked<ReservationService>;
 
   const mockActivatedRoute = {
     paramMap: of(convertToParamMap({ filmId: '12' })),
@@ -87,6 +89,19 @@ describe('FilmDetailsComponent', () => {
       },
     },
   ];
+  const mockExtendedScreening: ExtendedScreening = {
+    screeningId: 10,
+    screeningDate: new Date(Date.now() + 1000 * 60 * 60),
+    screeningStatus: 'active',
+    cinemaId: 1,
+    filmId: 12,
+    roomId: 5,
+    startTime: '17:00',
+    endTime: '19:00',
+    quality: 'IMAX',
+    price: 15.5,
+    room: { roomId: 5, roomNumber: 1 },
+  };
 
   beforeEach(async () => {
     mockFilmInfoService = {
@@ -96,6 +111,12 @@ describe('FilmDetailsComponent', () => {
     mockRoomInfoService = {
       getRoomById: jest.fn().mockReturnValue(of(mockRoomData as RoomInfo[])),
     } as unknown as jest.Mocked<RoomInfoService>;
+
+    mockReservationService = {
+      getExtendedScreening: jest.fn().mockReturnValue(of([])),
+      createExtendedScreening: jest.fn().mockReturnValue(of({})),
+      setSelectedScreening: jest.fn(),
+    } as unknown as jest.Mocked<ReservationService>;
 
     mockRouter = {
       navigate: jest.fn(),
@@ -115,6 +136,7 @@ describe('FilmDetailsComponent', () => {
             scrollToAnchor: jest.fn(),
           },
         },
+        { provide: ReservationService, useValue: mockReservationService },
       ],
     }).compileComponents();
     fixture = TestBed.createComponent(FilmDetailsComponent);
@@ -143,15 +165,18 @@ describe('FilmDetailsComponent', () => {
     expect(component.film).toEqual(mockFilmData[0]);
   });
 
-  it('should load screenings and set seances', done => {
+  it('should load the screenings and set seances for the films', () => {
+    mockReservationService.getExtendedScreening.mockReturnValue(of(mockExtendedScreening));
     component.ngOnInit();
     fixture.detectChanges();
-    setTimeout(() => {
-      expect(component.seances.length).toBe(1);
-      expect(component.seances[0].screeningId).toBe(10);
-      expect(component.isLoading).toBe(false);
-      done();
-    }, 0);
+    expect(mockReservationService.getExtendedScreening).toHaveBeenCalled();
+    expect(component.seances.length).toBe(1);
+    expect(component.seances[0].screeningId).toBe(10);
+    expect(component.seances[0].startTime).toBe('17:00');
+    expect(component.seances[0].endTime).toBe('19:00');
+    expect(component.seances[0].quality).toBe('IMAX');
+    expect(component.seances[0].price).toBe(15.5);
+    expect(component.isLoading).toBe(false);
   });
 
   it('should handle errors correctly for loading film data', () => {
@@ -166,12 +191,12 @@ describe('FilmDetailsComponent', () => {
   it('should handle errors correctly for loading screenings', () => {
     mockFilmInfoService.getFilmById.mockReturnValue(of(mockFilmData as FilmInfo[]));
     mockRoomInfoService.getRoomById.mockReturnValue(throwError(() => new Error('fail')));
-    const screeningSpy = jest
-      .spyOn(component, 'getExtendedScreening')
-      .mockReturnValue(throwError(() => new Error('fail')));
+    mockReservationService.getExtendedScreening.mockReturnValue(
+      throwError(() => new Error('fail')),
+    );
     component.ngOnInit();
     fixture.detectChanges();
-    expect(screeningSpy).toHaveBeenCalled();
+    expect(mockReservationService.getExtendedScreening).toHaveBeenCalled();
     expect(component.hasError).toBe('Erreur lors du chargement des séances.');
     expect(component.isLoading).toBe(false);
     expect(console.error).toHaveBeenCalledWith('Error loading screenings:', expect.any(Error));
@@ -191,19 +216,8 @@ describe('FilmDetailsComponent', () => {
       price: 11.5,
     };
     component.onReserveScreening(extended);
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['/reservation'], {
-      queryParams: {
-        screeningId: 12,
-        screeningDate: '2025-07-10T15:00:00.000Z',
-        cinemaId: 3,
-        filmId: 5,
-        roomId: 6,
-        startTime: '14:00',
-        endTime: '16:00',
-        quality: '4K',
-        price: 11.5,
-      },
-    });
+    expect(mockReservationService.setSelectedScreening).toHaveBeenCalledWith(extended);
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/reservation']);
   });
 
   it('should clean up subscriptions on destroy', () => {

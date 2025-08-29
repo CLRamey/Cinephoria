@@ -125,7 +125,7 @@ export class screening
         tableName: 'Screening',
         modelName: 'screening',
         underscored: true,
-        timestamps: true,
+        timestamps: false,
         deletedAt: 'deletedAt',
         defaultScope: {
           attributes: {

@@ -16,8 +16,8 @@ const config: Config = {
   moduleFileExtensions: ['ts', 'js', 'json'],
   verbose: true,
   detectLeaks: false,
-  detectOpenHandles: false,
-  forceExit: true,
+  detectOpenHandles: true,
+  forceExit: false,
 };
 
 export default config;

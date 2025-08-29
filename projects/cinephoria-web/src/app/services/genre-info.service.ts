@@ -20,7 +20,6 @@ export class GenreInfoService {
         map((response: GenreResponse | GenreErrorResponse) => {
           if ('success' in response && response.success && 'data' in response) {
             const data = (response as GenreResponse).data;
-            // Ensure the result is always an array
             return Array.isArray(data) ? data : data ? [data] : [];
           }
           console.error(

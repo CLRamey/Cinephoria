@@ -6,6 +6,7 @@ services:
     container_name: cinephoria-sqldb
     restart: unless-stopped
     environment:
+      - TZ=Europe/Paris
       - MARIADB_DATABASE=${MARIADB_DATABASE}
       - MARIADB_USER=${MARIADB_USER}
       - MARIADB_PASSWORD=${MARIADB_PASSWORD}
@@ -65,6 +66,10 @@ services:
         - PORT=${PORT}
         - API_URL=${API_URL}
         - BASE_URL=${BASE_URL}
+        - TEST_USER_PASSWORD=${TEST_USER_PASSWORD}
+        - CLIENT_TEST_USER_EMAIL=${CLIENT_TEST_USER_EMAIL}
+        - EMPLOYEE_TEST_USER_EMAIL=${EMPLOYEE_TEST_USER_EMAIL}
+        - ADMIN_TEST_USER_EMAIL=${ADMIN_TEST_USER_EMAIL}
       volumes:
         - .:/app
         - /app/node_modules
