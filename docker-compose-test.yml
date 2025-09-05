@@ -20,7 +20,7 @@ services:
     image: mariadb:11.7.2
     container_name: cinephoria-sqldb
     restart: unless-stopped
-    env_file: ".env"
+    # env_file: ".env" # Uncomment for local use only, comment for commits
     environment:
       - TZ=Europe/Paris
       - MARIADB_DATABASE=${MARIADB_DATABASE}
@@ -39,7 +39,7 @@ services:
     image: mongo:8.0
     container_name: cinephoria-nosqldb
     restart: unless-stopped
-    env_file: ".env"
+    # env_file: ".env" # Uncomment for local use only, comment for commits
     environment:
       - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
       - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
@@ -63,7 +63,7 @@ services:
       ports:
         - "4200:4200"
         - "3000:3000"
-      env_file: ".env"
+      # env_file: ".env" # Uncomment for local use only, comment for commits
       environment:
         - MARIADB_DATABASE=${MARIADB_DATABASE}
         - MARIADB_USER=${MARIADB_USER}
