@@ -6,6 +6,7 @@ dotenv.config(); // Load environment variables FIRST safely
 import { app } from './app';
 import { connectMariaDB } from './config/databaseSql';
 import { connectMongo } from './config/databaseMongo';
+import { log, logerror } from './utils/logger';
 import http from 'http';
 
 // Set the port from environment variable or fallback to 3000
@@ -20,10 +21,10 @@ const startServer = async () => {
     const server = http.createServer(app);
     server.setTimeout(5 * 60 * 1000); // Set timeout to 5 minutes
     server.listen(port, () => {
-      console.log(`Server is running on port ${port}`);
+      log(`Server is running on port ${port}`);
     });
   } catch (error) {
-    console.error('Error starting the server:', error);
+    logerror('Error starting the server:', error);
     process.exit(1); // Exit the process if there is an error
   }
 };

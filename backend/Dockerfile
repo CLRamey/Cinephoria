@@ -21,5 +21,4 @@ RUN npm run build
 # Expose the port 3000
 EXPOSE 3000
 
-ENTRYPOINT [ "npm", "run", "start", "dev" ]
-CMD []
+ENTRYPOINT ["npm", "run", "start", "prod" ]

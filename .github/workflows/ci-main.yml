@@ -1,13 +1,13 @@
-# This workflow will be triggered on every pull to the feature branches.
-# It will run the build and test commands to ensure that the code is working correctly.
 
-name: CI Feature Branches and Security Improvements
+# This workflow will be triggered on every pull to the main branch.
+# It will run the build and test commands to ensure that the code is working correctly.
+# It will deploy the application if all tests pass.
+
+name: CI  Main Branch
 
 on:
-  push:
-    branches: ["feature/**", "security/**"]
   pull_request:
-    branches: ["feature/**", "security/**"]
+    branches: ["main"]
 
 env: 
   NODE_ENV: development
@@ -55,6 +55,9 @@ env:
   ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
   ADMIN_USERNAME: ${{ secrets.ADMIN_USERNAME }}
   ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+  # Secure database management user
+  SUPER_ADMIN: ${{ secrets.SUPER_ADMIN }}
+  SUPER_ADMIN_PASSWORD: ${{ secrets.SUPER_ADMIN_PASSWORD }}
 
 jobs:
   build-and-test:
@@ -75,7 +78,7 @@ jobs:
         cache: 'npm'
         cache-dependency-path: '**/package-lock.json'
 
-    - name: Install frontend dependencies
+    - name: Install dependencies
       run: npm ci
       working-directory: ./
 
@@ -83,11 +86,12 @@ jobs:
       run: npm ci
       working-directory: ./backend
 
+
     - name: Lint code
       run: npm run lint
       working-directory: ./
 
-    - name: Start Docker containers
+    - name: Start Docker containers (production testing)
       run: npm run docker:test
       working-directory: ./
 
@@ -101,22 +105,12 @@ jobs:
         echo "Seeding test users..."
         docker compose -f docker-compose-test.yml exec -T cinephoria-test npm run backend:seeder
 
-    - name: Run Unit Tests
+    - name: Run All Tests
       run: |
-        echo "Running unit tests..."
-        docker compose -f docker-compose-test.yml exec -T cinephoria-test npm run test:unit:all:docker
+        echo "Running all tests (unit, integration and functional)..."
+        docker compose -f docker-compose-test.yml exec -T cinephoria-test npm run test:all
 
-    - name: Run Integration Tests
-      run: |
-        echo "Running integration tests..."
-        docker compose -f docker-compose-test.yml exec -T cinephoria-test npm run test:integration:all:docker
-
-    - name: Run Functional Tests
-      run: |
-        echo "Running functional tests..."
-        docker compose -f docker-compose-test.yml exec -T cinephoria-test npm run test:functional:all:docker
-
-    - name: Wait for cinephoria test app to be ready
+    - name: Wait for cinephoria app to be ready for testing
       run: |
         echo "Waiting for the app to be ready..."
         sleep 45

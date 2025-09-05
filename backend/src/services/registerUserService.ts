@@ -6,6 +6,7 @@ import {
 import { user, userCreationAttributes } from '../models/init-models';
 import { ServiceResponse, successResponse, errorResponse } from '../interfaces/serviceResponse';
 import { Role } from '../validators/userValidator';
+import { logerror } from '../utils/logger';
 
 interface RegisteredUserData {
   userId: number;
@@ -49,7 +50,7 @@ export const registerUser = async (
     return successResponse(responseData);
     // If any error occurs during the process
   } catch (error) {
-    console.error('Error registering user:', error);
+    logerror('Error registering user:', error);
     return errorResponse('Registration failed', 'REGISTRATION_ERROR');
   }
 };

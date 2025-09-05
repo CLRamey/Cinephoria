@@ -1,4 +1,4 @@
-# Frontend Dockerfile
+# Global application test Dockerfile
 FROM node:22-bullseye-slim AS build
 
 # mkdir /app && cd

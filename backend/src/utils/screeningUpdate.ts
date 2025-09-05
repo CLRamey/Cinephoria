@@ -1,5 +1,6 @@
 import { screening } from '../models/init-models';
 import { successResponse, errorResponse } from '../interfaces/serviceResponse';
+import { logerror } from './logger';
 
 export async function isScreeningActive(screeningId: number) {
   try {
@@ -27,7 +28,7 @@ export async function isScreeningActive(screeningId: number) {
       message: 'Screening is active',
     });
   } catch (error) {
-    console.error('Error checking and updating screening status:', error);
+    logerror('Error checking and updating screening status:', error);
     return errorResponse('Internal server error', 'INTERNAL_SERVER_ERROR');
   }
 }

@@ -1,6 +1,7 @@
 import { film, genre, cinema, screening, genreFilm, cinemaFilm } from '../models/init-models';
 import { Op } from 'sequelize';
 import { FilmInfo, FilmInfoResponse, FilmInfoErrorResponse } from '../interfaces/filmInfo';
+import { logerror } from '../utils/logger';
 
 // This service function retrieves film information from the database and returns it in a structured format + error handling.
 // Sequelize is used fetch the relevant attributes (selected so that not all are returned).
@@ -66,7 +67,7 @@ export async function getFilmInfo(): Promise<FilmInfoResponse | FilmInfoErrorRes
     });
 
     if (!filmData || filmData.length === 0) {
-      console.error('Film information not found in the database.');
+      logerror('Film information not found in the database.');
       return {
         success: false,
         error: {
@@ -81,7 +82,7 @@ export async function getFilmInfo(): Promise<FilmInfoResponse | FilmInfoErrorRes
       data: filmData.map(f => f.toJSON()) as FilmInfo, // Ensure we return plain objects
     };
   } catch (error) {
-    console.error('Film information service error:', error);
+    logerror('Film information service error:', error);
     return {
       success: false,
       error: {
@@ -130,7 +131,7 @@ export async function getFilmInfoById(
 
     return { success: true, data: [filmData.toJSON()] as FilmInfoResponse['data'] };
   } catch (error) {
-    console.error('Error retrieving film by ID:', error);
+    logerror('Error retrieving film by ID:', error);
     return {
       success: false,
       error: {

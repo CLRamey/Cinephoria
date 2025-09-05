@@ -1,6 +1,7 @@
 import { Request } from 'express';
 import { asyncHandler } from '../middlewares/asyncHandler';
 import { Role } from '../validators/userValidator';
+import { logerror } from '../utils/logger';
 
 // Extend Express Request interface to include 'user'
 declare module 'express-serve-static-core' {
@@ -34,7 +35,7 @@ export async function clientProfileHandler(req: Request) {
       },
     };
   } catch (error) {
-    console.error('Error fetching client profile:', error);
+    logerror('Error fetching client profile:', error);
     return {
       success: false,
       error: {

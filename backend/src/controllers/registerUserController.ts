@@ -7,6 +7,7 @@ import { sendVerificationEmail } from '../utils/verificationEmail';
 import { errorResponse } from '../interfaces/serviceResponse';
 import { user } from '../models/init-models';
 import { Role } from '../validators/userValidator';
+import { logerror } from '../utils/logger';
 
 export const registerUserController = asyncHandler(registerUserHandler);
 export const verifyEmailController = asyncHandler(verifyEmailHandler);
@@ -62,7 +63,7 @@ export async function registerUserHandler(req: Request) {
     try {
       await sendVerificationEmail(newUser.userEmail, newUser.userFirstName, emailVerificationLink);
     } catch (emailError) {
-      console.error('Email failed:', emailError);
+      logerror('Email failed:', emailError);
     }
 
     // Always return success to frontend if user is created
@@ -73,7 +74,7 @@ export async function registerUserHandler(req: Request) {
       },
     };
   } catch (error) {
-    console.error('Registration error:', error);
+    logerror('Registration error:', error);
     return {
       success: false,
       error: {
@@ -117,7 +118,7 @@ export async function verifyEmailHandler(req: Request) {
       data: { message: 'Email verified successfully' },
     };
   } catch (error) {
-    console.error('Email verification error:', error);
+    logerror('Email verification error:', error);
     return {
       success: false,
       error: { message: 'An error occurred during email verification', code: 'VERIFICATION_ERROR' },

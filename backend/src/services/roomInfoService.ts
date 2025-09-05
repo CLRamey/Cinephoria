@@ -1,6 +1,7 @@
 import { room, quality, cinema } from '../models/init-models';
 import { RoomInfo, RoomInfoResponse, RoomInfoErrorResponse } from '../interfaces/roomInfo';
 import { Op } from 'sequelize';
+import { logerror } from '../utils/logger';
 
 // This function retrieves room information from the database and returns it in a structured format + error handling.
 export async function getRoomInfo(): Promise<RoomInfoResponse | RoomInfoErrorResponse> {
@@ -23,7 +24,7 @@ export async function getRoomInfo(): Promise<RoomInfoResponse | RoomInfoErrorRes
     });
 
     if (!roomData || roomData.length === 0) {
-      console.error('Room information not found in the database.');
+      logerror('Room information not found in the database.');
       return {
         success: false,
         error: {
@@ -38,7 +39,7 @@ export async function getRoomInfo(): Promise<RoomInfoResponse | RoomInfoErrorRes
       data: roomData.map(r => r.toJSON()) as RoomInfo, // Ensure we return plain objects
     };
   } catch (error) {
-    console.error('Room information service error:', error);
+    logerror('Room information service error:', error);
     return {
       success: false,
       error: {
@@ -76,7 +77,7 @@ export async function getRoomById(
 
     return { success: true, data: [roomData.toJSON()] as RoomInfoResponse['data'] };
   } catch (error) {
-    console.error('Error fetching room by ID:', error);
+    logerror('Error fetching room by ID:', error);
     return {
       success: false,
       error: {

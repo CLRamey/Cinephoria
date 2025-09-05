@@ -47,6 +47,12 @@ env:
   CLIENT_TEST_USER_EMAIL: ${{ secrets.CLIENT_TEST_USER_EMAIL }}
   EMPLOYEE_TEST_USER_EMAIL: ${{ secrets.EMPLOYEE_TEST_USER_EMAIL }}
   ADMIN_TEST_USER_EMAIL: ${{ secrets.ADMIN_TEST_USER_EMAIL }}
+  # Secure admin account 
+  ADMIN_FIRST_NAME: ${{ secrets.ADMIN_FIRST_NAME }}
+  ADMIN_LAST_NAME: ${{ secrets.ADMIN_LAST_NAME }}
+  ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
+  ADMIN_USERNAME: ${{ secrets.ADMIN_USERNAME }}
+  ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
 
 jobs:
   build-and-test:
@@ -92,7 +98,7 @@ jobs:
       run: |
         echo "Seeding test users..."
         docker compose -f docker-compose-test.yml exec -T cinephoria-test npm run backend:seeder
-
+ 
     - name: Run Unit Tests
       run: |
         echo "Running unit tests..."

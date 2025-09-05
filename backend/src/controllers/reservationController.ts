@@ -4,6 +4,7 @@ import { errorResponse } from '../interfaces/serviceResponse';
 import { isScreeningActive } from '../utils/screeningUpdate';
 import * as reservationService from '../services/reservationService';
 import { ReservationService } from '../services/reservationService';
+import { logerror } from '../utils/logger';
 
 export const seatingController = asyncHandler(seatingHandler);
 export const reservingController = asyncHandler(reservingHandler);
@@ -42,7 +43,7 @@ export async function seatingHandler(req: Request) {
       data: seats,
     };
   } catch (error) {
-    console.error('Error handling reservation:', error);
+    logerror('Error handling reservation:', error);
     return {
       success: false,
       error: {
@@ -94,7 +95,7 @@ export async function reservingHandler(req: Request) {
       message: 'Reservation successful',
     };
   } catch (error) {
-    console.error('Error handling reservation:', error);
+    logerror('Error handling reservation:', error);
     return {
       success: false,
       error: {
@@ -126,7 +127,7 @@ export async function reservationsHandler(req: Request) {
       data: reservations,
     };
   } catch (error) {
-    console.error('Error handling reservations:', error);
+    logerror('Error handling reservations:', error);
     return {
       success: false,
       error: {

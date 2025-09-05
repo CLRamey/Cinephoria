@@ -4,6 +4,7 @@ import express from 'express';
 import helmet, { contentSecurityPolicy } from 'helmet';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
+import { logerror } from './utils/logger';
 
 // Express
 export const app = express();
@@ -77,31 +78,30 @@ app.use('/api', adminRoutes);
 
 app.use('/api', reservationRoutes);
 
+// General test rate limiter route
+if (process.env.NODE_ENV !== 'production') {
+  app.get('/api/general-test', generalRateLimiter, generalRateLimiter, (req, res) => {
+    res.status(200).send('OK');
+  });
+}
+
 // Health check route
 app.get('/api/health', (_req, res) => {
   res.status(200).json({ status: 'ok' });
-});
-
-// General test rate limiter route
-app.get('/api/general-test', generalRateLimiter, generalRateLimiter, (req, res) => {
-  res.status(200).send('OK');
 });
 
 // 404 not found Error handler
 app.use((_req, res) => {
   res.status(404).json({
     success: false,
-    error: {
-      message: 'Not Found',
-      code: 'NOT_FOUND',
-    },
+    error: { code: 'NOT_FOUND' },
   });
 });
 
 // Error handling
 app.use((err: Error, req: express.Request, res: express.Response, _next: express.NextFunction) => {
   if (process.env.NODE_ENV !== 'production') {
-    console.error(err.stack);
+    logerror(err.stack);
   }
   res.status(500).json({
     success: false,

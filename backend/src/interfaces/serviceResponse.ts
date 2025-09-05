@@ -1,3 +1,4 @@
+// Interface for responses
 export type ServiceResponse<T> =
   | { success: true; data: T }
   | { success: false; error: { message: string; code: string } };

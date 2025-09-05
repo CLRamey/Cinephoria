@@ -2,7 +2,7 @@
 CREATE DATABASE IF NOT EXISTS cinephoriasqldb;
 USE cinephoriasqldb;
 
---
+-- Set time zone
 SET GLOBAL time_zone = 'Europe/Paris';
 SET time_zone = 'Europe/Paris';
 
