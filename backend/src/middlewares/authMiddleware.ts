@@ -2,6 +2,7 @@ import { Request, Response, NextFunction, RequestHandler } from 'express';
 import { verifyToken, VerificationTokenPayload } from '../utils/tokenManagement';
 import { Role } from '../validators/userValidator';
 import { user } from '../models/init-models';
+import { logerror } from '../utils/logger';
 
 export interface AuthenticatedRequest extends Request {
   user?: VerificationTokenPayload;
@@ -24,7 +25,7 @@ export const authenticate = async (
     req.user = payload;
     next();
   } catch (error) {
-    console.error('JWT error:', error);
+    logerror('JWT error:', error);
     res.status(401).json({ message: 'Invalid or expired token' });
   }
 };

@@ -1,5 +1,6 @@
 import bcrypt from 'bcrypt';
 import crypto from 'crypto';
+import { logerror } from './logger';
 
 const SALT_ROUNDS = 12;
 
@@ -21,7 +22,7 @@ export const isPasswordStrong = (password: string): boolean => {
   const hasSpecial = /[@$!%*?&]/.test(password);
   const isValid = minLength && maxLength && hasUpper && hasLower && hasNumber && hasSpecial;
   if (!isValid) {
-    console.error('Password does not meet strength requirements');
+    logerror('Password does not meet strength requirements');
   }
   return isValid;
 };

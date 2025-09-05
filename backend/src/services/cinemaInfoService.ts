@@ -3,6 +3,7 @@
 import { cinema } from '../models/init-models';
 import { Op } from 'sequelize';
 import { CinemaInfo, CinemaInfoResponse, CinemaInfoErrorResponse } from '../interfaces/cinemaInfo';
+import { logerror } from '../utils/logger';
 
 // This function retrieves cinema information from the database and returns it in a structured format + error handling.
 // Sequelize is used fetch the relevant attributes (selected so that not all are returned).
@@ -28,7 +29,7 @@ export async function getCinemaInfo(): Promise<CinemaInfoResponse | CinemaInfoEr
     });
 
     if (!cinemaData || cinemaData.length === 0) {
-      console.error('Cinema information not found in the database.');
+      logerror('Cinema information not found in the database.');
       return {
         success: false,
         error: {
@@ -42,7 +43,7 @@ export async function getCinemaInfo(): Promise<CinemaInfoResponse | CinemaInfoEr
       data: cinemaData.map(c => c.toJSON()) as CinemaInfo,
     };
   } catch (error) {
-    console.error('Cinema information service error:', error);
+    logerror('Cinema information service error:', error);
     return {
       success: false,
       error: {

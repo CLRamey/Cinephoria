@@ -7,6 +7,7 @@ import { user } from '../models/init-models';
 import { comparePasswords } from '../utils/userPassword';
 import { generateAccessToken } from '../utils/tokenManagement';
 import type { Role } from '../validators/userValidator';
+import { logerror } from '../utils/logger';
 
 export const loginAdminController = asyncHandler(loginAdminHandler);
 
@@ -67,7 +68,7 @@ export async function loginAdminHandler(req: Request) {
       },
     };
   } catch (error) {
-    console.error('Error during admin login:', error);
+    logerror('Error during admin login:', error);
     return {
       success: false,
       error: {

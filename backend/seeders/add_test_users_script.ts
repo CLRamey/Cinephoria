@@ -3,6 +3,7 @@ import { user } from '../src/models/init-models';
 import { sequelize } from '../src/config/databaseSql';
 import { hashPassword } from '../src/utils/userPassword';
 import { Role } from '../src/validators/userValidator';
+import { log, logerror } from '../src/utils/logger';
 
 const ClientEmail = process.env['CLIENT_TEST_USER_EMAIL'];
 const EmployeeEmail = process.env['EMPLOYEE_TEST_USER_EMAIL'];
@@ -41,27 +42,25 @@ const defaultFlags = {
 };
 
 if (!sharedPassword) {
-  console.error('TEST_USER_PASSWORD not set in environment');
+  logerror('TEST_USER_PASSWORD not set in environment');
   process.exit(1);
 }
 
 const insertTestUsers = async () => {
   try {
     await sequelize.authenticate();
-    console.log('Connected to DB');
+    log('Connected to DB');
 
     for (const userData of TEST_USERS) {
       if (!userData.userEmail) {
-        console.error(
-          `User email for role ${userData.userRole} is not set in environment variables.`,
-        );
+        logerror(`User email for role ${userData.userRole} is not set in environment variables.`);
         continue;
       }
 
       const existing = await user.findOne({ where: { userEmail: userData.userEmail } });
 
       if (existing) {
-        console.log(`User already exists`);
+        log(`User already exists`);
         continue;
       }
 
@@ -75,14 +74,14 @@ const insertTestUsers = async () => {
         ...defaultFlags,
       });
 
-      console.log(`Created test ${userData.userRole}: ${userData.userEmail}`);
+      log(`Created test ${userData.userRole}: ${userData.userEmail}`);
     }
 
-    console.log('All test users created');
-    console.log('Closing sequelize connection...');
+    log('All test users created');
+    log('Closing sequelize connection...');
     await sequelize.close();
   } catch (err) {
-    console.error('Error inserting test users:', err);
+    logerror('Error inserting test users:', err);
     process.exit(1);
   }
 };

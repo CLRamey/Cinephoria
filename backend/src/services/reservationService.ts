@@ -11,6 +11,7 @@ import {
 import { ServiceResponse, successResponse, errorResponse } from '../interfaces/serviceResponse';
 import { Op, Transaction } from 'sequelize';
 import { sequelize } from '../config/databaseSql';
+import { logerror } from '../utils/logger';
 
 export interface seatsWithStatus {
   seatId: number;
@@ -77,7 +78,7 @@ export async function getSeatsForScreening(
     return successResponse(seatsWithStatus);
     // Error handling for any issues during the process
   } catch (error) {
-    console.error('Error fetching seats for screening:', error);
+    logerror('Error fetching seats for screening:', error);
     return errorResponse('Internal server error', 'INTERNAL_SERVER_ERROR');
   }
 }
@@ -194,7 +195,7 @@ export class ReservationService {
       });
     } catch (err) {
       await transaction.rollback();
-      console.error('Error making reservation:', err);
+      logerror('Error making reservation:', err);
       return errorResponse('Reservation failed', 'RESERVATION_ERROR');
     }
   }
@@ -398,7 +399,7 @@ export async function getUserReservations(userId: number): Promise<ServiceRespon
     });
     return successResponse(reservationData);
   } catch (error) {
-    console.error('Error retrieving user reservations:', error);
+    logerror('Error retrieving user reservations:', error);
     return errorResponse('Failed to retrieve reservations', 'RESERVATION_ERROR');
   }
 }

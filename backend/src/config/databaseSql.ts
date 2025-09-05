@@ -3,15 +3,19 @@
 import { Sequelize } from 'sequelize';
 import { initModels } from '../models/init-models';
 import dotenv from 'dotenv';
-dotenv.config({ path: '../.env' }); // Load environment variables FIRST safely
+dotenv.config({ path: process.env.NODE_ENV === 'production' ? '../production.env' : '../.env' }); // Load environment variables FIRST safely
+import { log, logerror } from '../utils/logger';
 
 // Determine if the environment is production or development
 const isProduction = process.env['NODE_ENV'] === 'production';
 
+// Temporary disable SSL until this is obtained
+const useSSL = process.env['DB_SSL'] === 'true';
+
 // Define dialect options based on the environment
 const dialectOptions = {
   connectTimeout: 60000, // Connection timeout (ms)
-  ...(isProduction
+  ...(useSSL
     ? {
         ssl: {
           rejectUnauthorized: true, // Reject unauthorized SSL certificates in production for security
@@ -50,14 +54,14 @@ export const sequelize = new Sequelize(databaseUrl, {
 export const connectMariaDB = async () => {
   try {
     await sequelize.authenticate();
-    console.log('Sql connected successfully.');
+    log('Sql connected successfully.');
   } catch (error) {
-    console.error('Unable to connect to the sql database:', error);
+    logerror('Unable to connect to the sql database:', error);
     throw error;
   }
 };
 
 // Initialize models
 export const models = initModels(sequelize);
-console.log('Models initialized successfully.', Object.keys(models));
+log('Models initialized successfully.', Object.keys(models));
 // Export models for use in other parts of the application

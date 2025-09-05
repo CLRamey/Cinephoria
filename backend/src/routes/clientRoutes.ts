@@ -8,6 +8,7 @@ import { clientAuthMiddleware } from '../middlewares/authMiddleware';
 import { clientProfileController } from '../controllers/clientController';
 import { rateLimiter, loginRateLimiter, generalRateLimiter } from '../middlewares/rateLimiter';
 
+// Routes for the client
 const router = express.Router();
 
 router.post('/register-client', rateLimiter, registerUserController);

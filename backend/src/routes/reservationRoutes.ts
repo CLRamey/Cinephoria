@@ -7,6 +7,7 @@ import {
 import { clientAuthMiddleware } from '../middlewares/authMiddleware';
 import { reservationRateLimiter, generalRateLimiter } from '../middlewares/rateLimiter';
 
+// Routes for reservations
 const router = express.Router();
 
 router.get('/screenings/:id/seats', generalRateLimiter, seatingController);

@@ -37,10 +37,7 @@
         aria-label="Note moyenne du film"
       >
         <ng-container
-          *ngIf="
-            film.filmAverageRating !== null && film.filmAverageRating !== undefined;
-            else noRating
-          "
+          *ngIf="film.filmAverageRating !== null && film.filmAverageRating >= 0; else noRating"
         >
           <mat-icon *ngFor="let icon of starIcons" color="accent">
             {{ icon }}

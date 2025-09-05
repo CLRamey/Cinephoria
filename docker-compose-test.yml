@@ -1,10 +1,26 @@
-# Objectif : Angular + nodejs + mariadb + mongoDB | Objective: Test angular + nodejs + mariadb + mongoDB
+# Objective: Tests angular + nodejs + mariadb + mongoDB with jest and cypress in a container docker environment.
+
+# This docker-compose-test.yml file will not provide a visual of the website.
+# It is intended for running tests in a headless environment to test the cinephoria web application
+# in a CI/CD pipeline or locally within a contained docker environment.
+
+# CI/CD Configured accordingly, for local testing, follow the below steps:
+# 1. Ensure you adjust the environment variables accordingly for DOCKER-TEST.
+# 2. Call the docker-compose-test.yml with "npm run docker:test" in the terminal.
+# 3. Once running, open bash terminal and launch the app inside the container "docker exec -it cinephoria-test bash" then, "npm run dev"
+# 4. Open a new bash terminal  and enter the docker container "docker exec -it cinephoria-test bash" >>
+# 5. Use the jest scripts to test e.g. "npm run test:all"
+# 6. Add test users "npm run backend:seeder"
+# 7. Ensure that the /sql/init/02_init_data.sql file has some films with last Wednesdays date or some tests will fail
+# 8. Test with cypress: "npm run test:e2e:run:ci"
+# 9. To stop the containers: "npm run docker:test:down"
 
 services:
   mariadb:
     image: mariadb:11.7.2
     container_name: cinephoria-sqldb
     restart: unless-stopped
+    # env_file: ".env" # Uncomment for local use only, comment for commits
     environment:
       - TZ=Europe/Paris
       - MARIADB_DATABASE=${MARIADB_DATABASE}
@@ -23,6 +39,7 @@ services:
     image: mongo:8.0
     container_name: cinephoria-nosqldb
     restart: unless-stopped
+    # env_file: ".env" # Uncomment for local use only, comment for commits
     environment:
       - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
       - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
@@ -45,6 +62,8 @@ services:
       restart: always
       ports:
         - "4200:4200"
+        - "3000:3000"
+      # env_file: ".env" # Uncomment for local use only, comment for commits
       environment:
         - MARIADB_DATABASE=${MARIADB_DATABASE}
         - MARIADB_USER=${MARIADB_USER}
@@ -70,6 +89,11 @@ services:
         - CLIENT_TEST_USER_EMAIL=${CLIENT_TEST_USER_EMAIL}
         - EMPLOYEE_TEST_USER_EMAIL=${EMPLOYEE_TEST_USER_EMAIL}
         - ADMIN_TEST_USER_EMAIL=${ADMIN_TEST_USER_EMAIL}
+        - ADMIN_FIRST_NAME=${ADMIN_FIRST_NAME}
+        - ADMIN_LAST_NAME=${ADMIN_LAST_NAME}
+        - ADMIN_EMAIL=${ADMIN_EMAIL}
+        - ADMIN_USERNAME=${ADMIN_USERNAME}
+        - ADMIN_PASSWORD=${ADMIN_PASSWORD}
       volumes:
         - .:/app
         - /app/node_modules

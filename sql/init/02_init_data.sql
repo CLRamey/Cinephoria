@@ -1,9 +1,11 @@
+-- Insert initial data into the database for development purposes
+-- Define the database to use
 USE cinephoriasqldb;
--- Insert initial data into the database
 
--- Insert initial users (super admin, admin, employee, client)
+-- Insert initial admin user securely and their role ( admin)
 INSERT INTO User (user_first_name, user_last_name, user_username, user_email, user_password, user_role, must_change_password, is_verified, agreed_policy, agreed_cgv_cgu) VALUES
-('Initial', 'User', 'User01', 'Test@cinephoria.com', 'hashed_password', 'client', TRUE, TRUE, TRUE, TRUE);
+('Initial', 'User', 'User01', 'Test@cinephoria.com', 'hashed_password', 'client', TRUE, TRUE, TRUE, TRUE),
+('Employee', 'User', 'employeeUser', 'employee@cinephoria.com', 'hashed_employee_password', 'employee', TRUE, TRUE, TRUE, TRUE);
 
 -- Insert Genres
 INSERT INTO Genre (genre_type) VALUES
@@ -18,14 +20,14 @@ INSERT INTO Genre (genre_type) VALUES
 
 -- Insert Films --- error in the original code: film_active_date should be a DATE, not a DATETIME
 INSERT INTO Film (film_title, film_description, film_img, film_duration, film_favorite, film_minimum_age, film_active_date, film_publishing_state, film_average_rating) VALUES
-('Les Ombres du Passé', 'Un voyage aventureux à travers des secrets oubliés.', 'assets/img/les_ombres_du_passe.webp', 115, FALSE, 12, '2025-08-27', 'active', 4.2),                   -- Film example 1
-('Échos de la Ville', 'Une course effrénée mêlant action et suspense urbain.', 'assets/img/echos_de_la_ville.webp', 105, FALSE, 12, '2025-08-27', 'active', 3.9),                     -- Film example 2
-('Murmures dans la Forêt', 'Une histoire de peur et de survie dans un environnement hostile.', 'assets/img/murmures_dans_la_foret.webp', 95, FALSE, 16, '2025-08-27', 'active', 4.5), -- Film example 3
-('Les Couleurs de l''Innocence', 'Une comédie touchante sur les relations humaines.', 'assets/img/les_couleurs_de_l_innocence.webp', 110, FALSE, 0, '2025-06-27', 'active', 0),     -- Film example 4
+('Les Ombres du Passé', 'Un voyage aventureux à travers des secrets oubliés.', 'assets/img/les_ombres_du_passe.webp', 115, FALSE, 12, '2025-09-03', 'active', 4.2),                   -- Film example 1
+('Échos de la Ville', 'Une course effrénée mêlant action et suspense urbain.', 'assets/img/echos_de_la_ville.webp', 105, FALSE, 16, '2025-09-03', 'active', 3.9),                     -- Film example 2
+('Murmures dans la Forêt', 'Une histoire de peur et de survie dans un environnement hostile.', 'assets/img/murmures_dans_la_foret.webp', 95, FALSE, 18, '2025-09-03', 'active', 4.5), -- Film example 3
+('Les Couleurs de l''Innocence', 'Une comédie touchante sur les relations humaines.', 'assets/img/les_couleurs_de_l_innocence.webp', 110, FALSE, 0, '2025-09-03', 'active', 0),     -- Film example 4
 ('Nuits Blanches à Lyon', 'Un thriller comique mêlant mystère et rires.', 'assets/img/nuits_blanches_a_lyon.webp', 100, FALSE, 12, '2025-06-16', 'active', 3.8),                      -- Film example 5
-('Le Chant des Étoiles', 'Un voyage fantastique à travers l''univers.', 'assets/img/le_chant_des_etoiles.webp', 120, TRUE, 10, '2025-07-23', 'active', 4.7),                         -- Film example 6
-('Sous le Vent', 'Un drame familial explorant les liens invisibles.', 'assets/img/sous_le_vent.webp', 120, FALSE, 10, '2025-06-16', 'active', 4.1),                                   -- Film example 7
-('Fragments d''un Rêve', 'Un récit fantastique mêlé de réalités brisées.', 'assets/img/fragments_d_un_reve.webp', 115, FALSE, 10, '2025-06-16', 'active', 4.3);                       -- Film example 8
+('Le Chant des Étoiles', 'Un voyage fantastique à travers l''univers.', 'assets/img/le_chant_des_etoiles.webp', 120, TRUE, 12, '2025-07-23', 'active', 4.7),                         -- Film example 6
+('Sous le Vent', 'Un drame familial explorant les liens invisibles.', 'assets/img/sous_le_vent.webp', 120, FALSE, 0, '2025-06-16', 'active', 4.1),                                   -- Film example 7
+('Fragments d''un Rêve', 'Un récit fantastique mêlé de réalités brisées.', 'assets/img/fragments_d_un_reve.webp', 115, FALSE, 12, '2025-06-16', 'active', 4.3);                       -- Film example 8
 
 -- Insert Genre_Film relationships
 INSERT INTO Genre_Film (genre_id, film_id) VALUES
@@ -165,10 +167,10 @@ VALUES
 -- Reservation data example
 INSERT INTO Reservation (user_id, screening_id, reservation_total_price, reservation_status, reservation_created_at, reservation_qr_code, deleted_at)
 VALUES
-(4, 2, 10.00, 'paid', '2025-07-12 10:00:00', UUID(), NULL),
-(4, 9, 10.00, 'reserved', '2025-07-12 10:05:00', UUID(), NULL),
-(4, 14, 20.00, 'cancelled', '2025-07-12 10:10:00', UUID(), NULL),
-(4, 20, 28.00, 'pending', '2025-07-12 10:15:00', UUID(), NULL);
+(1, 2, 10.00, 'paid', '2025-07-12 10:00:00', UUID(), NULL),
+(1, 9, 10.00, 'reserved', '2025-07-12 10:05:00', UUID(), NULL),
+(1, 14, 20.00, 'cancelled', '2025-07-12 10:10:00', UUID(), NULL),
+(1, 20, 28.00, 'pending', '2025-07-12 10:15:00', UUID(), NULL);
 
 -- Insert Reservation_Seat relationships
 INSERT INTO Reservation_Seat (reservation_id, seat_id) VALUES 
@@ -182,10 +184,10 @@ INSERT INTO Reservation_Seat (reservation_id, seat_id) VALUES
 -- Review data example
 INSERT INTO Review (review_rating, review_comment, review_status, review_created_at, review_updated_at, deleted_at, film_id, user_id, reservation_id)
 VALUES 
-(4, 'Un film captivant avec une intrigue bien ficelée.', 'pending', '2025-06-15 19:20:00', NULL, NULL, 1, 4, 1);
+(4, 'Un film captivant avec une intrigue bien ficelée.', 'pending', '2025-06-15 19:20:00', NULL, NULL, 1, 1, 1);
 
 -- Incident data example
 INSERT INTO Incident (incident_equipment, incident_description, incident_status, incident_created_at, incident_updated_at, deleted_at, room_id, user_id)
 VALUES 
-('Projecteur','Le projecteur de la salle ne fonctionne plus correctement.', 'open', '2025-06-15 19:00:00', NULL, NULL, 3, 3),
-('Siège A1','présente un défaut, la couture est partiellement défaite.', 'resolved', '2025-06-12 11:00:00', '2025-06-12 16:00:00', NULL, 3, 3);
+('Projecteur','Le projecteur de la salle ne fonctionne plus correctement.', 'open', '2025-06-15 19:00:00', NULL, NULL, 3, 2),
+('Siège A1','présente un défaut, la couture est partiellement défaite.', 'resolved', '2025-06-12 11:00:00', '2025-06-12 16:00:00', NULL, 3, 2);

@@ -1,5 +1,7 @@
 import nodemailer from 'nodemailer';
+import { logerror } from '../utils/logger';
 
+// Function to send an email using nodemailer
 export const sendEmail = async (to: string, subject: string, text: string, html?: string) => {
   try {
     const transporter = nodemailer.createTransport({
@@ -21,7 +23,7 @@ export const sendEmail = async (to: string, subject: string, text: string, html?
     });
     return info;
   } catch (error) {
-    console.error('Error sending email:', error);
+    logerror('Error sending email:', error);
     throw error;
   }
 };

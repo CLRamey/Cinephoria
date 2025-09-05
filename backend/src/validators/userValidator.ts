@@ -1,6 +1,7 @@
 import { user } from '../models/init-models';
 import { isPasswordStrong } from '../utils/userPassword';
 import validator from 'validator';
+import { logwarn } from '../utils/logger';
 
 export interface RegisterInput {
   userFirstName: string;
@@ -85,7 +86,7 @@ export async function validateRegisterInput(data: RegisterInput): Promise<Regist
   ]);
 
   if (emailExists || usernameExists) {
-    console.warn('Duplicate registration attempt:', {
+    logwarn('Duplicate registration attempt:', {
       emailExists: !!emailExists,
       usernameExists: !!usernameExists,
     });

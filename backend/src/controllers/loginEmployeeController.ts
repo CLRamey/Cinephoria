@@ -7,6 +7,7 @@ import { user } from '../models/init-models';
 import { comparePasswords } from '../utils/userPassword';
 import { generateAccessToken } from '../utils/tokenManagement';
 import type { Role } from '../validators/userValidator';
+import { logerror } from '../utils/logger';
 
 export const loginEmployeeController = asyncHandler(loginEmployeeHandler);
 
@@ -67,7 +68,7 @@ export async function loginEmployeeHandler(req: Request) {
       },
     };
   } catch (error) {
-    console.error('Login error:', error);
+    logerror('Login error:', error);
     return {
       success: false,
       error: {

@@ -1,0 +1,119 @@
+# Objectif : <cinephoria application using angular + nodejs + mariadb + mongoDB
+
+services:
+  mariadb:
+    build:
+      context: ./sql
+      dockerfile: Dockerfile
+    container_name: cinephoria-sqldb
+    restart: unless-stopped
+    env_file: ".env" # Uncomment for local use only, comment for commits
+    environment:
+      - TZ=Europe/Paris
+      - MARIADB_DATABASE=${MARIADB_DATABASE}
+      - MARIADB_USER=${MARIADB_USER}
+      - MARIADB_PASSWORD=${MARIADB_PASSWORD}
+      - MARIADB_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD}
+      - SUPER_ADMIN=${SUPER_ADMIN}
+      - SUPER_ADMIN_PASSWORD=${SUPER_ADMIN_PASSWORD}
+    ports:
+      - "3307:3306"
+    volumes:
+      - mariadb_data:/var/lib/mysql
+      - ./sql/init:/docker-entrypoint-initdb.d:ro
+      - mariadb_backup:/backup
+    networks:
+      - cinephoria-network
+
+  mongo:
+    image: mongo:8.0
+    container_name: cinephoria-nosqldb
+    restart: unless-stopped
+    env_file: ".env" # Uncomment for local use only, comment for commits
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
+      - MONGO_INITDB_DATABASE=${MONGO_INITDB_DATABASE}
+      - MONGO_URI=${MONGO_URI}
+    ports:
+      - "27018:27017"
+    volumes:
+      - mongo_data:/data/db
+      - ./nosql/init:/docker-entrypoint-initdb.d/*.js:ro
+    networks:
+      - cinephoria-network
+
+  cinephoria-back:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    image: app-backend
+    container_name: cinephoria-back
+    restart: on-failure
+    ports:
+      - "3001:3000"
+    env_file: ".env" # Uncomment for local use only, comment for commits
+    environment:
+      - NODE_ENV=${NODE_ENV}
+      - MARIADB_DATABASE=${MARIADB_DATABASE}
+      - MARIADB_USER=${MARIADB_USER}
+      - MARIADB_PASSWORD=${MARIADB_PASSWORD}
+      - MARIADB_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD}
+      - MARIADB_HOST=${MARIADB_HOST}
+      - MARIADB_PORT=${MARIADB_PORT}
+      - DATABASE_URL=${DATABASE_URL}
+      - MONGO_NAME=${MONGO_NAME}
+      - MONGO_USERNAME=${MONGO_USERNAME}
+      - MONGO_PASSWORD=${MONGO_PASSWORD}
+      - MONGO_HOST=${MONGO_HOST}
+      - MONGO_PORT=${MONGO_PORT}
+      - MONGO_URI=${MONGO_URI}
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_EXPIRES_IN=${JWT_EXPIRES_IN}
+      - CORS_ORIGIN=${CORS_ORIGIN}
+      - COOKIE_SECRET=${COOKIE_SECRET}
+      - PORT=${PORT}
+      - API_URL=${API_URL}
+      - BASE_URL=${BASE_URL}
+      - ADMIN_FIRST_NAME=${ADMIN_FIRST_NAME}
+      - ADMIN_LAST_NAME=${ADMIN_LAST_NAME}
+      - ADMIN_EMAIL=${ADMIN_EMAIL}
+      - ADMIN_USERNAME=${ADMIN_USERNAME}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD}
+      - DB_SSL=${DB_SSL}
+      - SSL_CA=${SSL_CA}
+      - SSL_KEY=${SSL_KEY}
+      - SSL_CERT=${SSL_CERT}
+    depends_on:
+      - mariadb
+      - mongo
+    networks:
+      - cinephoria-network
+    stdin_open: true
+    tty: true
+      
+  cinephoria-front:
+    build:
+      context: .
+      dockerfile: projects/cinephoria-web/Dockerfile
+    image: app-frontend
+    container_name: cinephoria-front
+    restart: always
+    ports:
+      - "8081:80"
+    env_file: ".env" # Uncomment for local use only, comment for commits
+    environment:
+      - API_URL=${API_URL}
+    depends_on:
+      - cinephoria-back
+    networks:
+      - cinephoria-network
+
+networks:
+  cinephoria-network:
+    driver: bridge
+
+volumes:
+  mariadb_data:
+  mariadb_backup:
+  mongo_data:

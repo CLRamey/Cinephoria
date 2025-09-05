@@ -1,5 +1,6 @@
 import jwt, { Secret, JwtPayload } from 'jsonwebtoken';
 import { Role } from '../validators/userValidator';
+import { logerror } from './logger';
 
 // Ensure JWT_SECRET exists
 if (!process.env.JWT_SECRET) {
@@ -40,7 +41,7 @@ export const verifyToken = (token: string): VerificationTokenPayload => {
     const decoded = jwt.verify(token, JWT_SECRET) as VerificationTokenPayload;
     return decoded;
   } catch (error) {
-    console.error('Verification failed:', error);
+    logerror('Verification failed:', error);
     throw new Error('Invalid');
   }
 };
