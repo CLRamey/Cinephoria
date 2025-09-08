@@ -4,6 +4,7 @@ import express from 'express';
 import helmet, { contentSecurityPolicy } from 'helmet';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
+// import compression from 'compression';
 import { logerror } from './utils/logger';
 
 // Express
@@ -23,9 +24,9 @@ const allowedOrigins: string[] = corsOriginEnv
 app.use(
   cors({
     origin: allowedOrigins, // Allow requests from the frontend
-    credentials: true,
-    optionsSuccessStatus: 200,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    credentials: true, // Allow credentials (cookies, authorization headers, etc.) to be sent
+    optionsSuccessStatus: 200, // Provide a successful response for preflight requests
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Allowed methods
     allowedHeaders: ['Content-Type', 'Authorization'],
   }),
 );
@@ -35,11 +36,13 @@ app.use(helmet());
 app.use(
   contentSecurityPolicy({
     directives: {
-      defaultSrc: ["'self'"],
-      scriptSrc: ["'self'"],
-      styleSrc: ["'self'", "'https:'"],
-      imgSrc: ["'self'", 'data:', 'https:'],
+      defaultSrc: ["'self'"], // Allow resources from self
+      scriptSrc: ["'self'"], // Allow scripts from self
+      styleSrc: ["'self'", "'https:'"], // Allow styles from self and HTTPS
+      imgSrc: ["'self'", 'data:', 'https:'], // Allow images from self, data URIs, and HTTPS
       connectSrc: ["'self'", ...allowedOrigins], // Allow connections to the frontend
+      objectSrc: ["'none'"], // Disallow all object sources
+      upgradeInsecureRequests: [], // Upgrade HTTP to HTTPS
     },
   }),
 );

@@ -61,7 +61,8 @@
               "outputHashing": "all",
               "optimization": true,
               "extractLicenses": true,
-              "sourceMap": false
+              "sourceMap": false,
+              "aot": true
             },
             "development": {
               "optimization": false,

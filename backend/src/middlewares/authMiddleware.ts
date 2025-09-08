@@ -61,7 +61,7 @@ export const checkUserVerified = async (
     }
     next();
   } catch (error) {
-    console.error('DB error:', error);
+    logerror('DB error:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
 };

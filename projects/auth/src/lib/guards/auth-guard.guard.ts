@@ -50,7 +50,6 @@ function checkAccess(route: ActivatedRouteSnapshot, url: string): Observable<boo
       }
       if (!userRole || (requiredRole && !requiredRole.includes(userRole as Role))) {
         notAuthorizedSnackBar(snackBar);
-        console.log('AUTH role not authorized:', userRole);
         return router.createUrlTree(['/accueil'], {
           queryParams: { returnUrl: url },
         });
@@ -58,7 +57,6 @@ function checkAccess(route: ActivatedRouteSnapshot, url: string): Observable<boo
       return true;
     }),
     catchError(err => {
-      console.log('AUTH GUARD ERROR:', err);
       console.error('Error checking access:', err);
       return of(router.createUrlTree(['/accueil']));
     }),
