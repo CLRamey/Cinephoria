@@ -39,11 +39,13 @@ services:
       - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
       - MONGO_INITDB_DATABASE=${MONGO_INITDB_DATABASE}
       - MONGO_URI=${MONGO_URI}
+      - MONGO_USERNAME=${MONGO_USERNAME}
+      - MONGO_PASSWORD=${MONGO_PASSWORD}
     ports:
       - "27018:27017"
     volumes:
       - mongo_data:/data/db
-      - ../nosql/init:/docker-entrypoint-initdb.d/*.js:ro
+      - ../nosql/init:/docker-entrypoint-initdb.d:ro
     networks:
       - cinephoria-network
 

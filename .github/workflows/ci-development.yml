@@ -22,7 +22,6 @@ env:
   MONGO_INITDB_ROOT_USERNAME: ${{ secrets.MONGO_INITDB_ROOT_USERNAME }}
   MONGO_INITDB_ROOT_PASSWORD: ${{ secrets.MONGO_INITDB_ROOT_PASSWORD }}
   MONGO_INITDB_DATABASE: ${{ secrets.MONGO_INITDB_DATABASE }}
-  MONGO_NAME: ${{ secrets.MONGO_NAME }}
   MONGO_USERNAME: ${{ secrets.MONGO_USERNAME }}
   MONGO_PASSWORD: ${{ secrets.MONGO_PASSWORD }}
   MONGO_HOST: ${{ secrets.MONGO_HOST }}
@@ -43,6 +42,7 @@ env:
   BASE_URL: ${{ secrets.BASE_URL }}
   API_URL: ${{ secrets.API_URL }}
   PORT: ${{ secrets.PORT }}
+  # Test users
   TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
   CLIENT_TEST_USER_EMAIL: ${{ secrets.CLIENT_TEST_USER_EMAIL }}
   EMPLOYEE_TEST_USER_EMAIL: ${{ secrets.EMPLOYEE_TEST_USER_EMAIL }}
@@ -53,6 +53,8 @@ env:
   ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
   ADMIN_USERNAME: ${{ secrets.ADMIN_USERNAME }}
   ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+  # SSL
+  DB_SSL: ${{ secrets.DB_SSL }}
 
 jobs:
   build-and-test:
