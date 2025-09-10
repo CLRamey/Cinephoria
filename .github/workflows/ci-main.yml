@@ -42,6 +42,7 @@ env:
   CORS_ORIGIN: ${{ secrets.CORS_ORIGIN }}
   COOKIE_SECRET: ${{ secrets.COOKIE_SECRET }}
   BASE_URL: ${{ secrets.BASE_URL }}
+  FRONTEND_DOMAIN: ${{ secrets.FRONTEND_DOMAIN }}
   API_URL: ${{ secrets.API_URL }}
   PORT: ${{ secrets.PORT }}
   # Test users
@@ -64,7 +65,7 @@ env:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
-    environment: development
+    environment: test
     strategy:
       matrix:
         node-version: [22.x]

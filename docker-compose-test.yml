@@ -74,7 +74,6 @@ services:
         - MARIADB_HOST=${MARIADB_HOST}
         - MARIADB_PORT=${MARIADB_PORT}
         - DATABASE_URL=${DATABASE_URL}
-        - MONGO_NAME=${MONGO_NAME}
         - MONGO_USERNAME=${MONGO_USERNAME}
         - MONGO_PASSWORD=${MONGO_PASSWORD}
         - MONGO_HOST=${MONGO_HOST}
@@ -87,6 +86,7 @@ services:
         - PORT=${PORT}
         - API_URL=${API_URL}
         - BASE_URL=${BASE_URL}
+        - FRONTEND_DOMAIN=${FRONTEND_DOMAIN}
         - TEST_USER_PASSWORD=${TEST_USER_PASSWORD}
         - CLIENT_TEST_USER_EMAIL=${CLIENT_TEST_USER_EMAIL}
         - EMPLOYEE_TEST_USER_EMAIL=${EMPLOYEE_TEST_USER_EMAIL}
@@ -96,6 +96,7 @@ services:
         - ADMIN_EMAIL=${ADMIN_EMAIL}
         - ADMIN_USERNAME=${ADMIN_USERNAME}
         - ADMIN_PASSWORD=${ADMIN_PASSWORD}
+        - DB_SSL=${DB_SSL}
       volumes:
         - .:/app
         - /app/node_modules
