@@ -10,6 +10,7 @@
 
 
 ---- THIS DB_SECURITY_EXAMPLE.SQL FILE SHOWS HOW TO :
+-- Limits the permissions for the database user created with Docker
 -- Create user accounts
 -- Create specific roles with adapted permissions to their role
 -- Secure the access to the database limiting/specifying the privileges granted and applying password policies
@@ -23,6 +24,15 @@
 -- CREATE DATABASE IF NOT EXISTS add_database_name;
 -- USE add_database_name;
 
+---- [SENSITIVE_DATA_SECTIONS] -- docker mariadb_user authorizations ----
+
+---- # Limits the privileges granted to the database user upon creation with docker ----
+-- CREATE USER IF NOT EXISTS '**INSERT_MARIADB_USER'@'%' IDENTIFIED BY '$MARIADB_PASSWORD' PASSWORD EXPIRE INTERVAL 90 DAY;
+-- CREATE USER IF NOT EXISTS '**INSERT_MARIADB_USER'@'localhost' IDENTIFIED BY '$MARIADB_PASSWORD' PASSWORD EXPIRE INTERVAL 90 DAY;
+-- REVOKE ALL PRIVILEGES, GRANT OPTION FROM '**INSERT_MARIADB_USER'@'%';
+-- REVOKE ALL PRIVILEGES, GRANT OPTION FROM '**INSERT_MARIADB_USER'@'localhost';
+-- GRANT SELECT, INSERT, UPDATE, DELETE ON $MARIADB_DATABASE.* TO '**INSERT_MARIADB_USER'@'%';
+-- GRANT SELECT, INSERT, UPDATE, DELETE ON $MARIADB_DATABASE.* TO '**INSERT_MARIADB_USER'@'localhost';
 
 ---- [SENSITIVE_DATA_SECTIONS] -- super_admin ----
 

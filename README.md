@@ -6,7 +6,7 @@ Cinéphoria est une plateforme complète de gestion de cinéma comprenant une ap
 
 Liens des documents :
 
-Charte graphique :
+Charte graphique : https://www.canva.com/design/DAGtZzMY204/tcOgR3bAUTl3DXPOaKqBjA/view?utm_content=DAGtZzMY204&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=hbc15963beb
 
 Wireframes :
 

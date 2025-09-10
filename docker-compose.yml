@@ -7,7 +7,7 @@ services:
       dockerfile: Dockerfile
     container_name: cinephoria-sqldb
     restart: unless-stopped
-    env_file: ".env" # Uncomment for local use only, comment for commits
+    # env_file: ".env" # Uncomment for local use only, comment for commits
     environment:
       - TZ=Europe/Paris
       - MARIADB_DATABASE=${MARIADB_DATABASE}
@@ -29,17 +29,19 @@ services:
     image: mongo:8.0
     container_name: cinephoria-nosqldb
     restart: unless-stopped
-    env_file: ".env" # Uncomment for local use only, comment for commits
+    # env_file: ".env" # Uncomment for local use only, comment for commits
     environment:
       - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
       - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
       - MONGO_INITDB_DATABASE=${MONGO_INITDB_DATABASE}
       - MONGO_URI=${MONGO_URI}
+      - MONGO_USERNAME=${MONGO_USERNAME}
+      - MONGO_PASSWORD=${MONGO_PASSWORD}
     ports:
       - "27018:27017"
     volumes:
       - mongo_data:/data/db
-      - ./nosql/init:/docker-entrypoint-initdb.d/*.js:ro
+      - ./nosql/init:/docker-entrypoint-initdb.d:ro
     networks:
       - cinephoria-network
 
@@ -52,7 +54,7 @@ services:
     restart: on-failure
     ports:
       - "3001:3000"
-    env_file: ".env" # Uncomment for local use only, comment for commits
+    # env_file: ".env" # Uncomment for local use only, comment for commits
     environment:
       - NODE_ENV=${NODE_ENV}
       - MARIADB_DATABASE=${MARIADB_DATABASE}
@@ -89,8 +91,8 @@ services:
       - mongo
     networks:
       - cinephoria-network
-    stdin_open: true
-    tty: true
+    stdin_open: true # Remove for production
+    tty: true # Remove for production
       
   cinephoria-front:
     build:
@@ -101,7 +103,7 @@ services:
     restart: always
     ports:
       - "8081:80"
-    env_file: ".env" # Uncomment for local use only, comment for commits
+    # env_file: ".env" # Uncomment for local use only, comment for commits
     environment:
       - API_URL=${API_URL}
     depends_on:

@@ -1,7 +1,7 @@
 
 # This workflow will be triggered on every pull to the main branch.
 # It will run the build and test commands to ensure that the code is working correctly.
-# It will deploy the application if all tests pass.
+# It will launch the ci-deploy.yml to deploy the application if all tests pass on this workflow.
 
 name: CI  Main Branch
 
@@ -10,7 +10,7 @@ on:
     branches: ["main"]
 
 env: 
-  NODE_ENV: development
+  NODE_ENV: ${{ secrets.NODE_ENV }}
   #SQL
   MARIADB_DATABASE: ${{ secrets.MARIADB_DATABASE }}
   MARIADB_USER: ${{ secrets.MARIADB_USER }}
@@ -24,7 +24,6 @@ env:
   MONGO_INITDB_ROOT_USERNAME: ${{ secrets.MONGO_INITDB_ROOT_USERNAME }}
   MONGO_INITDB_ROOT_PASSWORD: ${{ secrets.MONGO_INITDB_ROOT_PASSWORD }}
   MONGO_INITDB_DATABASE: ${{ secrets.MONGO_INITDB_DATABASE }}
-  MONGO_NAME: ${{ secrets.MONGO_NAME }}
   MONGO_USERNAME: ${{ secrets.MONGO_USERNAME }}
   MONGO_PASSWORD: ${{ secrets.MONGO_PASSWORD }}
   MONGO_HOST: ${{ secrets.MONGO_HOST }}
@@ -45,6 +44,7 @@ env:
   BASE_URL: ${{ secrets.BASE_URL }}
   API_URL: ${{ secrets.API_URL }}
   PORT: ${{ secrets.PORT }}
+  # Test users
   TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
   CLIENT_TEST_USER_EMAIL: ${{ secrets.CLIENT_TEST_USER_EMAIL }}
   EMPLOYEE_TEST_USER_EMAIL: ${{ secrets.EMPLOYEE_TEST_USER_EMAIL }}
@@ -58,11 +58,13 @@ env:
   # Secure database management user
   SUPER_ADMIN: ${{ secrets.SUPER_ADMIN }}
   SUPER_ADMIN_PASSWORD: ${{ secrets.SUPER_ADMIN_PASSWORD }}
+  # SSL
+  DB_SSL: ${{ secrets.DB_SSL }}
 
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
-    environment: development
+    environment: test
     strategy:
       matrix:
         node-version: [22.x]
@@ -85,7 +87,6 @@ jobs:
     - name: Install backend dependencies
       run: npm ci
       working-directory: ./backend
-
 
     - name: Lint code
       run: npm run lint
@@ -128,3 +129,20 @@ jobs:
     - name: Stop Docker containers
       if: always()
       run: npm run docker:test:down
+
+    - name: Trigger CI Deploy workflow
+      if: ${{ success() }}
+      uses: actions/github-script@v7
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          console.log("All tests past! Triggering CI Deploy workflow...");
+          await github.actions.createWorkflowDispatch({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            workflow_id: "ci-deploy.yml",
+            ref: "main",
+            inputs: {
+              env: "production"
+            }
+          })

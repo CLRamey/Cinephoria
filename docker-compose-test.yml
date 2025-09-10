@@ -45,11 +45,13 @@ services:
       - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
       - MONGO_INITDB_DATABASE=${MONGO_INITDB_DATABASE}
       - MONGO_URI=${MONGO_URI}
+      - MONGO_USERNAME=${MONGO_USERNAME}
+      - MONGO_PASSWORD=${MONGO_PASSWORD}
     ports:
       - "27018:27017"
     volumes:
       - mongo_data:/data/db
-      - ./nosql/init:/docker-entrypoint-initdb.d/*.js:ro
+      - ./nosql/init:/docker-entrypoint-initdb.d:ro
     networks:
       - cinephoria-network
 
@@ -65,6 +67,7 @@ services:
         - "3000:3000"
       # env_file: ".env" # Uncomment for local use only, comment for commits
       environment:
+        - NODE_ENV=${NODE_ENV}
         - MARIADB_DATABASE=${MARIADB_DATABASE}
         - MARIADB_USER=${MARIADB_USER}
         - MARIADB_PASSWORD=${MARIADB_PASSWORD}
@@ -72,7 +75,6 @@ services:
         - MARIADB_HOST=${MARIADB_HOST}
         - MARIADB_PORT=${MARIADB_PORT}
         - DATABASE_URL=${DATABASE_URL}
-        - MONGO_NAME=${MONGO_NAME}
         - MONGO_USERNAME=${MONGO_USERNAME}
         - MONGO_PASSWORD=${MONGO_PASSWORD}
         - MONGO_HOST=${MONGO_HOST}
@@ -94,6 +96,7 @@ services:
         - ADMIN_EMAIL=${ADMIN_EMAIL}
         - ADMIN_USERNAME=${ADMIN_USERNAME}
         - ADMIN_PASSWORD=${ADMIN_PASSWORD}
+        - DB_SSL=${DB_SSL}
       volumes:
         - .:/app
         - /app/node_modules
