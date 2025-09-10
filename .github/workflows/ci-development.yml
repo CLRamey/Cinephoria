@@ -8,7 +8,7 @@ on:
     branches: ["development"]
 
 env: 
-  NODE_ENV: development
+  NODE_ENV: ${{ secrets.NODE_ENV }}
   #SQL
   MARIADB_DATABASE: ${{ secrets.MARIADB_DATABASE }}
   MARIADB_USER: ${{ secrets.MARIADB_USER }}
@@ -40,7 +40,6 @@ env:
   CORS_ORIGIN: ${{ secrets.CORS_ORIGIN }}
   COOKIE_SECRET: ${{ secrets.COOKIE_SECRET }}
   BASE_URL: ${{ secrets.BASE_URL }}
-  FRONTEND_DOMAIN: ${{ secrets.FRONTEND_DOMAIN }}
   API_URL: ${{ secrets.API_URL }}
   PORT: ${{ secrets.PORT }}
   # Test users
