@@ -7,7 +7,7 @@ services:
       dockerfile: Dockerfile
     container_name: cinephoria-sqldb
     restart: unless-stopped
-    # env_file: ".env" # Uncomment for local use only, comment for commits
+    #env_file: ".env" # Uncomment for local use only, comment for commits
     environment:
       - TZ=Europe/Paris
       - MARIADB_DATABASE=${MARIADB_DATABASE}
@@ -58,17 +58,7 @@ services:
     environment:
       - NODE_ENV=${NODE_ENV}
       - MARIADB_DATABASE=${MARIADB_DATABASE}
-      - MARIADB_USER=${MARIADB_USER}
-      - MARIADB_PASSWORD=${MARIADB_PASSWORD}
-      - MARIADB_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD}
-      - MARIADB_HOST=${MARIADB_HOST}
-      - MARIADB_PORT=${MARIADB_PORT}
       - DATABASE_URL=${DATABASE_URL}
-      - MONGO_NAME=${MONGO_NAME}
-      - MONGO_USERNAME=${MONGO_USERNAME}
-      - MONGO_PASSWORD=${MONGO_PASSWORD}
-      - MONGO_HOST=${MONGO_HOST}
-      - MONGO_PORT=${MONGO_PORT}
       - MONGO_URI=${MONGO_URI}
       - JWT_SECRET=${JWT_SECRET}
       - JWT_EXPIRES_IN=${JWT_EXPIRES_IN}
@@ -77,11 +67,12 @@ services:
       - PORT=${PORT}
       - API_URL=${API_URL}
       - BASE_URL=${BASE_URL}
-      - ADMIN_FIRST_NAME=${ADMIN_FIRST_NAME}
-      - ADMIN_LAST_NAME=${ADMIN_LAST_NAME}
       - ADMIN_EMAIL=${ADMIN_EMAIL}
       - ADMIN_USERNAME=${ADMIN_USERNAME}
       - ADMIN_PASSWORD=${ADMIN_PASSWORD}
+      - EMPLOYEE_EMAIL=${EMPLOYEE_EMAIL}
+      - EMPLOYEE_USERNAME=${EMPLOYEE_USERNAME}
+      - EMPLOYEE_PASSWORD=${EMPLOYEE_PASSWORD}
       - DB_SSL=${DB_SSL}
       - SSL_CA=${SSL_CA}
       - SSL_KEY=${SSL_KEY}
@@ -91,8 +82,6 @@ services:
       - mongo
     networks:
       - cinephoria-network
-    stdin_open: true # Remove for production
-    tty: true # Remove for production
       
   cinephoria-front:
     build:

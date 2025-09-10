@@ -49,6 +49,7 @@
     "build:backend": "npm run build --prefix backend",
     "build:web": "npm run build:frontend && npm run build:backend",
     "dev": "cross-env NODE_ENV=development concurrently \"npm run frontend\" \"npm run docker:backend\"",
+    "backend:seed:staff": "npm run seeder:add:staff --prefix backend",
     "backend:seeder": "npm run seeder:add:users --prefix backend",
     "backend:seeder:remove": "npm run seeder:remove:users --prefix backend",
     "docker:frontend": "ng serve cinephoria-web",

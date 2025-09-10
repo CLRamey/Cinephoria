@@ -21,7 +21,7 @@ const startServer = async () => {
     const server = http.createServer(app);
     server.setTimeout(5 * 60 * 1000); // Set timeout to 5 minutes
     server.listen(port, () => {
-      log(`Server is running on port ${port}`);
+      log(`Server is running`);
     });
   } catch (error) {
     logerror('Error starting the server:', error);
