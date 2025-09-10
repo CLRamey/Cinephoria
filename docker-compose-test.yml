@@ -91,11 +91,12 @@ services:
         - CLIENT_TEST_USER_EMAIL=${CLIENT_TEST_USER_EMAIL}
         - EMPLOYEE_TEST_USER_EMAIL=${EMPLOYEE_TEST_USER_EMAIL}
         - ADMIN_TEST_USER_EMAIL=${ADMIN_TEST_USER_EMAIL}
-        - ADMIN_FIRST_NAME=${ADMIN_FIRST_NAME}
-        - ADMIN_LAST_NAME=${ADMIN_LAST_NAME}
         - ADMIN_EMAIL=${ADMIN_EMAIL}
         - ADMIN_USERNAME=${ADMIN_USERNAME}
         - ADMIN_PASSWORD=${ADMIN_PASSWORD}
+        - EMPLOYEE_EMAIL=${EMPLOYEE_EMAIL}
+        - EMPLOYEE_USERNAME=${EMPLOYEE_USERNAME}
+        - EMPLOYEE_PASSWORD=${EMPLOYEE_PASSWORD}
         - DB_SSL=${DB_SSL}
       volumes:
         - .:/app
@@ -106,8 +107,6 @@ services:
       networks:
         - cinephoria-network
       working_dir: /app
-      tty: true
-      stdin_open: true
 
 networks:
   cinephoria-network:

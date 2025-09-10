@@ -1,4 +1,4 @@
-# Frontend Dockerfile
+# Stage 1: Frontend build
 FROM node:22-alpine AS build
 
 # mkdir /app && cd
@@ -20,7 +20,7 @@ COPY . .
 # Build the **browser** bundle
 RUN npm run build cinephoria-web --configuration=production
 
-# Server web reverse-proxy - NGINX
+# Stage 2: NGINX server
 FROM nginx:stable-alpine3.20
 
 # Copy cinephoria-web build to the NGINX html directory

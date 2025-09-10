@@ -47,12 +47,14 @@ env:
   CLIENT_TEST_USER_EMAIL: ${{ secrets.CLIENT_TEST_USER_EMAIL }}
   EMPLOYEE_TEST_USER_EMAIL: ${{ secrets.EMPLOYEE_TEST_USER_EMAIL }}
   ADMIN_TEST_USER_EMAIL: ${{ secrets.ADMIN_TEST_USER_EMAIL }}
-  # Secure admin account 
-  ADMIN_FIRST_NAME: ${{ secrets.ADMIN_FIRST_NAME }}
-  ADMIN_LAST_NAME: ${{ secrets.ADMIN_LAST_NAME }}
+  # Secure admin account for initial setup
   ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
   ADMIN_USERNAME: ${{ secrets.ADMIN_USERNAME }}
   ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+  # Secure employee account for initial setup
+  EMPLOYEE_EMAIL: ${{ secrets.EMPLOYEE_EMAIL }}
+  EMPLOYEE_USERNAME: ${{ secrets.EMPLOYEE_USERNAME }}
+  EMPLOYEE_PASSWORD: ${{ secrets.EMPLOYEE_PASSWORD }}
   # SSL
   DB_SSL: ${{ secrets.DB_SSL }}
 

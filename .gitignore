@@ -73,6 +73,3 @@
 **/cypress/fixtures/
 **/cypress/videos/
 **/cypress/screenshots/
-
-# CI/CD file whilst in development
-**/ci-deploy.yml

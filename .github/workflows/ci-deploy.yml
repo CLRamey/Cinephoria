@@ -1,0 +1,138 @@
+# This workflow will be triggered on successful completion of the ci-main.yml workflow.
+# It will run the backup of the database and deploy the Cinephoria-web application.
+# SQL database security and Adding staff jobs can be removed after the first success website deployment.
+# Backup database job to be placed in front of the deploy job after the first successful deployment.
+name: CI Deploy - Database backup and deploy Cinephoria-web
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment environment'
+        required: true
+        default: 'production'
+
+env:
+  # Node
+  NODE_ENV: ${{ secrets.NODE_ENV }}
+  # VPS
+  VPS_USER: ${{ secrets.VPS_USER }}
+  VPS_PASSWORD: ${{ secrets.VPS_PASSWORD }}
+  VPS_HOST: ${{ secrets.VPS_HOST }}
+  # Security reinforcement and backups
+  APP_PATH: ${{ secrets.APP_PATH }}
+  DOCKER_COMPOSE_FILE: ${{ secrets.DOCKER_COMPOSE_FILE }}
+  BACKUP_FILE: ${{ secrets.BACKUP_FILE }}
+  SECURE_CONTAINER: ${{ secrets.SECURE_CONTAINER }}
+  SECURE_COMMAND: ${{ secrets.SECURE_COMMAND }}
+  SEEDER_PATH: ${{ secrets.SEEDER_PATH }}
+  SEED_PATH: ${{ secrets.SEED_PATH }}
+  #SQL
+  MARIADB_DATABASE: ${{ secrets.MARIADB_DATABASE }}
+  MARIADB_USER: ${{ secrets.MARIADB_USER }}
+  MARIADB_PASSWORD: ${{ secrets.MARIADB_PASSWORD }}
+  MARIADB_ROOT_PASSWORD: ${{ secrets.MARIADB_ROOT_PASSWORD }}
+  DATABASE_URL: ${{ secrets.DATABASE_URL }}
+  DB_DIALECT: ${{ secrets.DB_DIALECT }}
+  # NoSQL
+  MONGO_INITDB_ROOT_USERNAME: ${{ secrets.MONGO_INITDB_ROOT_USERNAME }}
+  MONGO_INITDB_ROOT_PASSWORD: ${{ secrets.MONGO_INITDB_ROOT_PASSWORD }}
+  MONGO_INITDB_DATABASE: ${{ secrets.MONGO_INITDB_DATABASE }}
+  MONGO_USERNAME: ${{ secrets.MONGO_USERNAME }}
+  MONGO_PASSWORD: ${{ secrets.MONGO_PASSWORD }}
+  MONGO_URI: ${{ secrets.MONGO_URI }}
+  # Mail Service
+  SMTP_HOST: ${{ secrets.SMTP_HOST }}
+  SMTP_PORT: ${{ secrets.SMTP_PORT }}
+  SMTP_SECURE: ${{ secrets.SMTP_SECURE }}
+  SMTP_USER: ${{ secrets.SMTP_USER }}
+  SMTP_PASS: ${{ secrets.SMTP_PASS }}
+  SMTP_FROM: ${{ secrets.SMTP_FROM }}
+  # OTHER
+  JWT_SECRET: ${{ secrets.JWT_SECRET }}
+  JWT_EXPIRES_IN: ${{ secrets.JWT_EXPIRES_IN }}
+  CORS_ORIGIN: ${{ secrets.CORS_ORIGIN }}
+  COOKIE_SECRET: ${{ secrets.COOKIE_SECRET }}
+  BASE_URL: ${{ secrets.BASE_URL }}
+  API_URL: ${{ secrets.API_URL }}
+  PORT: ${{ secrets.PORT }}
+  # Secure admin account for initial setup
+  ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
+  ADMIN_USERNAME: ${{ secrets.ADMIN_USERNAME }}
+  ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+  # Secure employee account for initial setup
+  EMPLOYEE_EMAIL: ${{ secrets.EMPLOYEE_EMAIL }}
+  EMPLOYEE_USERNAME: ${{ secrets.EMPLOYEE_USERNAME }}
+  EMPLOYEE_PASSWORD: ${{ secrets.EMPLOYEE_PASSWORD }}
+  # Secure database management user
+  SUPER_ADMIN: ${{ secrets.SUPER_ADMIN }}
+  SUPER_ADMIN_PASSWORD: ${{ secrets.SUPER_ADMIN_PASSWORD }}
+  # SSL
+  DB_SSL: ${{ secrets.DB_SSL }}
+  SSL_CA: ${{ secrets.SSL_CA }}
+  SSL_KEY: ${{ secrets.SSL_KEY }}
+  SSL_CERT: ${{ secrets.SSL_CERT }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: Production
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Install SSH client
+        run: sudo apt-get update && sudo apt-get install -y openssh-client sshpass
+
+      - name: Add VPS to known hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H $VPS_HOST >> ~/.ssh/known_hosts
+
+      - name: Copy files to VPS
+        run: |
+          echo "Copying files to VPS..."
+          sshpass -p $VPS_PASSWORD scp -r ./ $VPS_USER@$VPS_HOST:$APP_PATH
+
+      - name: Deploy using docker-compose
+        run: |
+          echo "Deploying application..."
+          sshpass -p $VPS_PASSWORD ssh $VPS_USER@$VPS_HOST << EOF
+            cd $APP_PATH
+            docker-compose -f $DOCKER_COMPOSE_FILE down
+            docker-compose -f $DOCKER_COMPOSE_FILE pull
+            docker-compose -f $DOCKER_COMPOSE_FILE up --build -d
+          EOF  
+
+      - name: SQL database security
+        run: |
+          echo "Ensuring SQL database security..."
+          sshpass -p $VPS_PASSWORD ssh $VPS_USER@$VPS_HOST << EOF
+            cd $APP_PATH
+            docker-compose -f $DOCKER_COMPOSE_FILE exec -T $SECURE_CONTAINER sh -c "$SECURE_COMMAND"
+          EOF
+
+      - name: Copy compiled js seeder to VPS
+        run: |
+          echo "Copying seeder files..."
+          sshpass -p $VPS_PASSWORD ssh $VPS_USER@$VPS_HOST "mkdir -p $SEED_PATH"
+          sshpass -p $VPS_PASSWORD scp -r ./$SEEDER_PATH/seed_admin_employee.js $VPS_USER@$VPS_HOST:$SEED_PATH/
+
+      - name: Run seeder in a temporary container
+        run: |
+          echo "Running seeder..."
+          sshpass -p $VPS_PASSWORD ssh $VPS_USER@$VPS_HOST << EOF
+            docker run --rm --network cinephoria-network \
+            -v $SEED_PATH/seed_admin_employee.js:/seed_admin_employee.js \
+            cinephoria-back node /seed_admin_employee.js
+          EOF
+
+      - name: SQL database backup via VPS
+        run: |
+          echo "Starting SQL database backup..."
+          sshpass -p $VPS_PASSWORD ssh $VPS_USER@$VPS_HOST << EOF
+            cd $APP_PATH
+            docker-compose -f $DOCKER_COMPOSE_FILE exec -T $SECURE_CONTAINER sh -c \
+            "mariadb-dump -u $SUPER_ADMIN -p$SUPER_ADMIN_PASSWORD --databases $MARIADB_DATABASE --single-transaction  --quick  --lock-tables=false > $BACKUP_FILE"
+          EOF
