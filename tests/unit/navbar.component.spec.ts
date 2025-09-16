@@ -22,10 +22,12 @@ describe('NavbarComponent - Unit Tests', () => {
       isAuthenticated$: of(false),
       userRole$: of(null),
       logout: jest.fn(),
+      logoutSecurely: jest.fn(() => of(void 0)),
     } as unknown as jest.Mocked<AuthService>;
 
     mockReservationService = {
       clearStoredReservation: jest.fn(),
+      clearSelectedScreening: jest.fn(),
     } as unknown as jest.Mocked<ReservationService>;
 
     await TestBed.configureTestingModule({
@@ -90,14 +92,15 @@ describe('NavbarComponent - Unit Tests', () => {
       mockAuthService = {
         isAuthenticated$: of(true),
         userRole$: of(Role.CLIENT),
-        logout: jest.fn(),
+        logoutSecurely: jest.fn(),
       } as unknown as jest.Mocked<AuthService>;
       fixture.detectChanges();
       component.isAuthenticated$ = mockAuthService.isAuthenticated$;
       component.userRole$ = mockAuthService.userRole$;
       component.ngOnInit();
       fixture.detectChanges();
-      jest.spyOn(mockAuthService, 'logout');
+      jest.spyOn(mockAuthService, 'logoutSecurely');
+      jest.spyOn(component, 'logout');
     });
 
     it('should show Mon Compte, Mon Espace, and Déconnexion menu items', () => {
@@ -133,8 +136,14 @@ describe('NavbarComponent - Unit Tests', () => {
       expect(component.drawer.close).toHaveBeenCalled();
     });
 
-    it('should logout and navigate to /accueil when logout() is called', () => {
+    it('should logout and navigate to /accueil when logout() is called', async () => {
+      fixture.detectChanges();
       component.logout();
+      expect(mockReservationService.clearStoredReservation).toHaveBeenCalled();
+      expect(mockReservationService.clearSelectedScreening).toHaveBeenCalled();
+      expect(mockAuthService.logoutSecurely).toBeTruthy();
+      // Simulate the observable completion
+      await fixture.isStable();
       expect(mockRouter.navigate).toHaveBeenCalledWith(['/accueil']);
     });
   });

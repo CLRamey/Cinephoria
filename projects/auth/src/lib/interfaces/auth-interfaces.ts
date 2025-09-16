@@ -30,6 +30,13 @@ export interface AuthResponse {
   };
 }
 
+export interface AuthCookieResponse {
+  success: boolean;
+  data: {
+    userRole: Role;
+  };
+}
+
 export enum Role {
   CLIENT = 'client',
   EMPLOYEE = 'employee',

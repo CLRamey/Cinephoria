@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { BehaviorSubject } from 'rxjs';
-import { LoginAdminComponent } from '../../projects/cinephoria-web/src/app/features/auth/login-admin/login-admin.component';
+import { EmployeeCLoginComponent } from '../../projects/auth/src/lib/shared/employee-login/employee-c-login/employee-c-login.component';
 import { AuthService } from '../../projects/auth/src/lib/services/auth.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
@@ -12,11 +12,12 @@ import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { MatDivider } from '@angular/material/divider';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
-describe('LoginAdminComponent', () => {
-  let component: LoginAdminComponent;
-  let fixture: ComponentFixture<LoginAdminComponent>;
+describe('EmployeeCLoginComponent', () => {
+  let component: EmployeeCLoginComponent;
+  let fixture: ComponentFixture<EmployeeCLoginComponent>;
 
   let mockAuthService: Partial<AuthService>;
   let mockSnackBar: Partial<MatSnackBar>;
@@ -29,7 +30,7 @@ describe('LoginAdminComponent', () => {
     userRoleSubject = new BehaviorSubject<Role | null>(null);
     isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
     mockAuthService = {
-      loginCookieAdmin: jest.fn().mockReturnValue(of({})),
+      loginCookieEmployee: jest.fn().mockReturnValue(of({})),
       isAuthenticated$: isAuthenticatedSubject.asObservable(),
       userRole$: userRoleSubject.asObservable(),
       getUserRole: jest.fn() as jest.Mock<Role | null>,
@@ -42,16 +43,18 @@ describe('LoginAdminComponent', () => {
     mockRouter = {
       navigate: jest.fn(),
     };
+
     await TestBed.configureTestingModule({
-      declarations: [LoginAdminComponent],
       imports: [
-        ReactiveFormsModule,
+        EmployeeCLoginComponent,
         FormsModule,
+        ReactiveFormsModule,
         MatFormFieldModule,
         MatInputModule,
         MatIconModule,
         MatButtonModule,
         MatCardModule,
+        MatDivider,
         NoopAnimationsModule,
       ],
       providers: [
@@ -61,7 +64,7 @@ describe('LoginAdminComponent', () => {
       ],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(LoginAdminComponent);
+    fixture = TestBed.createComponent(EmployeeCLoginComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
@@ -71,7 +74,7 @@ describe('LoginAdminComponent', () => {
     jest.restoreAllMocks();
   });
 
-  it('should create the admin login component', () => {
+  it('should create the employee login component', () => {
     expect(component).toBeTruthy();
   });
 
@@ -99,10 +102,7 @@ describe('LoginAdminComponent', () => {
     component.loginForm.get('password')?.setValue('');
     component.onLogin();
     expect(component.loginForm.invalid).toBe(true);
-    expect(component.loginForm.get('email')?.touched).toBe(true);
-    expect(component.loginForm.get('password')?.touched).toBe(true);
-    expect(mockAuthService.loginCookieAdmin).not.toHaveBeenCalled();
-    expect(mockSnackBar.open).not.toHaveBeenCalled();
+    expect(mockAuthService.loginCookieEmployee).not.toHaveBeenCalled();
   });
 
   it('should mark all fields as touched if the form is invalid', () => {
@@ -112,7 +112,7 @@ describe('LoginAdminComponent', () => {
     expect(component.loginForm.invalid).toBe(true);
     expect(component.loginForm.get('email')?.touched).toBe(true);
     expect(component.loginForm.get('password')?.touched).toBe(true);
-    expect(mockAuthService.loginCookieAdmin).not.toHaveBeenCalled();
+    expect(mockAuthService.loginCookieEmployee).not.toHaveBeenCalled();
     expect(mockSnackBar.open).not.toHaveBeenCalled();
   });
 
@@ -120,39 +120,39 @@ describe('LoginAdminComponent', () => {
     component.loginForm.get('email')?.setValue('TEST@EXAMPLE.COM');
     component.loginForm.get('password')?.setValue('StrongPassword123!');
     component.onLogin();
-    expect(mockAuthService.loginCookieAdmin).toHaveBeenCalledWith({
+    expect(mockAuthService.loginCookieEmployee).toHaveBeenCalledWith({
       userEmail: 'test@example.com',
       userPassword: 'StrongPassword123!',
     });
   });
 
-  it('should call authService.loginAdmin on valid form submission', () => {
+  it('should call authService.loginEmployee on valid form submission', () => {
     component.loginForm.get('email')?.setValue('test@example.com');
     component.loginForm.get('password')?.setValue('StrongPassword123!');
     component.onLogin();
     expect(component.loginForm.invalid).toBe(false);
-    expect(mockAuthService.loginCookieAdmin).toHaveBeenCalled();
-    expect(mockAuthService.loginCookieAdmin).toHaveBeenCalledWith({
+    expect(mockAuthService.loginCookieEmployee).toHaveBeenCalled();
+    expect(mockAuthService.loginCookieEmployee).toHaveBeenCalledWith({
       userEmail: 'test@example.com',
       userPassword: 'StrongPassword123!',
     });
   });
 
-  it('should handle login success to then navigate to admin space', async () => {
+  it('should handle login success to then navigate to employee space', async () => {
     isAuthenticatedSubject.next(true);
-    userRoleSubject.next(Role.ADMIN);
+    userRoleSubject.next(Role.EMPLOYEE);
     component.loginForm.get('email')?.setValue('test@example.com');
     component.loginForm.get('password')?.setValue('StrongPassword123!');
     component.onLogin();
     expect(component.loginForm.invalid).toBe(false);
-    expect(mockAuthService.loginCookieAdmin).toHaveBeenCalled();
-    expect(mockAuthService.loginCookieAdmin).toHaveBeenCalledWith({
+    expect(mockAuthService.loginCookieEmployee).toHaveBeenCalled();
+    expect(mockAuthService.loginCookieEmployee).toHaveBeenCalledWith({
       userEmail: 'test@example.com',
       userPassword: 'StrongPassword123!',
     });
     await fixture.whenStable();
     expect(component.loginError).toBe(false);
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['/admin']);
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/employee']);
   });
 
   it('should have the show password set to false on initialisation', () => {

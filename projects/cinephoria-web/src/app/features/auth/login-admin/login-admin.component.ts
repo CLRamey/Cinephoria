@@ -53,7 +53,7 @@ export class LoginAdminComponent {
     };
     try {
       this.authService
-        .loginAdmin(credentials)
+        .loginCookieAdmin(credentials)
         .pipe(take(1))
         .subscribe({
           next: async () => {
@@ -80,9 +80,7 @@ export class LoginAdminComponent {
             resetForm(this.loginForm);
             loginSuccessSnackBar(this.snackBar);
             // Navigate to dashboard with full refreshed state
-            setTimeout(() => {
-              window.location.href = '/admin';
-            }, 1000);
+            this.router.navigate(['/admin']);
           },
           error: err => {
             console.error('Login failed:', err);

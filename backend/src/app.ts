@@ -65,6 +65,8 @@ import clientRoutes from './routes/clientRoutes';
 import employeeRoutes from './routes/employeeRoutes';
 import adminRoutes from './routes/adminRoutes';
 
+import sharedRoutes from './routes/sharedRoutes';
+
 // Import reservation routes
 import reservationRoutes from './routes/reservationRoutes';
 import { generalRateLimiter } from './middlewares/rateLimiter';
@@ -79,6 +81,7 @@ app.use('/api', clientRoutes);
 app.use('/api', employeeRoutes);
 app.use('/api', adminRoutes);
 
+app.use('/api', sharedRoutes);
 app.use('/api', reservationRoutes);
 
 // General test rate limiter route

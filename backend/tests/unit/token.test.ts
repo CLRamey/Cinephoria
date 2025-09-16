@@ -2,12 +2,15 @@ const TEST_SECRET = 'test.jwt.secret';
 process.env.JWT_SECRET = TEST_SECRET;
 
 import jwt from 'jsonwebtoken';
+import { Response } from 'express';
 import {
   createToken,
   generateAccessToken,
   verifyToken,
   TokenPayload,
   VerificationTokenPayload,
+  attachAccessToken,
+  clearAccessToken,
 } from '../../src/utils/tokenManagement';
 import { Role } from '../../src/validators/userValidator';
 
@@ -64,5 +67,39 @@ describe('JWT token utils', () => {
     return new Promise(resolve => setTimeout(resolve, 10)).then(() => {
       expect(() => verifyToken(expiredToken)).toThrow('Invalid');
     });
+  });
+
+  it('should set cookie options correctly', async () => {
+    const res = {
+      cookie: jest.fn(),
+    } as unknown as Response;
+    const token = createToken(payload);
+    const options = {
+      httpOnly: true,
+      sameSite: 'lax',
+      maxAge: 3600000,
+      path: '/',
+      secure: false, // for dev only
+      signed: true,
+    };
+    const setCookie = jest.fn();
+    (res.cookie as jest.Mock) = setCookie;
+    attachAccessToken(res, token);
+    expect(setCookie).toHaveBeenCalledWith('access_token', token, options);
+  });
+
+  it('should clear the access token cookie', () => {
+    const res = {
+      clearCookie: jest.fn(),
+    } as unknown as Response;
+    const options = {
+      httpOnly: true,
+      sameSite: 'lax',
+      maxAge: 0,
+      secure: false, // for dev only
+      signed: true,
+    };
+    clearAccessToken(res);
+    expect(res.clearCookie).toHaveBeenCalledWith('access_token', options);
   });
 });

@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { BehaviorSubject } from 'rxjs';
-import { EmployeeLoginComponent } from '../../projects/auth/src/lib/shared/employee-login/employee-login.component';
+import { EmployeeLoginComponent } from '../../projects/auth/src/lib/shared/employee-login/employee-token-login/employee-login.component';
 import { AuthService } from '../../projects/auth/src/lib/services/auth.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
@@ -16,7 +16,7 @@ import { MatDivider } from '@angular/material/divider';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { throwError } from 'rxjs';
 
-describe('EmployeeLoginComponent', () => {
+describe('EmployeeLoginComponent with Tokens', () => {
   let component: EmployeeLoginComponent;
   let fixture: ComponentFixture<EmployeeLoginComponent>;
 

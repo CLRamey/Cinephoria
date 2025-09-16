@@ -107,6 +107,8 @@ services:
       networks:
         - cinephoria-network
       working_dir: /app
+      tty: true
+      stdin_open: true
 
 networks:
   cinephoria-network:

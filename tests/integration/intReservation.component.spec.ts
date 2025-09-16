@@ -28,10 +28,15 @@ import {
   SavedReservation,
 } from '../../projects/cinephoria-web/src/app/interfaces/reservation';
 import { ExtendedScreening } from '../../projects/cinephoria-web/src/app/interfaces/screening';
+import { BehaviorSubject } from 'rxjs';
+import { Role } from '../../projects/auth/src/lib/interfaces/auth-interfaces';
 
 describe('ReservationComponent', () => {
   let component: ReservationComponent;
   let fixture: ComponentFixture<ReservationComponent>;
+
+  const isAuthenticatedSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  const userRoleSubject: BehaviorSubject<Role | null> = new BehaviorSubject<Role | null>(null);
 
   let mockCinemaInfoService: Partial<CinemaInfoService>;
   let mockFilmInfoService: Partial<FilmInfoService>;
@@ -99,6 +104,8 @@ describe('ReservationComponent', () => {
 
   beforeEach(async () => {
     mockAuthService = {
+      isAuthenticated$: isAuthenticatedSubject.asObservable(),
+      userRole$: userRoleSubject.asObservable(),
       isAuthenticated: jest.fn(),
       getUserRole: jest.fn(),
     } as unknown as jest.Mocked<AuthService>;
@@ -208,21 +215,29 @@ describe('ReservationComponent', () => {
     expect(component.filteredScreenings).toEqual([]);
   });
 
-  it('should check authentication state on init', () => {
+  it('should confirm user is authenticated on init', async () => {
+    isAuthenticatedSubject.next(true);
     component.ngOnInit();
-    expect(mockAuthService.isAuthenticated).toHaveBeenCalled();
+    await fixture.whenStable();
+    expect(component.isAuthenticated).toBe(true);
   });
 
-  it('should load the saved screening selection and redirect the user to complete the reservation if available', () => {
+  it('should confirm user is NOT authenticated on init', async () => {
+    isAuthenticatedSubject.next(false);
+    component.ngOnInit();
+    await fixture.whenStable();
+    expect(component.isAuthenticated).toBe(false);
+  });
+
+  it('should load the saved screening selection and redirect the user to complete the reservation if available', async () => {
     (mockReservationService.setSelectedScreening as jest.Mock).mockImplementation(
       () => mockScreening,
     );
-    (mockReservationService.getSelectedScreening as jest.Mock).mockReturnValue(mockScreening);
     (mockAuthService.isAuthenticated as jest.Mock).mockReturnValue(false);
+    (mockReservationService.getSelectedScreening as jest.Mock).mockReturnValue(mockScreening);
     jest.spyOn(component, 'onFilterChange').mockImplementation(() => {});
     jest.spyOn(component, 'loadSeatSelection').mockImplementation(() => {});
     component.ngOnInit();
-    expect(mockAuthService.isAuthenticated).toHaveBeenCalled();
     expect(component.filtersNeeded).toBe(false);
     expect(component.selectedCinemaId).toBe(mockScreening.cinemaId);
     expect(component.selectedFilmId).toBe(mockScreening.filmId);
@@ -238,7 +253,10 @@ describe('ReservationComponent', () => {
     );
     (mockReservationService.getSavedReservation as jest.Mock).mockReturnValue(mockSavedReservation);
     (mockAuthService.isAuthenticated as jest.Mock).mockReturnValue(true);
+    isAuthenticatedSubject.next(true);
     component.ngOnInit();
+    await fixture.whenStable();
+    expect(component.isAuthenticated).toBe(true);
     expect(mockReservationService.getSavedReservation).toHaveBeenCalled();
     expect(component.filtersNeeded).toBe(false);
     expect(component.selectedCinemaId).toBe(mockSavedReservation.cinemaId);

@@ -1,4 +1,4 @@
-import { Request } from 'express';
+import { Request, Response } from 'express';
 import { asyncHandler } from '../middlewares/asyncHandler';
 import { errorResponse } from '../interfaces/serviceResponse';
 import { sanitizeLoginInput } from '../utils/sanitize';
@@ -8,10 +8,10 @@ import { comparePasswords } from '../utils/userPassword';
 import { generateAccessToken } from '../utils/tokenManagement';
 import type { Role } from '../validators/userValidator';
 import { logerror } from '../utils/logger';
+import { attachAccessToken } from '../utils/tokenManagement';
 
 export const loginClientController = asyncHandler(loginClientHandler);
-
-export async function loginClientHandler(req: Request) {
+export async function loginClientHandler(req: Request, res: Response) {
   try {
     const { userEmail, userPassword } = req.body;
     // Check if all required fields are provided
@@ -59,11 +59,14 @@ export async function loginClientHandler(req: Request) {
       return errorResponse('Token failure', 'INTERNAL_SERVER_ERROR');
     }
 
+    // Attach access token to response
+    if (accessToken) {
+      attachAccessToken(res, accessToken);
+    }
     // Return success response with access token
     return {
       success: true,
       data: {
-        accessToken: accessToken,
         userRole: clientRole,
       },
     };

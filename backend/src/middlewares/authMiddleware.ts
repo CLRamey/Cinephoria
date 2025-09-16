@@ -14,13 +14,16 @@ export const authenticate = async (
   res: Response,
   next: NextFunction,
 ) => {
-  const authHeader = req.header('Authorization');
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    res.status(401).json({ message: 'Missing or malformed token' });
-    return;
+  let token = req.signedCookies?.['access_token'];
+  if (!token) {
+    const authHeader = req.header('Authorization');
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      res.status(401).json({ message: 'Missing or malformed token' });
+      return;
+    }
+    token = authHeader.slice(7); // skip "Bearer "
   }
   try {
-    const token = authHeader.slice(7); // skip "Bearer "
     const payload: VerificationTokenPayload = verifyToken(token);
     req.user = payload;
     next();
@@ -83,3 +86,10 @@ export const employeeAuthMiddleware: RequestHandler[] = authMiddleware(
 
 // Admin specific middleware that ensures the user is authenticated, authorized (secure check that they are an ADMIN) and verified.
 export const adminAuthMiddleware: RequestHandler[] = authMiddleware(Role.ADMIN) as RequestHandler[];
+
+// General middleware that ensures the user is authenticated, authorized (secure check that they are either a CLIENT, EMPLOYEE or ADMIN) and verified.
+export const generalAuthMiddleware: RequestHandler[] = authMiddleware(
+  Role.CLIENT,
+  Role.EMPLOYEE,
+  Role.ADMIN,
+) as RequestHandler[];

@@ -16,8 +16,9 @@ import { MatDividerModule } from '@angular/material/divider';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { throwError } from 'rxjs';
 import { ReservationService } from '../../projects/cinephoria-web/src/app/services/reservation.service';
-import { Screening } from '../../projects/cinephoria-web/src/app/interfaces/film';
+import { SavedReservation } from '../../projects/cinephoria-web/src/app/interfaces/reservation';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { ExtendedScreening } from '../../projects/cinephoria-web/src/app/interfaces/screening';
 
 describe('LoginClientComponent', () => {
   let component: LoginClientComponent;
@@ -31,24 +32,41 @@ describe('LoginClientComponent', () => {
   let userRoleSubject: BehaviorSubject<Role | null>;
   let isAuthenticatedSubject: BehaviorSubject<boolean>;
 
-  const mockScreening: Screening = {
+  const mockExtendedScreening: ExtendedScreening = {
     screeningId: 10,
-    screeningDate: '2025-08-27T17:00:00Z',
+    screeningDate: new Date('2026-08-27T17:00:00Z'),
     screeningStatus: 'active',
     cinemaId: 1,
     filmId: 12,
     roomId: 5,
+    startTime: '17:00',
+    endTime: '19:00',
+    quality: 'HD',
+    price: 10.0,
+  };
+
+  const mockSavedReservation: SavedReservation | null = {
+    cinemaId: 1,
+    filmId: 12,
+    screeningId: 10,
+    seatCount: 2,
+    selectedSeats: [
+      { seatId: 101, seatRow: 'A', seatNumber: 1, pmrSeat: false, roomId: 5, isReserved: false },
+      { seatId: 102, seatRow: 'A', seatNumber: 2, pmrSeat: false, roomId: 5, isReserved: false },
+    ],
+    selectedSeatLabels: 'A1, A2',
+    selectedScreening: [mockExtendedScreening],
   };
 
   beforeEach(async () => {
     userRoleSubject = new BehaviorSubject<Role | null>(null);
     isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
     mockAuthService = {
-      loginClient: jest.fn().mockReturnValue(of({})),
+      loginCookieClient: jest.fn().mockReturnValue(of({})),
       isAuthenticated$: isAuthenticatedSubject.asObservable(),
       userRole$: userRoleSubject.asObservable(),
       getUserRole: jest.fn() as jest.Mock<Role | null>,
-      logout: jest.fn(),
+      logoutSecurely: jest.fn(),
       register: jest.fn(),
     };
     mockSnackBar = {
@@ -59,6 +77,7 @@ describe('LoginClientComponent', () => {
     };
     mockReservationService = {
       getSelectedScreening: jest.fn().mockReturnValue(of(null)),
+      getSavedReservation: jest.fn().mockReturnValue(of([])),
     } as Partial<ReservationService> as ReservationService;
 
     await TestBed.configureTestingModule({
@@ -101,7 +120,7 @@ describe('LoginClientComponent', () => {
     component.loginForm.get('email')?.setValue('client@example.com');
     component.loginForm.get('password')?.setValue('StrongPassword123!');
     component.onLogin();
-    expect(mockAuthService.loginClient).toHaveBeenCalledWith({
+    expect(mockAuthService.loginCookieClient).toHaveBeenCalledWith({
       userEmail: 'client@example.com',
       userPassword: 'StrongPassword123!',
     });
@@ -124,13 +143,13 @@ describe('LoginClientComponent', () => {
         panelClass: 'snackbar-success',
       },
     );
-    expect(window.location.href).toBeDefined();
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/client']);
   });
 
   it('should handle login error and display error form', async () => {
     component.loginForm.get('email')?.setValue('client@example.com');
     component.loginForm.get('password')?.setValue('WrongPassword123!');
-    mockAuthService.loginClient = jest
+    mockAuthService.loginCookieClient = jest
       .fn()
       .mockReturnValue(throwError(() => new Error('Login failed')));
     component.onLogin();
@@ -150,11 +169,13 @@ describe('LoginClientComponent', () => {
   });
 
   it('should navigate to reservation if there is a reservation in progress', async () => {
-    (mockReservationService.getSelectedScreening as jest.Mock).mockReturnValue(mockScreening);
+    (mockReservationService.getSavedReservation as jest.Mock).mockReturnValue(
+      of(mockSavedReservation),
+    );
     component.loginForm.get('email')?.setValue('client@example.com');
     component.loginForm.get('password')?.setValue('StrongPassword123!');
     component.onLogin();
-    expect(mockAuthService.loginClient).toHaveBeenCalledWith({
+    expect(mockAuthService.loginCookieClient).toHaveBeenCalledWith({
       userEmail: 'client@example.com',
       userPassword: 'StrongPassword123!',
     });
@@ -162,15 +183,20 @@ describe('LoginClientComponent', () => {
     userRoleSubject.next(Role.CLIENT);
     await fixture.whenStable();
     expect(component.loginError).toBe(false);
+    mockReservationService.getSavedReservation?.();
+    expect(mockReservationService.getSavedReservation).toHaveBeenCalled();
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/client']);
+    jest.setTimeout(4000);
+    await new Promise(resolve => setTimeout(resolve, 1500));
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/reservation']);
   });
 
-  it('should use window.location.href to the client space on successful login', async () => {
+  it('should navigate to the client space on successful login', async () => {
     (mockReservationService.getSelectedScreening as jest.Mock).mockReturnValue(null);
     component.loginForm.get('email')?.setValue('client@example.com');
     component.loginForm.get('password')?.setValue('StrongPassword123!');
     component.onLogin();
-    expect(mockAuthService.loginClient).toHaveBeenCalledWith({
+    expect(mockAuthService.loginCookieClient).toHaveBeenCalledWith({
       userEmail: 'client@example.com',
       userPassword: 'StrongPassword123!',
     });
@@ -178,13 +204,12 @@ describe('LoginClientComponent', () => {
     userRoleSubject.next(Role.CLIENT);
     await fixture.whenStable();
     expect(component.loginError).toBe(false);
-    expect(mockRouter.navigate).not.toHaveBeenCalled();
-    expect(window.location.href).toBeDefined();
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/client']);
   });
 
   it('should handle login error from authService', () => {
     jest
-      .spyOn(mockAuthService, 'loginClient')
+      .spyOn(mockAuthService, 'loginCookieClient')
       .mockReturnValue(throwError(() => new Error('Invalid credentials')));
     component.loginForm.setValue({
       email: 'test@test.com',

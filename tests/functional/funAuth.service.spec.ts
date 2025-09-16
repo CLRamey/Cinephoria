@@ -111,4 +111,70 @@ describe('AuthService', () => {
     });
     loginAdminSpy.mockRestore();
   });
+
+  it('should set the update authentication state and role on client login with cookies', () => {
+    const mockCookieResponse = {
+      success: true,
+      data: {
+        userRole: Role.CLIENT,
+      },
+    };
+    const loginClientSpy = jest
+      .spyOn(service, 'loginCookieClient')
+      .mockReturnValue(of(mockCookieResponse));
+    service.loginCookieClient({
+      userEmail: 'client@example.com',
+      userPassword: 'StrongPassword123!',
+    });
+    service.isAuthenticated$.subscribe(isAuth => {
+      expect(isAuth).toBe(true);
+    });
+    service.userRole$.subscribe(role => {
+      expect(role).toBe(Role.CLIENT);
+    });
+    loginClientSpy.mockRestore();
+  });
+
+  it('should set the token, update authentication state and role on employee login with cookies', () => {
+    const mockCookieResponse = {
+      success: true,
+      data: {
+        userRole: Role.EMPLOYEE,
+      },
+    };
+    const loginEmployeeSpy = jest
+      .spyOn(service, 'loginCookieEmployee')
+      .mockReturnValue(of(mockCookieResponse));
+    service.loginEmployee({
+      userEmail: 'employee@example.com',
+      userPassword: 'StrongPassword123!',
+    });
+    service.isAuthenticated$.subscribe(isAuth => {
+      expect(isAuth).toBe(true);
+    });
+    service.userRole$.subscribe(role => {
+      expect(role).toBe(Role.EMPLOYEE);
+    });
+    loginEmployeeSpy.mockRestore();
+  });
+
+  it('should set the token, update authentication state and role on admin login with cookies', () => {
+    const mockCookieResponse = {
+      success: true,
+      data: {
+        userRole: Role.ADMIN,
+      },
+    };
+    const loginAdminSpy = jest
+      .spyOn(service, 'loginCookieAdmin')
+      .mockReturnValue(of(mockCookieResponse));
+    service.loginAdmin({ userEmail: 'admin@example.com', userPassword: 'StrongPassword123!' });
+    service.isAuthenticated$.subscribe(isAuth => {
+      expect(isAuth).toBe(true);
+    });
+    service.userRole$.subscribe(role => {
+      expect(role).toBe(Role.ADMIN);
+    });
+    loginAdminSpy.mockRestore();
+  });
 });

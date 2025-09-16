@@ -108,6 +108,12 @@ describe('AuthService', () => {
     });
   });
 
+  it('should check if there is a token when getUserRole is called', () => {
+    mockTokenService.getPayload.mockReturnValue({ userRole: 'CLIENT' });
+    expect(mockTokenService.hasToken()).toBe(true);
+    expect(service.getUserRole()).toBe(Role.CLIENT);
+  });
+
   it('should return CLIENT role from payload', () => {
     mockTokenService.getPayload.mockReturnValue({ userRole: 'CLIENT' });
     expect(service.getUserRole()).toBe(Role.CLIENT);

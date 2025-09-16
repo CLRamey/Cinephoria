@@ -3,12 +3,17 @@ import express from 'express';
 import employeeRoutes from '../../src/routes/employeeRoutes';
 import { user } from '../../src/models/init-models';
 import { comparePasswords } from '../../src/utils/userPassword';
-import { generateAccessToken } from '../../src/utils/tokenManagement';
+import { generateAccessToken, attachAccessToken } from '../../src/utils/tokenManagement';
 import { validateLoginInput } from '../../src/validators/userValidator';
 import { sanitizeLoginInput } from '../../src/utils/sanitize';
+import cookieParser from 'cookie-parser';
+
+process.env.NODE_ENV = 'test';
+process.env.COOKIE_SECRET = 'testsecret';
 
 const app = express();
 app.use(express.json());
+app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use('/api', employeeRoutes);
 
 // Mock dependencies
@@ -24,6 +29,7 @@ jest.mock('../../src/utils/userPassword', () => ({
 
 jest.mock('../../src/utils/tokenManagement', () => ({
   generateAccessToken: jest.fn(),
+  attachAccessToken: jest.fn(),
 }));
 
 jest.mock('../../src/validators/userValidator', () => ({
@@ -42,10 +48,10 @@ afterEach(() => {
   jest.clearAllMocks();
 });
 
-describe('Login-admin integration test', () => {
-  it('should return success response with token on valid credentials', async () => {
+describe('Login-employee integration test', () => {
+  it('should return success response with userRole on valid credentials', async () => {
     const body = {
-      userEmail: 'admin@example.com',
+      userEmail: 'employee@example.com',
       userPassword: 'Password123!',
     };
     const validUser = {
@@ -62,11 +68,13 @@ describe('Login-admin integration test', () => {
     (user.findOne as jest.Mock).mockResolvedValue(validUser);
     (comparePasswords as jest.Mock).mockResolvedValue(true);
     (generateAccessToken as jest.Mock).mockReturnValue('fake_token');
+
     const response = await request(app).post('/api/login-employee').send(body);
+    expect(generateAccessToken).toHaveBeenCalledWith(1, 'employee');
+    expect(attachAccessToken).toHaveBeenCalledWith(expect.any(Object), 'fake_token');
     expect(response.status).toBe(200);
     expect(response.body.success).toBe(true);
     expect(response.body.data).toEqual({
-      accessToken: 'fake_token',
       userRole: 'employee',
     });
   });
@@ -118,7 +126,7 @@ describe('Login-admin integration test', () => {
       get: (field: string) => {
         if (field === 'userId') return 1;
         if (field === 'userPassword') return 'hashed_password';
-        if (field === 'userRole') return 'client'; // not admin
+        if (field === 'userRole') return 'client';
         if (field === 'isVerified') return true;
         return undefined;
       },

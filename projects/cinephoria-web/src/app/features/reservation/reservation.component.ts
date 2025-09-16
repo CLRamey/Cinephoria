@@ -79,7 +79,9 @@ export class ReservationComponent implements OnInit, OnDestroy {
 
   // Lifecycle hook to initialize component
   ngOnInit(): void {
-    this.isAuthenticated = this.authService.isAuthenticated();
+    const AuthSub = this.authService.isAuthenticated$.pipe(take(1)).subscribe(isAuth => {
+      this.isAuthenticated = isAuth;
+    });
     const screening = this.reservationService.getSelectedScreening();
     if (this.isAuthenticated) {
       this.restoreReservation();
@@ -98,6 +100,7 @@ export class ReservationComponent implements OnInit, OnDestroy {
       this.filteredScreenings = [];
     }
     this.loadFilters();
+    this.subscriptions.add(AuthSub);
   }
 
   // Method to restore saved reservation progress after authentication/account creation
@@ -248,7 +251,6 @@ export class ReservationComponent implements OnInit, OnDestroy {
     }
     const seatSub = this.reservationService.getScreeningSeats(screening.screeningId!).subscribe({
       next: seats => {
-        console.log('Seats loaded for screening:', seats);
         if (seats && seats.length > 0) {
           this.hasSeatingError = false;
           this.seats = seats;

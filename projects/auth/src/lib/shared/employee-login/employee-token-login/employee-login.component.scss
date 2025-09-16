@@ -1,0 +1,55 @@
+.login-card {
+  width: 90vw;
+  max-width: 450px;
+  padding: 2rem;
+  box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.2);
+  border: rgb(215, 222, 218) 0.25px solid;
+
+  @media (max-width: 768px) {
+    padding: 1.5rem 1rem 2rem 1rem;
+  }
+}
+
+.full-width {
+  width: 100%;
+}
+
+h2 {
+  font-size: 2.2rem;
+  font-family:
+    "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande", "Lucida Sans", Arial, sans-serif;
+  margin-bottom: 1rem;
+  color: rgb(31, 48, 37);
+}
+
+mat-icon {
+  font-size: 22px;
+}
+
+button[mat-icon-button] {
+  min-width: 20px;
+  height: 25px;
+  padding: 0;
+  margin: 5px;
+  color: rgb(31, 48, 37);
+}
+
+.divider {
+  margin: 2rem 0;
+}
+
+.register-invite {
+  text-align: center;
+
+  p {
+    margin-bottom: 1rem;
+    font-weight: 500;
+  }
+
+  button {
+    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
+    &:hover {
+      background-color: #f8f8f7c9;
+    }
+  }
+}

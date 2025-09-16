@@ -1,6 +1,7 @@
 import jwt, { Secret, JwtPayload } from 'jsonwebtoken';
 import { Role } from '../validators/userValidator';
 import { logerror } from './logger';
+import { Response } from 'express';
 
 // Ensure JWT_SECRET exists
 if (!process.env.JWT_SECRET) {
@@ -44,4 +45,30 @@ export const verifyToken = (token: string): VerificationTokenPayload => {
     logerror('Verification failed:', error);
     throw new Error('Invalid');
   }
+};
+
+// COOKIE OPTIONS
+export const cookieOptions = {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === 'production',
+  sameSite: 'lax' as const, // Lax is a good default for CSRF protection, or strict
+  maxAge: 1000 * 60 * 60, // 1 hour
+  signed: !!process.env.COOKIE_SECRET,
+  path: '/',
+};
+
+// Attach JWT access token as HttpOnly cookie
+export const attachAccessToken = (res: Response, token: string) => {
+  res.cookie('access_token', token, cookieOptions);
+};
+
+// Clear the JWT access token cookie
+export const clearAccessToken = (res: Response) => {
+  res.clearCookie('access_token', {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax' as const, // Lax is a good default for CSRF protection, or strict
+    maxAge: 0,
+    signed: !!process.env.COOKIE_SECRET,
+  });
 };

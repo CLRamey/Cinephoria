@@ -33,7 +33,7 @@ describe('LoginClientComponent', () => {
     userRoleSubject = new BehaviorSubject<Role | null>(null);
     isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
     mockAuthService = {
-      loginClient: jest.fn().mockReturnValue(of({})),
+      loginCookieClient: jest.fn().mockReturnValue(of({})),
       isAuthenticated$: isAuthenticatedSubject.asObservable(),
       userRole$: userRoleSubject.asObservable(),
       getUserRole: jest.fn() as jest.Mock<Role | null>,
@@ -48,6 +48,7 @@ describe('LoginClientComponent', () => {
     };
     mockReservationService = {
       getSelectedScreening: jest.fn().mockReturnValue(of(null)),
+      getSavedReservation: jest.fn().mockReturnValue(of(null)),
     } as Partial<ReservationService> as ReservationService;
 
     await TestBed.configureTestingModule({
@@ -111,7 +112,7 @@ describe('LoginClientComponent', () => {
     component.loginForm.get('password')?.setValue('');
     component.onLogin();
     expect(component.loginForm.invalid).toBe(true);
-    expect(mockAuthService.loginClient).not.toHaveBeenCalled();
+    expect(mockAuthService.loginCookieClient).not.toHaveBeenCalled();
   });
 
   it('should mark all fields as touched if the form is invalid', () => {
@@ -121,7 +122,7 @@ describe('LoginClientComponent', () => {
     expect(component.loginForm.invalid).toBe(true);
     expect(component.loginForm.get('email')?.touched).toBe(true);
     expect(component.loginForm.get('password')?.touched).toBe(true);
-    expect(mockAuthService.loginClient).not.toHaveBeenCalled();
+    expect(mockAuthService.loginCookieClient).not.toHaveBeenCalled();
     expect(mockSnackBar.open).not.toHaveBeenCalled();
   });
 
@@ -129,7 +130,7 @@ describe('LoginClientComponent', () => {
     component.loginForm.get('email')?.setValue('TEST@EXAMPLE.COM');
     component.loginForm.get('password')?.setValue('StrongPassword123!');
     component.onLogin();
-    expect(mockAuthService.loginClient).toHaveBeenCalledWith({
+    expect(mockAuthService.loginCookieClient).toHaveBeenCalledWith({
       userEmail: 'test@example.com',
       userPassword: 'StrongPassword123!',
     });
@@ -140,8 +141,8 @@ describe('LoginClientComponent', () => {
     component.loginForm.get('password')?.setValue('StrongPassword123!');
     component.onLogin();
     expect(component.loginForm.invalid).toBe(false);
-    expect(mockAuthService.loginClient).toHaveBeenCalled();
-    expect(mockAuthService.loginClient).toHaveBeenCalledWith({
+    expect(mockAuthService.loginCookieClient).toHaveBeenCalled();
+    expect(mockAuthService.loginCookieClient).toHaveBeenCalledWith({
       userEmail: 'test@example.com',
       userPassword: 'StrongPassword123!',
     });
@@ -154,13 +155,15 @@ describe('LoginClientComponent', () => {
     component.loginForm.get('password')?.setValue('StrongPassword123!');
     component.onLogin();
     expect(component.loginForm.invalid).toBe(false);
-    expect(mockAuthService.loginClient).toHaveBeenCalled();
-    expect(mockAuthService.loginClient).toHaveBeenCalledWith({
+    expect(mockAuthService.loginCookieClient).toHaveBeenCalled();
+    expect(mockAuthService.loginCookieClient).toHaveBeenCalledWith({
       userEmail: 'test@example.com',
       userPassword: 'StrongPassword123!',
     });
     await fixture.whenStable();
     expect(component.loginError).toBe(false);
+    expect(mockReservationService.getSavedReservation).toHaveBeenCalled();
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/client']);
   });
 
   it('should have the show password set to false on initialisation', () => {
