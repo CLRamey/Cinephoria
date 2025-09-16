@@ -3,10 +3,13 @@ import { CanActivateFn, CanActivateChildFn, Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { BehaviorSubject } from 'rxjs';
 import { AuthService } from '../../projects/auth/src/lib/services/auth.service';
-import { AuthGuard, AuthGuardChild } from '../../projects/auth/src/lib/guards/auth-guard.guard';
+import {
+  AuthTokenGuard,
+  AuthTokenGuardChild,
+} from '../../projects/auth/src/lib/guards/auth-token-guard.guard';
 import { Role } from '../../projects/auth/src/lib/interfaces/auth-interfaces';
 
-describe('Auth Guards unit role test', () => {
+describe('Auth Token Guards unit role test', () => {
   let authServiceMock: Partial<AuthService>;
   let isAuthenticatedSubject: BehaviorSubject<boolean>;
   let userRoleSubject: BehaviorSubject<Role | null>;
@@ -14,9 +17,9 @@ describe('Auth Guards unit role test', () => {
   let mockRouter: { createUrlTree: jest.Mock; navigate: jest.Mock };
 
   const executeGuard: CanActivateFn = (...guardParameters) =>
-    TestBed.runInInjectionContext(() => AuthGuard(...guardParameters));
+    TestBed.runInInjectionContext(() => AuthTokenGuard(...guardParameters));
   const executeGuardChild: CanActivateChildFn = (...guardParameters) =>
-    TestBed.runInInjectionContext(() => AuthGuardChild(...guardParameters));
+    TestBed.runInInjectionContext(() => AuthTokenGuardChild(...guardParameters));
 
   // Function to get the login path based on user roles
   function getLoginPathForRole(roles?: Role[]): string {
@@ -41,8 +44,6 @@ describe('Auth Guards unit role test', () => {
     authServiceMock = {
       isAuthenticated$: isAuthenticatedSubject.asObservable(),
       userRole$: userRoleSubject.asObservable(),
-      checkAuth: jest.fn().mockReturnValue(isAuthenticatedSubject.asObservable()),
-      logoutSecurely: jest.fn().mockReturnValue(isAuthenticatedSubject.asObservable()),
     };
     snackBarMock = {
       open: jest.fn(),

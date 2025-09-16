@@ -115,7 +115,6 @@ export class ReservationService {
 
   // Method to obtain the screening seatings and their reservation status
   getScreeningSeats(screeningId: number) {
-    console.log('Fetching seats for screening:', screeningId);
     return this.http
       .get<SeatingResponse>(`${this.baseUrl}/screenings/${screeningId}/seats`, {
         responseType: 'json',
@@ -133,7 +132,7 @@ export class ReservationService {
           return [];
         }),
         catchError(err => {
-          console.log('Error fetching screening seats:', err);
+          console.error('Error fetching screening seats:', err);
           return of([]);
         }),
       );
@@ -173,7 +172,10 @@ export class ReservationService {
       seatIds,
     };
     return this.http
-      .post<ReserveResponse>(`${this.baseUrl}/reserve`, reservationData, { responseType: 'json' })
+      .post<ReserveResponse>(`${this.baseUrl}/reserve`, reservationData, {
+        responseType: 'json',
+        withCredentials: true,
+      })
       .pipe(
         take(1),
         map((response: ReserveResponse) => {

@@ -93,6 +93,12 @@ describe('AuthService', () => {
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toEqual(mockCredentials);
     expect(req.request.responseType).toBe('json');
+    service.isAuthenticated$.subscribe(value => {
+      expect(value).toBe(true);
+    });
+    service.userRole$.subscribe(role => {
+      expect(role).toBe(Role.CLIENT);
+    });
     req.flush({ success: true });
   });
 
@@ -107,6 +113,12 @@ describe('AuthService', () => {
     });
     const req = httpMock.expectOne(`${mockApiUrl}/login-client`);
     expect(req.request.method).toBe('POST');
+    service.isAuthenticated$.subscribe(value => {
+      expect(value).toBe(false);
+    });
+    service.userRole$.subscribe(role => {
+      expect(role).toBe(null);
+    });
     req.flush('Internal Server Error', { status: 500, statusText: 'Server Error' });
   });
 
@@ -122,6 +134,12 @@ describe('AuthService', () => {
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toEqual(mockCredentials);
     expect(req.request.responseType).toBe('json');
+    service.isAuthenticated$.subscribe(value => {
+      expect(value).toBe(true);
+    });
+    service.userRole$.subscribe(role => {
+      expect(role).toBe(Role.EMPLOYEE);
+    });
     req.flush({ success: true });
   });
 
@@ -139,6 +157,12 @@ describe('AuthService', () => {
     });
     const req = httpMock.expectOne(`${mockApiUrl}/login-employee`);
     expect(req.request.method).toBe('POST');
+    service.isAuthenticated$.subscribe(value => {
+      expect(value).toBe(false);
+    });
+    service.userRole$.subscribe(role => {
+      expect(role).toBe(null);
+    });
     req.flush('Internal Server Error', { status: 500, statusText: 'Server Error' });
   });
 
@@ -151,6 +175,12 @@ describe('AuthService', () => {
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toEqual(mockCredentials);
     expect(req.request.responseType).toBe('json');
+    service.isAuthenticated$.subscribe(value => {
+      expect(value).toBe(true);
+    });
+    service.userRole$.subscribe(role => {
+      expect(role).toBe(Role.ADMIN);
+    });
     req.flush({ success: true });
   });
 
@@ -165,6 +195,12 @@ describe('AuthService', () => {
     });
     const req = httpMock.expectOne(`${mockApiUrl}/login-admin`);
     expect(req.request.method).toBe('POST');
+    service.isAuthenticated$.subscribe(value => {
+      expect(value).toBe(false);
+    });
+    service.userRole$.subscribe(role => {
+      expect(role).toBe(null);
+    });
     req.flush('Internal Server Error', { status: 500, statusText: 'Server Error' });
   });
 
@@ -196,7 +232,7 @@ describe('AuthService', () => {
   it('should update the user role from getUserRole', () => {
     const mockRole = Role.CLIENT;
     jest.spyOn(service, 'getUserRole').mockReturnValue(mockRole);
-    service.updateUserRoleFromToken();
+    service.updateUserRoleFromLogin();
     service.userRole$.subscribe(role => {
       expect(role).toBe(mockRole);
     });
@@ -215,6 +251,136 @@ describe('AuthService', () => {
 
   it('should logout a user when logout is called', () => {
     service.logout();
+    service.isAuthenticated$.subscribe(value => {
+      expect(value).toBe(false);
+    });
+    service.userRole$.subscribe(role => {
+      expect(role).toBe(null);
+    });
+  });
+
+  it('should login a client user with cookies', () => {
+    const mockCredentials = { userEmail: 'alice@example.com', userPassword: 'StrongPassword123!' };
+    service.loginCookieClient(mockCredentials).subscribe(response => {
+      expect(response).toBeTruthy();
+    });
+    const req = httpMock.expectOne(`${mockApiUrl}/login-client`);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual(mockCredentials);
+    expect(req.request.responseType).toBe('json');
+    service.isAuthenticated$.subscribe(value => {
+      expect(value).toBe(true);
+    });
+    service.userRole$.subscribe(role => {
+      expect(role).toBe(Role.CLIENT);
+    });
+    req.flush({ success: true });
+  });
+
+  it('should handle client login error with cookies', () => {
+    const mockCredentials = { userEmail: 'alice@example.com', userPassword: 'StrongPassword123!' };
+    service.loginCookieClient(mockCredentials).subscribe({
+      next: () => fail('should have failed with 500 error'),
+      error(error) {
+        expect(error.status).toBe(500);
+        expect(error.error).toContain('Internal Server Error');
+      },
+    });
+    const req = httpMock.expectOne(`${mockApiUrl}/login-client`);
+    expect(req.request.method).toBe('POST');
+    service.isAuthenticated$.subscribe(value => {
+      expect(value).toBe(false);
+    });
+    service.userRole$.subscribe(role => {
+      expect(role).toBe(null);
+    });
+    req.flush('Internal Server Error', { status: 500, statusText: 'Server Error' });
+  });
+
+  it('should login an employee user with cookies', () => {
+    const mockCredentials = {
+      userEmail: 'employee@example.com',
+      userPassword: 'StrongPassword123!',
+    };
+    service.loginCookieEmployee(mockCredentials).subscribe(response => {
+      expect(response).toBeTruthy();
+    });
+    const req = httpMock.expectOne(`${mockApiUrl}/login-employee`);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual(mockCredentials);
+    expect(req.request.responseType).toBe('json');
+    service.isAuthenticated$.subscribe(value => {
+      expect(value).toBe(true);
+    });
+    service.userRole$.subscribe(role => {
+      expect(role).toBe(Role.EMPLOYEE);
+    });
+    req.flush({ success: true });
+  });
+
+  it('should handle employee login error with cookies', () => {
+    const mockCredentials = {
+      userEmail: 'employee@example.com',
+      userPassword: 'StrongPassword123!',
+    };
+    service.loginCookieEmployee(mockCredentials).subscribe({
+      next: () => fail('should have failed with 500 error'),
+      error(error) {
+        expect(error.status).toBe(500);
+        expect(error.error).toContain('Internal Server Error');
+      },
+    });
+    const req = httpMock.expectOne(`${mockApiUrl}/login-employee`);
+    expect(req.request.method).toBe('POST');
+    service.isAuthenticated$.subscribe(value => {
+      expect(value).toBe(false);
+    });
+    service.userRole$.subscribe(role => {
+      expect(role).toBe(null);
+    });
+    req.flush('Internal Server Error', { status: 500, statusText: 'Server Error' });
+  });
+
+  it('should login an admin user with cookies', () => {
+    const mockCredentials = { userEmail: 'admin@example.com', userPassword: 'StrongPassword123!' };
+    service.loginCookieAdmin(mockCredentials).subscribe(response => {
+      expect(response).toBeTruthy();
+    });
+    const req = httpMock.expectOne(`${mockApiUrl}/login-admin`);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual(mockCredentials);
+    expect(req.request.responseType).toBe('json');
+    service.isAuthenticated$.subscribe(value => {
+      expect(value).toBe(true);
+    });
+    service.userRole$.subscribe(role => {
+      expect(role).toBe(Role.ADMIN);
+    });
+    req.flush({ success: true });
+  });
+
+  it('should handle admin login error with cookies', () => {
+    const mockCredentials = { userEmail: 'admin@example.com', userPassword: 'StrongPassword123!' };
+    service.loginCookieAdmin(mockCredentials).subscribe({
+      next: () => fail('should have failed with 500 error'),
+      error(error) {
+        expect(error.status).toBe(500);
+        expect(error.error).toContain('Internal Server Error');
+      },
+    });
+    const req = httpMock.expectOne(`${mockApiUrl}/login-admin`);
+    expect(req.request.method).toBe('POST');
+    service.isAuthenticated$.subscribe(value => {
+      expect(value).toBe(false);
+    });
+    service.userRole$.subscribe(role => {
+      expect(role).toBe(null);
+    });
+    req.flush('Internal Server Error', { status: 500, statusText: 'Server Error' });
+  });
+
+  it('should logout a user when logoutSecurely is called', () => {
+    service.logoutSecurely();
     service.isAuthenticated$.subscribe(value => {
       expect(value).toBe(false);
     });

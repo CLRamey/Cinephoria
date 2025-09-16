@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { BehaviorSubject } from 'rxjs';
-import { EmployeeLoginComponent } from '../../projects/auth/src/lib/shared/employee-login/employee-login.component';
+import { EmployeeLoginComponent } from '../../projects/auth/src/lib/shared/employee-login/employee-token-login/employee-login.component';
 import { AuthService } from '../../projects/auth/src/lib/services/auth.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';

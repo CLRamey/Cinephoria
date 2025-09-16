@@ -4,10 +4,13 @@ import { ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { BehaviorSubject, throwError, of } from 'rxjs';
 import { AuthService } from '../../projects/auth/src/lib/services/auth.service';
-import { AuthGuard, AuthGuardChild } from '../../projects/auth/src/lib/guards/auth-guard.guard';
+import {
+  AuthTokenGuard,
+  AuthTokenGuardChild,
+} from '../../projects/auth/src/lib/guards/auth-token-guard.guard';
 import { Role } from '../../projects/auth/src/lib/interfaces/auth-interfaces';
 
-describe('Auth Guards', () => {
+describe('Auth Token Guard', () => {
   let authServiceMock: Partial<AuthService>;
   let isAuthenticatedSubject: BehaviorSubject<boolean>;
   let userRoleSubject: BehaviorSubject<Role | null>;
@@ -18,9 +21,9 @@ describe('Auth Guards', () => {
   const mockState = { url: '/protected' } as RouterStateSnapshot;
 
   const executeGuard: CanActivateFn = (...guardParameters) =>
-    TestBed.runInInjectionContext(() => AuthGuard(...guardParameters));
+    TestBed.runInInjectionContext(() => AuthTokenGuard(...guardParameters));
   const executeGuardChild: CanActivateChildFn = (...guardParameters) =>
-    TestBed.runInInjectionContext(() => AuthGuardChild(...guardParameters));
+    TestBed.runInInjectionContext(() => AuthTokenGuardChild(...guardParameters));
 
   beforeEach(() => {
     isAuthenticatedSubject = new BehaviorSubject<boolean>(true);
@@ -28,8 +31,7 @@ describe('Auth Guards', () => {
     authServiceMock = {
       isAuthenticated$: isAuthenticatedSubject.asObservable(),
       userRole$: userRoleSubject.asObservable(),
-      checkAuth: jest.fn().mockReturnValue(isAuthenticatedSubject.asObservable()),
-      logoutSecurely: jest.fn().mockReturnValue(isAuthenticatedSubject.asObservable()),
+      logout: jest.fn(),
     };
     snackBarMock = {
       open: jest.fn(),
@@ -301,12 +303,11 @@ describe('Auth Guards', () => {
     });
   });
 
-  it('should redirect to accueil and logoutSecurely if an error occurs during access check', done => {
+  it('should redirect to accueil and logout if an error occurs during access check', done => {
     const erroringService = {
       isAuthenticated$: of(true),
       userRole$: throwError(() => new Error('Simulated role error')),
-      checkAuth: jest.fn(() => of(void 0)),
-      logoutSecurely: jest.fn(() => of(void 0)),
+      logout: jest.fn(() => of(void 0)),
     };
     TestBed.overrideProvider(AuthService, { useValue: erroringService });
     mockRoute.data = { roles: [Role.ADMIN] };
@@ -315,8 +316,7 @@ describe('Auth Guards', () => {
       expect(mockRouter.createUrlTree).toHaveBeenCalledWith(['/accueil']);
       done();
     });
-    expect(erroringService.logoutSecurely).toHaveBeenCalled();
-    expect(erroringService.checkAuth).toHaveBeenCalled();
+    expect(erroringService.logout).toHaveBeenCalled();
   });
 
   it('should allow access to public routes that have no need for authentification or authorisation [route guard]', done => {

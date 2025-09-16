@@ -1,0 +1,67 @@
+<mat-card class="login-card">
+  <h2>Connexion</h2>
+  <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Adresse e-mail</mat-label>
+      <input
+        matInput
+        formControlName="email"
+        type="email"
+        spellcheck="false"
+        autocomplete="email"
+        [attr.aria-label]="'Adresse e-mail'"
+        [attr.aria-required]="true"
+        required
+      />
+      <mat-error *ngIf="loginForm.get('email')?.hasError('required')">
+        Veuillez entrer une adresse e-mail.
+      </mat-error>
+      <mat-error *ngIf="loginForm.get('email')?.hasError('email')">
+        Veuillez entrer une adresse e-mail valide.
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Mot de passe</mat-label>
+      <input
+        matInput
+        [type]="showPassword ? 'text' : 'password'"
+        formControlName="password"
+        type="password"
+        spellcheck="false"
+        autocomplete="current-password"
+        [attr.aria-label]="'Mot de passe'"
+        [attr.aria-required]="true"
+        required
+      />
+      <button
+        mat-icon-button
+        matSuffix
+        (click)="togglePasswordVisibility()"
+        type="button"
+        [attr.aria-label]="'Afficher/Masquer mot de passe'"
+      >
+        <mat-icon>{{ showPassword ? "visibility_off" : "visibility" }}</mat-icon>
+      </button>
+      <mat-error *ngIf="loginForm.get('password')?.hasError('required')">
+        Veuillez entrer votre mot de passe.
+      </mat-error>
+    </mat-form-field>
+
+    <ng-container *ngIf="loginError" class="error-message">
+      <mat-error>
+        Nom d'utilisateur ou mot de passe incorrect, veuillez corriger les informations saisies.
+      </mat-error>
+    </ng-container>
+
+    <button
+      mat-raised-button
+      color="primary"
+      class="full-width"
+      type="submit"
+      [disabled]="loginForm.invalid"
+    >
+      Se connecter
+    </button>
+  </form>
+</mat-card>

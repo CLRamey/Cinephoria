@@ -5,9 +5,9 @@ name: CI Feature Branches and Security Improvements
 
 on:
   push:
-    branches: ["feature/**", "security/**"]
+    branches: ["feature/**", "security/**", "admin/**"]
   pull_request:
-    branches: ["feature/**", "security/**"]
+    branches: ["feature/**", "security/**", "admin/**"]
 
 env: 
   NODE_ENV: ${{ secrets.NODE_ENV }}

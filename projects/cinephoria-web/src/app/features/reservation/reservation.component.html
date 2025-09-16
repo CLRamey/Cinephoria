@@ -106,7 +106,7 @@
     <p>Qualité : {{ recapDetails.quality }}</p>
     <p>Prix total : {{ totalPrice | currency: "EUR" }}</p>
     <br />
-    <ng-container *ngIf="isAuthenticated === true; else loginPrompt">
+    <ng-container *ngIf="isAuthenticated; else loginPrompt">
       <button mat-raised-button color="primary" class="validate" (click)="confirmReservation()">
         Valider la réservation
       </button>

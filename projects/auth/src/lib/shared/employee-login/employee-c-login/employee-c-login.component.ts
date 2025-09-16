@@ -1,27 +1,43 @@
 import { Component } from '@angular/core';
+import { NgIf } from '@angular/common';
 import { FormBuilder, Validators, FormGroup } from '@angular/forms';
-import { AuthService } from '../../../../../../auth/src/lib/services/auth.service';
-import { passwordStrengthValidator } from '../../../../../../auth/src/lib/validators/auth-validators';
+import { AuthService } from '../../../services/auth.service';
+import { passwordStrengthValidator } from '../../../validators/auth-validators';
 
 import { Router } from '@angular/router';
-import { firstValueFrom } from 'rxjs';
 import { take, filter, timeout } from 'rxjs/operators';
+import { firstValueFrom } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import {
   loginSuccessSnackBar,
   catchErrorSnackBar,
   resetForm,
   errorForm,
-} from '../../../../../../../projects/auth/src/lib/shared/utils/shared-responses';
-import { Role } from '../../../../../../../projects/auth/src/lib/interfaces/auth-interfaces';
-import { ReservationService } from '../../../services/reservation.service';
+} from '../../utils/shared-responses';
+import { ReactiveFormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { Role } from '../../../interfaces/auth-interfaces';
 
 @Component({
-  selector: 'caw-login-client',
-  templateUrl: './login-client.component.html',
-  styleUrl: './login-client.component.scss',
+  selector: 'csh-employee-c-login',
+  standalone: true,
+  imports: [
+    MatIconModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatCardModule,
+    ReactiveFormsModule,
+    NgIf,
+  ],
+  templateUrl: './employee-c-login.component.html',
+  styleUrl: './employee-c-login.component.scss',
 })
-export class LoginClientComponent {
+export class EmployeeCLoginComponent {
   showPassword = false;
   loginError = false;
   loginForm: FormGroup;
@@ -33,7 +49,6 @@ export class LoginClientComponent {
     private readonly authService: AuthService,
     private readonly router: Router,
     private readonly snackBar: MatSnackBar,
-    private readonly reservationService: ReservationService,
   ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -42,7 +57,7 @@ export class LoginClientComponent {
   }
 
   // Method to handle login submission.
-  // It checks if the form is valid, authentication and role authorization prior to navigating to the secured client space.
+  // It checks if the form is valid, authentication and role authorization prior to navigating to the secured employee space.
   onLogin(): void {
     if (this.loginForm.invalid) {
       this.loginForm.markAllAsTouched();
@@ -55,7 +70,7 @@ export class LoginClientComponent {
     };
     try {
       this.authService
-        .loginCookieClient(credentials)
+        .loginCookieEmployee(credentials)
         .pipe(take(1))
         .subscribe({
           next: async () => {
@@ -68,12 +83,12 @@ export class LoginClientComponent {
             );
             const role = await firstValueFrom(
               this.authService.userRole$.pipe(
-                filter(role => role === Role.CLIENT),
+                filter(role => role === Role.EMPLOYEE),
                 timeout(3000),
                 take(1),
               ),
             );
-            if (!isAuth || role !== Role.CLIENT) {
+            if (!isAuth || role !== Role.EMPLOYEE) {
               this.loginError = true;
               errorForm(this.loginForm);
               return;
@@ -81,18 +96,8 @@ export class LoginClientComponent {
             this.loginError = false;
             resetForm(this.loginForm);
             loginSuccessSnackBar(this.snackBar);
-            // Check if there is a reservation in progress
-            const reserving = this.reservationService.getSavedReservation();
-            if (reserving) {
-              this.router.navigate(['/client']).then(() => {
-                setTimeout(() => {
-                  this.router.navigate(['/reservation']);
-                  return;
-                }, 1000);
-              });
-            }
             // Navigate to dashboard with full refreshed state
-            this.router.navigate(['/client']);
+            this.router.navigate(['/employee']);
           },
           error: err => {
             console.error('Login failed:', err);
@@ -114,10 +119,5 @@ export class LoginClientComponent {
   // Method to toggle password visibility.
   togglePasswordVisibility(): void {
     this.showPassword = !this.showPassword;
-  }
-
-  // Method to navigate to the registration page.
-  goToRegister(): void {
-    this.router.navigate(['/login-client/register']);
   }
 }

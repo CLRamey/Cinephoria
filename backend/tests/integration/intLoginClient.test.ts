@@ -3,12 +3,17 @@ import express from 'express';
 import clientRoutes from '../../src/routes/clientRoutes';
 import { user } from '../../src/models/init-models';
 import { comparePasswords } from '../../src/utils/userPassword';
-import { generateAccessToken } from '../../src/utils/tokenManagement';
+import { generateAccessToken, attachAccessToken } from '../../src/utils/tokenManagement';
 import { validateLoginInput } from '../../src/validators/userValidator';
 import { sanitizeLoginInput } from '../../src/utils/sanitize';
+import cookieParser from 'cookie-parser';
+
+process.env.NODE_ENV = 'test';
+process.env.COOKIE_SECRET = 'testsecret';
 
 const app = express();
 app.use(express.json());
+app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use('/api', clientRoutes);
 
 // Mock dependencies
@@ -24,6 +29,7 @@ jest.mock('../../src/utils/userPassword', () => ({
 
 jest.mock('../../src/utils/tokenManagement', () => ({
   generateAccessToken: jest.fn(),
+  attachAccessToken: jest.fn(),
 }));
 
 jest.mock('../../src/validators/userValidator', () => ({
@@ -43,7 +49,7 @@ afterEach(() => {
 });
 
 describe('Login-client integration test', () => {
-  it('should return success response with token on valid credentials', async () => {
+  it('should return success response with userRole on valid credentials', async () => {
     const body = {
       userEmail: 'test@example.com',
       userPassword: 'Password123!',
@@ -62,11 +68,13 @@ describe('Login-client integration test', () => {
     (user.findOne as jest.Mock).mockResolvedValue(validUser);
     (comparePasswords as jest.Mock).mockResolvedValue(true);
     (generateAccessToken as jest.Mock).mockReturnValue('fake_token');
+
     const res = await request(app).post('/api/login-client').send(body);
+    expect(generateAccessToken).toHaveBeenCalledWith(1, 'client');
+    expect(attachAccessToken).toHaveBeenCalledWith(expect.any(Object), 'fake_token');
     expect(res.status).toBe(200);
     expect(res.body.success).toBe(true);
     expect(res.body.data).toEqual({
-      accessToken: 'fake_token',
       userRole: 'client',
     });
   });

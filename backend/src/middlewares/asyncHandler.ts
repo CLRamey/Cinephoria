@@ -10,10 +10,10 @@ type HandlerResponse = {
 
 // This middleware function wraps an asynchronous request handler and handles errors.
 // Production-safe adaptation for controlled error responses
-export function asyncHandler(fn: (req: Request) => Promise<HandlerResponse>) {
+export function asyncHandler(fn: (req: Request, res: Response) => Promise<HandlerResponse>) {
   return async (req: Request, res: Response, _next: NextFunction) => {
     try {
-      const result = await fn(req);
+      const result = await fn(req, res);
 
       if (result.success) {
         res.status(200).json(result);

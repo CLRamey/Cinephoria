@@ -7,7 +7,7 @@ services:
       dockerfile: Dockerfile
     container_name: cinephoria-sqldb
     restart: unless-stopped
-    #env_file: ".env" # Uncomment for local use only, comment for commits
+    # env_file: ".env" # Uncomment for local use only, comment for commits
     environment:
       - TZ=Europe/Paris
       - MARIADB_DATABASE=${MARIADB_DATABASE}

@@ -167,7 +167,7 @@ describe('Employee login e2e Tests', () => {
       .within(() => {
         cy.contains('a', 'Mon espace').should('exist').click({ force: true });
       });
-    cy.wait(1000); // Wait for the employee page to load
+    cy.wait(2000); // Wait for the employee page to load
     cy.url().should('include', '/employee');
     cy.contains('button', 'Mon Compte').click();
     cy.get('div.mat-mdc-menu-content')

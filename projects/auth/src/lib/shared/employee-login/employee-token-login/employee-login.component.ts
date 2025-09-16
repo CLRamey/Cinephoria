@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { NgIf } from '@angular/common';
 import { FormBuilder, Validators, FormGroup } from '@angular/forms';
-import { AuthService } from '../../services/auth.service';
-import { passwordStrengthValidator } from '../../validators/auth-validators';
+import { AuthService } from '../../../services/auth.service';
+import { passwordStrengthValidator } from '../../../validators/auth-validators';
 
 import { Router } from '@angular/router';
 import { take, filter, timeout } from 'rxjs/operators';
@@ -13,14 +13,14 @@ import {
   catchErrorSnackBar,
   resetForm,
   errorForm,
-} from '../utils/shared-responses';
+} from '../../utils/shared-responses';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-import { Role } from '../../interfaces/auth-interfaces';
+import { Role } from '../../../interfaces/auth-interfaces';
 
 @Component({
   selector: 'csh-employee-login',

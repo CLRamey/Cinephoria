@@ -11,7 +11,7 @@ import { AuthService } from '../services/auth.service';
 import { Role } from '../interfaces/auth-interfaces';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { combineLatest, Observable, of } from 'rxjs';
-import { map, take, catchError, switchMap } from 'rxjs/operators';
+import { map, take, catchError } from 'rxjs/operators';
 import { notAuthorizedSnackBar } from '../shared/utils/shared-responses';
 
 // Function to get the login path based on user roles
@@ -40,37 +40,33 @@ function checkAccess(route: ActivatedRouteSnapshot, url: string): Observable<boo
   const requiredRole = route.data['roles'] as Role[] | undefined;
   const loginPath = getLoginPathForRole(requiredRole);
 
-  return authService.checkAuth().pipe(
-    switchMap(() =>
-      combineLatest([authService.isAuthenticated$, authService.userRole$]).pipe(
-        take(1),
-        map(([isAuthenticated, userRole]) => {
-          if (!isAuthenticated) {
-            return router.createUrlTree([loginPath], {
-              queryParams: { returnUrl: url },
-            });
-          }
-          if (!userRole || (requiredRole && !requiredRole.includes(userRole as Role))) {
-            notAuthorizedSnackBar(snackBar);
-            authService.logoutSecurely().pipe(take(1)).subscribe();
-            return router.createUrlTree(['/accueil'], {
-              queryParams: { returnUrl: url },
-            });
-          }
-          return true;
-        }),
-        catchError(err => {
-          authService.logoutSecurely();
-          console.error('Error checking access:', err);
-          return of(router.createUrlTree(['/accueil']));
-        }),
-      ),
-    ),
+  return combineLatest([authService.isAuthenticated$, authService.userRole$]).pipe(
+    take(1),
+    map(([isAuthenticated, userRole]) => {
+      if (!isAuthenticated) {
+        return router.createUrlTree([loginPath], {
+          queryParams: { returnUrl: url },
+        });
+      }
+      if (!userRole || (requiredRole && !requiredRole.includes(userRole as Role))) {
+        notAuthorizedSnackBar(snackBar);
+        authService.logout();
+        return router.createUrlTree(['/accueil'], {
+          queryParams: { returnUrl: url },
+        });
+      }
+      return true;
+    }),
+    catchError(err => {
+      authService.logout();
+      console.error('Error checking access:', err);
+      return of(router.createUrlTree(['/accueil']));
+    }),
   );
 }
 
 // AuthGuard function to be used in routing
-export const AuthGuard: CanActivateFn = (
+export const AuthTokenGuard: CanActivateFn = (
   route: ActivatedRouteSnapshot,
   state: RouterStateSnapshot,
 ): Observable<boolean | UrlTree> => {
@@ -78,7 +74,7 @@ export const AuthGuard: CanActivateFn = (
 };
 
 // AuthGuardChild function to be used for child routes
-export const AuthGuardChild: CanActivateChildFn = (
+export const AuthTokenGuardChild: CanActivateChildFn = (
   route: ActivatedRouteSnapshot,
   state: RouterStateSnapshot,
 ): Observable<boolean | UrlTree> => {

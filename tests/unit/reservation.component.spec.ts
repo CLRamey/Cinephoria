@@ -5,7 +5,7 @@ import { ReservationService } from '../../projects/cinephoria-web/src/app/servic
 import { FilmInfoService } from '../../projects/cinephoria-web/src/app/services/film-info.service';
 import { CinemaInfoService } from '../../projects/cinephoria-web/src/app/services/cinema-info.service';
 import { Router, ActivatedRoute } from '@angular/router';
-import { of } from 'rxjs';
+import { of, BehaviorSubject } from 'rxjs';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { AuthService } from '../../projects/auth/src/lib/services/auth.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -24,10 +24,14 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { Seat } from '../../projects/cinephoria-web/src/app/interfaces/reservation';
+import { Role } from '../../projects/auth/src/lib/interfaces/auth-interfaces';
 
 describe('ReservationComponent', () => {
   let component: ReservationComponent;
   let fixture: ComponentFixture<ReservationComponent>;
+
+  const isAuthenticatedSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  const userRoleSubject: BehaviorSubject<Role | null> = new BehaviorSubject<Role | null>(null);
 
   let mockCinemaInfoService: Partial<CinemaInfoService>;
   let mockFilmInfoService: Partial<FilmInfoService>;
@@ -60,6 +64,8 @@ describe('ReservationComponent', () => {
 
   beforeEach(async () => {
     mockAuthService = {
+      isAuthenticated$: isAuthenticatedSubject.asObservable(),
+      userRole$: userRoleSubject.asObservable(),
       isAuthenticated: jest.fn(),
       getUserRole: jest.fn(),
     } as unknown as jest.Mocked<AuthService>;

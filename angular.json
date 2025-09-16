@@ -62,7 +62,13 @@
               "optimization": true,
               "extractLicenses": true,
               "sourceMap": false,
-              "aot": true
+              "aot": true,
+              "fileReplacements": [
+                {
+                  "replace": "projects/cinephoria-web/src/environments/environment.development.ts",
+                  "with": "projects/cinephoria-web/src/environments/environment.ts"
+                }
+              ]
             },
             "development": {
               "optimization": false,

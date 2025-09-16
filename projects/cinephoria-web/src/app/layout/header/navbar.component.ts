@@ -2,6 +2,7 @@ import { Component, ViewChild, OnInit, OnDestroy } from '@angular/core';
 import { MatSidenav } from '@angular/material/sidenav';
 import { AuthService } from '../../../../../../projects/auth/src/lib/services/auth.service';
 import { Observable, Subscription } from 'rxjs';
+import { take } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { Role } from '../../../../../../projects/auth/src/lib/interfaces/auth-interfaces';
 import { ReservationService } from '../../services/reservation.service';
@@ -74,10 +75,16 @@ export class NavbarComponent implements OnInit, OnDestroy {
   // Method to log out the user
   logout(): void {
     this.reservationService.clearStoredReservation();
-    this.authService.logout();
-    this.router.navigate(['/accueil']).then(() => {
-      window.location.reload();
-    });
+    this.reservationService.clearSelectedScreening();
+    const logoutSub = this.authService
+      .logoutSecurely()
+      .pipe(take(1))
+      .subscribe({
+        next: () => {
+          this.router.navigate(['/accueil']);
+        },
+      });
+    this.subscriptions.add(logoutSub);
   }
 
   // Lifecycle hook that runs when the component is destroyed to clean up subscriptions.
