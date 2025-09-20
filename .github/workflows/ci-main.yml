@@ -142,7 +142,7 @@ jobs:
       uses: sonarsource/sonarcloud-github-action@master
       with:
         args: >
-          -Dsonar.projectKey=cinephoria
+          -Dsonar.projectKey=CLRamey_Cinephoria
           -Dsonar.organization=clramey
           -Dsonar.sources=.
           -Dsonar.host.url=https://sonarcloud.io
