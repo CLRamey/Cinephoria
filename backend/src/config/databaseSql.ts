@@ -3,12 +3,11 @@
 import { Sequelize } from 'sequelize';
 import { initModels } from '../models/init-models';
 import dotenv from 'dotenv';
-dotenv.config({ path: process.env.NODE_ENV === 'production' ? '../production.env' : '../.env' }); // Load environment variables FIRST safely
+dotenv.config(); // Load environment variables FIRST safely
 import { log, logerror } from '../utils/logger';
 
 // Determine if the environment is production or development
 const isProduction = process.env['NODE_ENV'] === 'production';
-
 // Temporary disable SSL until this is obtained
 const useSSL = process.env['DB_SSL'] === 'true';
 
@@ -19,9 +18,9 @@ const dialectOptions = {
     ? {
         ssl: {
           rejectUnauthorized: true, // Reject unauthorized SSL certificates in production for security
-          ca: process.env['SSL_CA'] ? process.env['SSL_CA'].split(',') : undefined, // SSL CA certificates
-          key: process.env['SSL_KEY'], // SSL key
-          cert: process.env['SSL_CERT'], // SSL certificate
+          ca: process.env['DB_SSL_CA'], // SSL CA certificate
+          key: process.env['DB_SSL_KEY'], // Client database key for TLS
+          cert: process.env['DB_SSL_CERT'], // Client database certificate for TLS
         },
         allowPublicKeyRetrieval: false, // Disable public key retrieval in production for security
       }

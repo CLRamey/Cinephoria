@@ -41,7 +41,7 @@
     "docker:test:down": "docker compose -f docker-compose-test.yml down -v",
     "cy:open": "cypress open --config-file tests/cypress/cypress.config.ts",
     "cy:run": "cypress run --config-file tests/cypress/cypress.config.ts --headed --browser chrome",
-    "cy:run:headless": "cypress run --config-file tests/cypress/cypress.config.ts --headless --browser chromium",
+    "cy:run:headless": "cypress run --config-file tests/cypress/cypress.config.ts --headless --browser chrome",
     "frontend": "ng serve cinephoria-web",
     "build:frontend": "ng build cinephoria-web",
     "backend": "npm run dev --prefix backend",
@@ -58,6 +58,8 @@
     "prod": "cross-env NODE_ENV=production concurrently \"npm run frontend:prod\" \"npm run backend:prod\"",
     "frontend:prod": "ng build cinephoria-web --configuration=production && ng serve cinephoria-web",
     "backend:prod": "npm run docker:build:prod --prefix backend",
+    "docker:stage": "docker compose -f docker-compose-staging.yml up --build",
+    "docker:stage:down": "docker compose -f docker-compose-staging.yml down -v",
     "docker:run": "docker compose -f docker-compose.yml up --build -d",
     "docker:stop": "docker compose -f docker-compose.yml down"
   },

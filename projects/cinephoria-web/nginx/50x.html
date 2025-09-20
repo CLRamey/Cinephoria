@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>50x</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Roboto", sans-serif;
+      }
+      body {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+        background: #f4f7f5;
+        color: #1f3025;
+      }
+      .navbar-header {
+        width: 100vw;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 1000;
+      }
+      .navbar {
+        display: flex;
+        align-items: center;
+        justify-content: left;
+        height: 5.25rem;
+        background: #80c683;
+        border-bottom: 0.7rem solid rgb(27, 62, 43);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+        font-size: 1.5rem;
+        font-weight: 500;
+        color: rgb(27, 62, 43);
+      }
+      .cinephoria-logo {
+        display: flex;
+        align-items: center;
+        max-width: 12rem;
+        max-height: 2rem;
+        height: auto;
+      }
+      .error-container {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 2rem;
+        margin-top: 6rem;
+      }
+      .error-code {
+        font-size: 6rem;
+        font-weight: 700;
+        color: rgb(27, 62, 43);
+        margin-bottom: 1rem;
+      }
+      .error-message {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+      }
+      .material-icons {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+        color: rgb(27, 62, 43);
+      }
+      .footer {
+        width: 100vw;
+        padding: 0;
+        background: #80c683;
+      }
+      .footer-toolbar {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        padding: 1rem;
+        overflow-x: hidden;
+        border-top: 2.7rem solid rgb(27, 62, 43);
+        box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.25);
+        height: auto;
+      }
+      .footer-title-container {
+        width: 100vw;
+        display: flex;
+        justify-content: center;
+        padding: 0.5rem 0.5rem;
+        font-size: 0.75rem;
+        font-weight: 500;
+        color: #1f3025;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="navbar-header">
+      <nav class="navbar">
+        <a href="/" class="logo" aria-label="Cinéphoria">
+          <img src="cinephoria-logo.webp" alt="Cinéphoria Logo" class="cinephoria-logo" />
+        </a>
+      </nav>
+    </header>
+
+    <main class="error-container">
+      <span class="material-icons">error_outline</span>
+      <div class="error-message">Oups ! Une erreur est survenue.</div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-toolbar">
+        <div class="footer-title-container">© 2025 Cinéphoria. Tous droits réservés.</div>
+      </div>
+    </footer>
+  </body>
+</html>

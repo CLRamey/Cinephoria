@@ -15,7 +15,7 @@ export const sendEmail = async (to: string, subject: string, text: string, html?
     });
 
     const info = await transporter.sendMail({
-      from: `"Cinephoria" <${process.env.SMTP_USER}>`,
+      from: `"Cinephoria <no-reply>" <${process.env.SMTP_USER}>`,
       to,
       subject,
       text,

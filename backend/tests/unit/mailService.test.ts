@@ -30,7 +30,7 @@ describe('sendEmail', () => {
     const result = await sendEmail(to, subject, text);
 
     expect(mockSendMail).toHaveBeenCalledWith({
-      from: `"Cinephoria" <${process.env.SMTP_USER}>`,
+      from: `"Cinephoria <no-reply>" <${process.env.SMTP_USER}>`,
       to,
       subject,
       text,

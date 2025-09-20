@@ -1,8 +1,9 @@
-# Objectif : Production cinephoria application using nginx + angular + nodejs + mariadb + mongoDB
-# Removed ports for security 
-# Secrets are securely passed through Github Actions
+# Objectif : Staging production cinephoria application using nginx + angular + nodejs + mariadb + mongoDB
+# Kindly note that the creation of a new accounts and logins will not work for this as it is in a docker contained environment with no access to the smtp provider
+# Created to test other pre-production elements such as database connections, ssl, nginx, angular, nodejs, docker, volumes, networks, etc...
 
-# FOR DEPLOYMENT REMOVE THE INITIALIZED USERS EITHER FROM THE SQL 02_init_data FILE OR THE DATABASE DIRECTLY TO AVOID SECURITY BREACHES !
+# NOTE ! FOR PRODUCTION THE INITIALIZED USERS SHOULD BE REMOVED EITHER FROM THE SQL 02_init_data FILE OR THE
+# DATABASE DIRECTLY TO AVOID SECURITY BREACHES !
 
 services:
   mariadb:
@@ -11,6 +12,7 @@ services:
       dockerfile: Dockerfile
     container_name: cinephoria-sqldb
     restart: unless-stopped
+    # env_file: ".env" # Uncomment for local use only, comment for commits
     environment:
       - TZ=Europe/Paris
       - MARIADB_DATABASE=${MARIADB_DATABASE}
@@ -19,13 +21,12 @@ services:
       - MARIADB_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD}
       - SUPER_ADMIN=${SUPER_ADMIN}
       - SUPER_ADMIN_PASSWORD=${SUPER_ADMIN_PASSWORD}
+    ports:
+      - "3307:3306"
     volumes:
       - mariadb_data:/var/lib/mysql
       - ./sql/init:/docker-entrypoint-initdb.d:ro
       - mariadb_backup:/backup
-      - ../app/certs/db-server-cert.pem:/etc/mysql/ssl/server-cert.pem:ro
-      - ../app/certs/db-server-key.pem:/etc/mysql/ssl/server-key.pem:ro
-      - ../app/certs/ca-cert.pem:/etc/mysql/ssl/ca-cert.pem:ro
     networks:
       - cinephoria-network
 
@@ -33,6 +34,7 @@ services:
     image: mongo:8.0
     container_name: cinephoria-nosqldb
     restart: unless-stopped
+    # env_file: ".env" # Uncomment for local use only, comment for commits
     environment:
       - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
       - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
@@ -40,12 +42,11 @@ services:
       - MONGO_URI=${MONGO_URI}
       - MONGO_USERNAME=${MONGO_USERNAME}
       - MONGO_PASSWORD=${MONGO_PASSWORD}
+    ports:
+      - "27018:27017"
     volumes:
       - mongo_data:/data/db
       - ./nosql/init:/docker-entrypoint-initdb.d:ro
-      - ../app/certs/mongo-server-cert.pem:/etc/ssl/mongodb/server-cert.pem:ro
-      - ../app/certs/mongo-server-key.pem:/etc/ssl/mongodb/server-key.pem:ro
-      - ../app/certs/mongo-ca-cert.pem:/etc/ssl/mongodb/ca-cert.pem:ro
     networks:
       - cinephoria-network
 
@@ -56,6 +57,9 @@ services:
     image: app-backend
     container_name: cinephoria-back
     restart: on-failure
+    ports:
+      - "3001:3000"
+    # env_file: ".env" # Uncomment for local use only, comment for commits
     environment:
       - NODE_ENV=${NODE_ENV}
       - MARIADB_DATABASE=${MARIADB_DATABASE}
@@ -75,31 +79,24 @@ services:
       - EMPLOYEE_USERNAME=${EMPLOYEE_USERNAME}
       - EMPLOYEE_PASSWORD=${EMPLOYEE_PASSWORD}
       - DB_SSL=${DB_SSL}
-      - DB_SSL_CA=${DB_SSL_CA}
-      - DB_SSL_KEY=${DB_SSL_KEY}
-      - DB_SSL_CERT=${DB_SSL_CERT}
-      - MONGO_CA=${MONGO_CA}
-      - MONGO_CLIENT_COMBINED=${MONGO_CLIENT_COMBINED}
     depends_on:
       - mariadb
       - mongo
     networks:
-      - cinephoria-network
+      - cinephoria-network  
       
   cinephoria-front:
     build:
       context: .
-      dockerfile: projects/cinephoria-web/Dockerfile
+      dockerfile: projects/cinephoria-web/Dockerfile.staging
     image: app-frontend
     container_name: cinephoria-front
     restart: always
     ports:
-      - "443:443"
+      - "8081:80"
+    # env_file: ".env" # Uncomment for local use only, comment for commits
     environment:
       - API_URL=${API_URL}
-    volumes:
-      - ../app/certs/fullchain.pem:/etc/ssl/certs/app.crt:ro
-      - ../app/certs/privkey.pem:/etc/ssl/private/app.key:ro
     depends_on:
       - cinephoria-back
     networks:

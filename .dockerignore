@@ -16,6 +16,7 @@
 .env.*
 **/.env
 **/.production.env
+**/.example.env
 **/.*.env
 
 # Node modules
@@ -58,7 +59,7 @@
 **/coverage
 **/.nyc_output/
 **/libpeerconnection.log
-**/testem.log
+**/testem.log 
 **/typings
 **/*.tsbuildinfo
 **/.pnpm-store/
@@ -102,3 +103,16 @@
 **/sql
 **/nosql
 **/tests
+
+# Dockerfiles
+**/Dockerfile
+**/Dockerfile.*
+**/.dockerignore
+**/docker-compose.yml
+**/docker-compose-test.yml
+**/docker-compose-staging.yml
+**/docker-compose-db.yml
+**/docker-compose.**.yml
+
+# SSL/TLS testing
+**/certs
