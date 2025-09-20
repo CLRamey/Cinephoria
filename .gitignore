@@ -73,3 +73,6 @@
 **/cypress/fixtures/
 **/cypress/videos/
 **/cypress/screenshots/
+
+# SSL/TLS testing
+**/certs
