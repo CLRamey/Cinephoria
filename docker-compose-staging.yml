@@ -1,4 +1,9 @@
 # Objectif : Staging production cinephoria application using nginx + angular + nodejs + mariadb + mongoDB
+# Kindly note that the creation of a new accounts and logins will not work for this as it is in a docker contained environment with no access to the smtp provider
+# Created to test other pre-production elements such as database connections, ssl, nginx, angular, nodejs, docker, volumes, networks, etc...
+
+# NOTE ! FOR PRODUCTION THE INITIALIZED USERS SHOULD BE REMOVED EITHER FROM THE SQL 02_init_data FILE OR THE
+# DATABASE DIRECTLY TO AVOID SECURITY BREACHES !
 
 services:
   mariadb:

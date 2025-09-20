@@ -2,6 +2,8 @@
 # Removed ports for security 
 # Secrets are securely passed through Github Actions
 
+# FOR DEPLOYMENT REMOVE THE INITIALIZED USERS EITHER FROM THE SQL 02_init_data FILE OR THE DATABASE DIRECTLY TO AVOID SECURITY BREACHES !
+
 services:
   mariadb:
     build:
