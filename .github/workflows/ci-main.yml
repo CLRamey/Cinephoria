@@ -12,6 +12,7 @@ permissions:
 on:
   pull_request:
     branches: ["main"]
+    types: [opened, synchronize, reopened]
 
 env: 
   NODE_ENV: ${{ secrets.NODE_ENV }}
@@ -58,6 +59,7 @@ env:
   SUPER_ADMIN_PASSWORD: ${{ secrets.SUPER_ADMIN_PASSWORD }}
   # SSL
   DB_SSL: ${{ secrets.DB_SSL }}
+  SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
 jobs:
   build-and-test:
@@ -135,6 +137,17 @@ jobs:
     - name: Stop Docker containers
       if: always()
       run: npm run docker:test:down
+    
+    - name: SonarCloud Scan
+      uses: sonarsource/sonarcloud-github-action@master
+      with:
+        args: >
+          -Dsonar.projectKey=cinephoria
+          -Dsonar.organization=clramey
+          -Dsonar.sources=.
+          -Dsonar.host.url=https://sonarcloud.io
+          -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+          -Dsonar.exclusions=**/node_modules/**,**/dist/**,**/coverage/**,**/docker/**,**/scripts/**,**/*.spec.ts,**/*.test.ts,**/*.d.ts,**/*.js,**/*.json,**/*.yml,**/*.yaml,**/*.md,**/*.html,**/*.css,**/*.scss
 
     - name: Trigger CI Pre-Deployment workflow
       if: ${{ success() }}

@@ -6,6 +6,7 @@ name: CI Development Branch
 on:
   pull_request:
     branches: ["development"]
+    types: [opened, synchronize, reopened]
 
 env: 
   NODE_ENV: ${{ secrets.NODE_ENV }}
@@ -57,6 +58,7 @@ env:
   EMPLOYEE_PASSWORD: ${{ secrets.EMPLOYEE_PASSWORD }}
   # SSL
   DB_SSL: ${{ secrets.DB_SSL }}
+  SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
 jobs:
   build-and-test:
@@ -140,6 +142,17 @@ jobs:
       run: |
         echo "Removing test users..."
         docker compose -f docker-compose-test.yml exec -T cinephoria-test npm run backend:seeder:remove
+
+    - name: SonarCloud Scan
+      uses: sonarsource/sonarcloud-github-action@master
+      with:
+        args: >
+          -Dsonar.projectKey=cinephoria
+          -Dsonar.organization=clramey
+          -Dsonar.sources=.
+          -Dsonar.host.url=https://sonarcloud.io
+          -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+          -Dsonar.exclusions=**/node_modules/**,**/dist/**,**/coverage/**,**/docker/**,**/scripts/**,**/*.spec.ts,**/*.test.ts,**/*.d.ts,**/*.js,**/*.json,**/*.yml,**/*.yaml,**/*.md,**/*.html,**/*.css,**/*.scss
 
     - name: Stop Docker containers
       if: always()
