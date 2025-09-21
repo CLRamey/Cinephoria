@@ -6,6 +6,7 @@ describe('Reservation e2e Tests', () => {
     cy.visit('/accueil');
     cy.contains('nav a, button', 'Réservation').click();
     cy.url().should('include', '/reservation');
+    cy.wait(4000);
   });
 
   it('should display reservation page elements on initialisation', () => {

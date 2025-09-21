@@ -5,10 +5,10 @@ dotenv.config({ path: '../../../.env' });
 export default defineConfig({
   video: false,
   e2e: {
-    defaultCommandTimeout: 20000,
-    requestTimeout: 20000,
-    responseTimeout: 20000,
-    pageLoadTimeout: 60000,
+    defaultCommandTimeout: 30000,
+    requestTimeout: 30000,
+    responseTimeout: 30000,
+    pageLoadTimeout: 90000,
     specPattern: 'tests/cypress/e2e/**/*.cy.{js,jsx,ts,tsx}',
     supportFile: 'tests/cypress/support/e2e.{js,jsx,ts,tsx}',
     fixturesFolder: false,

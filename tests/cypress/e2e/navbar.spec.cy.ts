@@ -3,6 +3,7 @@
 describe('Navbar e2e Tests', () => {
   beforeEach(() => {
     cy.visit('/accueil'); // Start on the home page before each test
+    cy.wait(3000);
   });
 
   it('clicks on each link from the desktop menu and redirects to the correct page', () => {

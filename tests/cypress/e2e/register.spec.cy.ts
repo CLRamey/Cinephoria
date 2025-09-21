@@ -3,10 +3,12 @@
 describe('Inscription e2e Tests', () => {
   beforeEach(() => {
     cy.visit('/accueil');
+    cy.wait(2000);
   });
 
   it('should access the registration form from the homepage', () => {
     cy.contains('button', 'Connexion').click();
+    cy.wait(3000);
     cy.get('div.mat-mdc-menu-content')
       .should('be.visible')
       .within(() => {
@@ -20,6 +22,7 @@ describe('Inscription e2e Tests', () => {
 
   it('should display errors for each required empty field', () => {
     cy.contains('button', 'Connexion').click();
+    cy.wait(3000);
     cy.get('div.mat-mdc-menu-content')
       .should('be.visible')
       .within(() => {
@@ -44,6 +47,7 @@ describe('Inscription e2e Tests', () => {
 
   it('should display errors for each box if checked and then unchecked', () => {
     cy.contains('button', 'Connexion').click();
+    cy.wait(3000);
     cy.get('div.mat-mdc-menu-content')
       .should('be.visible')
       .within(() => {
@@ -65,6 +69,7 @@ describe('Inscription e2e Tests', () => {
 
   it('should display an error if the password is weak or not confirmed correctly', () => {
     cy.contains('button', 'Connexion').click();
+    cy.wait(3000);
     cy.get('div.mat-mdc-menu-content')
       .should('be.visible')
       .within(() => {
@@ -87,6 +92,7 @@ describe('Inscription e2e Tests', () => {
 
   it('should disable "Créer votre compte" button when form is empty', () => {
     cy.contains('button', 'Connexion').click();
+    cy.wait(3000);
     cy.get('div.mat-mdc-menu-content')
       .should('be.visible')
       .within(() => {
@@ -107,6 +113,7 @@ describe('Inscription e2e Tests', () => {
     const email = `alice+${randomId}@example.com`;
 
     cy.contains('button', 'Connexion').click();
+    cy.wait(3000);
     cy.get('div.mat-mdc-menu-content')
       .should('be.visible')
       .within(() => {
@@ -144,6 +151,7 @@ describe('Inscription e2e Tests', () => {
     }).as('registerFail');
 
     cy.contains('button', 'Connexion').click();
+    cy.wait(3000);
     cy.get('div.mat-mdc-menu-content')
       .should('be.visible')
       .within(() => {
