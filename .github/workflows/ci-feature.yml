@@ -137,7 +137,7 @@ jobs:
       run: |
         echo "Waiting for the app to be ready..."
         sleep 45
-        
+
     - name: Run E2E cypress Tests
       run: |
         echo "Running e2e cypress tests..."
