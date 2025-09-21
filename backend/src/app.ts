@@ -1,7 +1,7 @@
 // File: backend/src/app.ts
 // This file sets up the Express application with security, CORS, cookie parser and routes.
 import express from 'express';
-import helmet, { contentSecurityPolicy } from 'helmet';
+import helmet from 'helmet';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import { logerror } from './utils/logger';
