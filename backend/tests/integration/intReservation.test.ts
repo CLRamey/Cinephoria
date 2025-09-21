@@ -2,11 +2,14 @@ import request from 'supertest';
 import express, { Request } from 'express';
 import reservationRoutes from '../../src/routes/reservationRoutes';
 import * as reservationService from '../../src/services/reservationService';
-import { ReservationService } from '../../src/services/reservationService';
 import { Role } from '../../src/validators/userValidator';
 import { isScreeningActive } from '../../src/utils/screeningUpdate';
 import { reservingHandler, reservationsHandler } from '../../src/controllers/reservationController';
-import { Reservation, seatsWithStatus } from '../../src/services/reservationService';
+import {
+  Reservation,
+  ReservationService,
+  seatsWithStatus,
+} from '../../src/services/reservationService';
 
 const app = express();
 app.use(express.json());

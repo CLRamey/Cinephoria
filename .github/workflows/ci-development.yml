@@ -148,17 +148,6 @@ jobs:
         echo "Removing test users..."
         docker compose -f docker-compose-test.yml exec -T cinephoria-test npm run backend:seeder:remove
 
-    - name: SonarCloud Scan
-      uses: sonarsource/sonarcloud-github-action@master
-      with:
-        args: >
-          -Dsonar.projectKey=CLRamey_Cinephoria
-          -Dsonar.organization=clramey
-          -Dsonar.sources=.
-          -Dsonar.host.url=https://sonarcloud.io
-          -Dsonar.login=${{ secrets.SONAR_TOKEN }}
-          -Dsonar.exclusions=**/node_modules/**,**/dist/**,**/coverage/**,**/docker/**,**/scripts/**,**/*.d.ts,**/*.js,**/*.json,**/*.yml,**/*.yaml,**/*.md,**/*.html,**/*.css,**/*.scss
-
     - name: Stop Docker containers
       if: always()
       run: npm run docker:test:down

@@ -1,6 +1,12 @@
 import { TestBed } from '@angular/core/testing';
-import { CanActivateFn, CanActivateChildFn, Router, UrlTree } from '@angular/router';
-import { ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
+import {
+  CanActivateFn,
+  CanActivateChildFn,
+  Router,
+  UrlTree,
+  ActivatedRouteSnapshot,
+  RouterStateSnapshot,
+} from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { BehaviorSubject, throwError, of } from 'rxjs';
 import { AuthService } from '../../projects/auth/src/lib/services/auth.service';
