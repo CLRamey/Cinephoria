@@ -119,6 +119,11 @@ jobs:
         echo "Seeding test users..."
         docker compose -f docker-compose-test.yml exec -T cinephoria-test npm run backend:seeder
 
+    - name: Wait for cinephoria test app to be ready
+      run: |
+        echo "Waiting for the app to be ready..."
+        sleep 45
+
     - name: Run All Tests
       run: |
         echo "Running all tests (unit, integration and functional)..."
