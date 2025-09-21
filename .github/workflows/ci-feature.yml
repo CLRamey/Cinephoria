@@ -136,7 +136,7 @@ jobs:
     - name: Wait for cinephoria test app to be ready
       run: |
         echo "Waiting for the app to be ready..."
-        sleep 120
+        sleep 500
         
     - name: Run E2E cypress Tests
       run: |
