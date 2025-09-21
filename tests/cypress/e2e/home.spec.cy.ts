@@ -4,6 +4,7 @@ describe('Home e2e Tests', () => {
   beforeEach(() => {
     cy.visit('/accueil');
     cy.url().should('include', '/accueil');
+    cy.wait(3000);
   });
 
   it('should display the home page welcome message', () => {

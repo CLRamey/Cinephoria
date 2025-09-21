@@ -11,7 +11,7 @@ export class GenreInfoService {
   // Base URL for the API, taken from environment configuration.
   private readonly baseUrl = environment.apiURL;
   // Constructor that injects the HttpClient for making HTTP requests.
-  constructor(private http: HttpClient) {}
+  constructor(private readonly http: HttpClient) {}
 
   getGenreInfo(): Observable<GenreInfo[] | null> {
     return this.http

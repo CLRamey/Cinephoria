@@ -25,7 +25,7 @@ export class ReservationService {
   private readonly baseUrl = environment.apiURL;
 
   // BehaviorSubject to hold the currently selected screening.
-  private selectedScreeningSubject = new BehaviorSubject<ExtendedScreening | null>(null);
+  private readonly selectedScreeningSubject = new BehaviorSubject<ExtendedScreening | null>(null);
   selectedScreening$ = this.selectedScreeningSubject.asObservable();
 
   // Local storage key for temporary reservation progress storage
@@ -35,8 +35,8 @@ export class ReservationService {
 
   // Constructor that injects the HttpClient for making HTTP requests.
   constructor(
-    private roomInfoService: RoomInfoService,
-    private http: HttpClient,
+    private readonly roomInfoService: RoomInfoService,
+    private readonly http: HttpClient,
   ) {}
 
   // Method to set the currently selected screening.

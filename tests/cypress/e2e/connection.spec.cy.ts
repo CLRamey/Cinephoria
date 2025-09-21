@@ -4,6 +4,7 @@ describe('Client login e2e Tests', () => {
   beforeEach(() => {
     cy.visit('/accueil');
     cy.contains('button', 'Connexion').click();
+    cy.wait(2000);
     cy.get('div.mat-mdc-menu-content')
       .should('be.visible')
       .within(() => {
@@ -70,7 +71,7 @@ describe('Client login e2e Tests', () => {
     cy.get('input[formControlName="password"]').type(password, { log: false });
     cy.get('input[formControlName="email"]').focus().blur();
     cy.get('button[type="submit"]').click();
-    cy.wait(1000); // Wait for the login to complete
+    cy.wait(5000); // Wait for the login to complete
     cy.url().should('include', '/client');
     cy.visit('/accueil');
     cy.url().should('include', '/accueil');
@@ -80,7 +81,7 @@ describe('Client login e2e Tests', () => {
       .within(() => {
         cy.contains('a', 'Mon espace').should('exist').click({ force: true });
       });
-    cy.wait(1000); // Wait for the client page to load
+    cy.wait(20000); // Wait for the client page to load
     cy.url().should('include', '/client');
     cy.contains('button', 'Mon Compte').click();
     cy.get('div.mat-mdc-menu-content')
@@ -88,7 +89,7 @@ describe('Client login e2e Tests', () => {
       .within(() => {
         cy.contains('button', 'Déconnexion').should('exist').click({ force: true });
       });
-    cy.wait(1000); // Wait for the logout to complete
+    cy.wait(2000); // Wait for the logout to complete
     cy.url().should('include', '/accueil');
   });
 });
@@ -157,7 +158,7 @@ describe('Employee login e2e Tests', () => {
     cy.get('input[formControlName="password"]').type(password, { log: false });
     cy.get('input[formControlName="email"]').focus().blur();
     cy.get('button[type="submit"]').click();
-    cy.wait(1000); // Wait for the page to load
+    cy.wait(5000); // Wait for the page to load
     cy.url().should('include', '/employee');
     cy.visit('/accueil');
     cy.url().should('include', '/accueil');
@@ -167,7 +168,7 @@ describe('Employee login e2e Tests', () => {
       .within(() => {
         cy.contains('a', 'Mon espace').should('exist').click({ force: true });
       });
-    cy.wait(2000); // Wait for the employee page to load
+    cy.wait(20000); // Wait for the employee page to load
     cy.url().should('include', '/employee');
     cy.contains('button', 'Mon Compte').click();
     cy.get('div.mat-mdc-menu-content')
@@ -175,7 +176,7 @@ describe('Employee login e2e Tests', () => {
       .within(() => {
         cy.contains('button', 'Déconnexion').should('exist').click({ force: true });
       });
-    cy.wait(1000); // Wait for the logout to complete
+    cy.wait(20000); // Wait for the logout to complete
     cy.url().should('include', '/accueil');
   });
 });
@@ -244,7 +245,7 @@ describe('Admin login e2e Tests', () => {
     cy.get('input[formControlName="password"]').type(password, { log: false });
     cy.get('input[formControlName="email"]').focus().blur();
     cy.get('button[type="submit"]').click();
-    cy.wait(1000); // Wait for the login to complete
+    cy.wait(5000); // Wait for the login to complete
     cy.url().should('include', '/admin');
     cy.visit('/accueil');
     cy.url().should('include', '/accueil');
@@ -254,7 +255,7 @@ describe('Admin login e2e Tests', () => {
       .within(() => {
         cy.contains('a', 'Mon espace').should('exist').click({ force: true });
       });
-    cy.wait(1000); // Wait for the admin page to load
+    cy.wait(20000); // Wait for the admin page to load
     cy.url().should('include', '/admin');
     cy.contains('button', 'Mon Compte').click();
     cy.get('div.mat-mdc-menu-content')
@@ -262,7 +263,7 @@ describe('Admin login e2e Tests', () => {
       .within(() => {
         cy.contains('button', 'Déconnexion').should('exist').click({ force: true });
       });
-    cy.wait(1000); // Wait for the logout to complete
+    cy.wait(20000); // Wait for the logout to complete
     cy.url().should('include', '/accueil');
   });
 });

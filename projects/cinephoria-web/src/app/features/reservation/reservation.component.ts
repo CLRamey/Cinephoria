@@ -8,9 +8,8 @@ import { catchError, take } from 'rxjs/operators';
 import { ReservationService } from '../../services/reservation.service';
 import { ExtendedScreening } from '../../interfaces/screening';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Seat, SavedReservation } from '../../interfaces/reservation';
+import { Seat, SavedReservation, ReserveResponse } from '../../interfaces/reservation';
 import { AuthService } from '../../../../../auth/src/lib/services/auth.service';
-import { ReserveResponse } from '../../interfaces/reservation';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({

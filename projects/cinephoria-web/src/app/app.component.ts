@@ -12,7 +12,7 @@ export class AppComponent implements OnInit, OnDestroy {
   status = 'Loading...';
 
   // Constructor
-  constructor(private api: ApiService) {}
+  constructor(private readonly api: ApiService) {}
 
   // Subscription to manage multiple observables
   private readonly subscriptions: Subscription = new Subscription();

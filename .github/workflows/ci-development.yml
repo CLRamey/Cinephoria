@@ -6,6 +6,7 @@ name: CI Development Branch
 on:
   pull_request:
     branches: ["development"]
+    types: [opened, synchronize, reopened]
 
 env: 
   NODE_ENV: ${{ secrets.NODE_ENV }}
@@ -57,6 +58,7 @@ env:
   EMPLOYEE_PASSWORD: ${{ secrets.EMPLOYEE_PASSWORD }}
   # SSL
   DB_SSL: ${{ secrets.DB_SSL }}
+  SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
 jobs:
   build-and-test:
@@ -85,6 +87,14 @@ jobs:
       run: npm ci
       working-directory: ./backend
 
+    - name: Audit frontend dependencies
+      run: npm audit --omit=dev
+      working-directory: ./
+
+    - name: Audit backend dependencies
+      run: npm audit --omit=dev
+      working-directory: ./backend
+
     - name: Lint code
       run: npm run lint
       working-directory: ./
@@ -97,6 +107,11 @@ jobs:
       run: |
         echo "Launching the cinephoria test app..."  
         docker compose -f docker-compose-test.yml exec -T cinephoria-test nohup npm run dev:test > /dev/null 2>&1 &
+
+    - name: Wait for cinephoria test app to be ready
+      run: |
+        echo "Waiting for the app to be ready..."
+        sleep 45
 
     - name: Initialize test users
       run: |
@@ -132,6 +147,17 @@ jobs:
       run: |
         echo "Removing test users..."
         docker compose -f docker-compose-test.yml exec -T cinephoria-test npm run backend:seeder:remove
+
+    - name: SonarCloud Scan
+      uses: sonarsource/sonarcloud-github-action@master
+      with:
+        args: >
+          -Dsonar.projectKey=CLRamey_Cinephoria
+          -Dsonar.organization=clramey
+          -Dsonar.sources=.
+          -Dsonar.host.url=https://sonarcloud.io
+          -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+          -Dsonar.exclusions=**/node_modules/**,**/dist/**,**/coverage/**,**/docker/**,**/scripts/**,**/*.d.ts,**/*.js,**/*.json,**/*.yml,**/*.yaml,**/*.md,**/*.html,**/*.css,**/*.scss
 
     - name: Stop Docker containers
       if: always()

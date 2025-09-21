@@ -5,6 +5,7 @@ describe('Film e2e Tests', () => {
     cy.visit('/accueil');
     cy.contains('nav a, button', 'Films').click();
     cy.url().should('include', '/films');
+    cy.wait(3000);
   });
 
   it('should display films with correct details', () => {

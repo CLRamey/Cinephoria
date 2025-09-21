@@ -87,6 +87,14 @@ jobs:
       run: npm ci
       working-directory: ./backend
 
+    - name: Audit frontend dependencies
+      run: npm audit --omit=dev
+      working-directory: ./
+
+    - name: Audit backend dependencies
+      run: npm audit --omit=dev
+      working-directory: ./backend
+
     - name: Lint code
       run: npm run lint
       working-directory: ./
@@ -100,10 +108,10 @@ jobs:
         echo "Launching the cinephoria test app..."  
         docker compose -f docker-compose-test.yml exec -T cinephoria-test nohup npm run dev:test > /dev/null 2>&1 &
 
-    - name: Initialize test users
+    - name: Wait for cinephoria test app to be ready
       run: |
-        echo "Seeding test users..."
-        docker compose -f docker-compose-test.yml exec -T cinephoria-test npm run backend:seeder
+        echo "Waiting for the app to be ready..."
+        sleep 45
 
     - name: Run Unit Tests
       run: |
@@ -120,11 +128,16 @@ jobs:
         echo "Running functional tests..."
         docker compose -f docker-compose-test.yml exec -T cinephoria-test npm run test:functional:all:docker
 
+    - name: Initialize test users
+      run: |
+        echo "Seeding test users..."
+        docker compose -f docker-compose-test.yml exec -T cinephoria-test npm run backend:seeder
+
     - name: Wait for cinephoria test app to be ready
       run: |
         echo "Waiting for the app to be ready..."
         sleep 45
-
+      
     - name: Run E2E cypress Tests
       run: |
         echo "Running e2e cypress tests..."

@@ -116,3 +116,6 @@
 
 # SSL/TLS testing
 **/certs
+
+# SAST
+**/sonar-project.properties

@@ -5,7 +5,7 @@ import { API_URL } from '../shared/utils/api-url.token';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
-  constructor(@Inject(API_URL) private baseUrl: string) {}
+  constructor(@Inject(API_URL) private readonly baseUrl: string) {}
 
   intercept(req: HttpRequest<unknown>, handler: HttpHandler): Observable<HttpEvent<unknown>> {
     if (req.url.startsWith(this.baseUrl)) {

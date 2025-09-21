@@ -80,6 +80,7 @@ services:
       - DB_SSL_CERT=${DB_SSL_CERT}
       - MONGO_CA=${MONGO_CA}
       - MONGO_CLIENT_COMBINED=${MONGO_CLIENT_COMBINED}
+      - DOMAIN_NAME=${DOMAIN_NAME}
     depends_on:
       - mariadb
       - mongo

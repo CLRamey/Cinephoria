@@ -1,4 +1,4 @@
-# This workflow will be triggered on successful completion of the ci-main.yml workflow.
+# This workflow will be triggered on successful completion of the ci-main.yml and ci-pre-deploy workflows.
 # It will run the backup of the database and deploy the Cinephoria-web application.
 # SQL database security and Adding staff jobs can be removed after the first success website deployment.
 # Backup database job to be placed in front of the deploy job after the first successful deployment.
@@ -55,7 +55,6 @@ env:
   CORS_ORIGIN: ${{ secrets.CORS_ORIGIN }}
   COOKIE_SECRET: ${{ secrets.COOKIE_SECRET }}
   BASE_URL: ${{ secrets.BASE_URL }}
-  API_URL: ${{ secrets.API_URL }}
   PORT: ${{ secrets.PORT }}
   # Secure admin account for initial setup
   ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
@@ -75,6 +74,10 @@ env:
   DB_SSL_CERT: ${{ secrets.DB_SSL_CERT }}
   MONGO_CA: ${{ secrets.MONGO_CA }}
   MONGO_CLIENT_COMBINED: ${{ secrets.MONGO_CLIENT_COMBINED }}
+  # WEBSITE 
+  DOMAIN_NAME: ${{ secrets.DOMAIN_NAME }}
+  API_URL: ${{ secrets.API_URL }}
+  FRONTEND_DOMAIN: ${{ secrets.FRONTEND_DOMAIN }}
 
 jobs:
   deploy:
@@ -101,6 +104,33 @@ jobs:
         run: |
           echo "Copying files to VPS..."
           scp -i ~/.ssh/id_ed25519 -P $VPS_PORT -r ./ $VPS_USER@$VPS_HOST:$APP_PATH
+
+      - name: Generate nginx.conf from template
+        run: |
+          echo "Generating nginx.conf from template..."
+          ssh -i ~/.ssh/id_ed25519 -p $VPS_PORT $VPS_USER@$VPS_HOST << EOF
+            cd $APP_PATH
+            if [ -f projects/cinephoria-web/nginx/nginx.conf.template ]; then
+              echo "Generating nginx.conf from template..."
+              export DOMAIN_NAME=${DOMAIN_NAME}
+              envsubst '${DOMAIN_NAME}' < projects/cinephoria-web/nginx/nginx.conf.template > projects/cinephoria-web/nginx/nginx.conf.generated
+              mv projects/cinephoria-web/nginx/nginx.conf.generated projects/cinephoria-web/nginx/nginx.conf
+            fi
+          EOF
+
+      - name: Replace angular enviornment variables for production
+        run: |
+          echo "Replacing Angular environment variables for production..."
+          ssh -i ~/.ssh/id_ed25519 -p $VPS_PORT $VPS_USER@$VPS_HOST << EOF
+            cd $APP_PATH
+            if [ -f projects/cinephoria-web/src/environments/environment.ts ]; then
+              echo "Replacing environment variables in environment.ts..."
+              export API_URL=${API_URL}
+              export FRONTEND_DOMAIN=${FRONTEND_DOMAIN}
+              envsubst '${API_URL} ${FRONTEND_DOMAIN}' < projects/cinephoria-web/src/environments/environment.ts > projects/cinephoria-web/src/environments/environment.generated.ts
+              mv projects/cinephoria-web/src/environments/environment.generated.ts projects/cinephoria-web/src/environments/environment.ts
+            fi
+          EOF
 
       - name: Deploy application using docker-compose on VPS
         run: |

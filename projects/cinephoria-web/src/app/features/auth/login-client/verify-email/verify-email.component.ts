@@ -25,7 +25,7 @@ export class VerifyEmailComponent implements OnInit, OnDestroy {
   }
 
   // Subscription to manage observables
-  private subscriptions = new Subscription();
+  private readonly subscriptions = new Subscription();
 
   // Lifecycle hook to handle email verification when the component initializes
   ngOnInit(): void {

@@ -72,7 +72,6 @@ export class TokenService {
       }
       return payload;
     } catch (error) {
-      // this.clearToken();
       console.error('Token decoding failed', error);
       return null;
     }

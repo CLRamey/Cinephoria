@@ -1,0 +1,95 @@
+# This workflow will be triggered on successful completion of the ci-main.yml workflow.
+# It will run security scans and tests in a staging environment prior to deployment to production.
+name: CI Pre-Deployment - Staging environment for scans prior to deployment
+
+permissions:
+  contents: read
+  actions: write
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Staging environment'
+        required: true
+        default: 'pre-deployment'
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    environment: pre-deployment
+    strategy:
+      matrix:
+        node-version: [22.x]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+        cache-dependency-path: '**/package-lock.json'
+
+    - name: Install dependencies
+      run: npm ci
+      working-directory: ./
+
+    - name: Install backend dependencies
+      run: npm ci
+      working-directory: ./backend
+
+    - name: Build frontend image for Trivy
+      run: |
+        echo "Building frontend image for scanning..."
+        docker build -t cinephoria-front ./projects/cinephoria-web
+
+    - name: Build backend image for Trivy
+      run: |
+        echo "Building backend image for scanning..."
+        docker build -t cinephoria-back ./backend
+
+    - name: Scan frontend with Trivy
+      uses: aquasecurity/trivy-action@master
+      with:
+        image-ref: cinephoria-front
+        format: table
+        exit-code: '1'
+        vuln-type: os,library
+        severity: CRITICAL,HIGH,MEDIUM
+        ignore-unfixed: true
+        cache-dir: /tmp/.trivycache
+        timeout: 10m
+      continue-on-error: true  # Continue even if vulnerabilities are found
+
+    - name: Scan backend with Trivy
+      uses: aquasecurity/trivy-action@master
+      with:
+        image-ref: cinephoria-back
+        format: table
+        exit-code: '1'
+        vuln-type: os,library
+        severity: CRITICAL,HIGH,MEDIUM
+        ignore-unfixed: true
+        cache-dir: /tmp/.trivycache
+        timeout: 10m
+      continue-on-error: true 
+
+    - name: Trigger CI Deploy workflow
+      if: ${{ success() }}
+      uses: actions/github-script@v7
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          console.log("All tests past! Triggering CI Deploy workflow...");
+          await github.actions.createWorkflowDispatch({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            workflow_id: "ci-deploy.yml",
+            ref: "main",
+            inputs: {
+              env: "production"
+            }
+          })

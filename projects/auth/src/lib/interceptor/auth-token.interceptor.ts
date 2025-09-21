@@ -9,7 +9,7 @@ import { API_URL } from '../shared/utils/api-url.token';
 export class AuthTokenInterceptor implements HttpInterceptor {
   constructor(
     private tokenService: TokenService,
-    @Inject(API_URL) private baseUrl: string,
+    @Inject(API_URL) private readonly baseUrl: string,
   ) {}
   intercept(req: HttpRequest<unknown>, handler: HttpHandler): Observable<HttpEvent<unknown>> {
     const token = this.tokenService.getToken();

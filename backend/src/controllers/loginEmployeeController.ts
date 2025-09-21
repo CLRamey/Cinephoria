@@ -5,10 +5,9 @@ import { sanitizeLoginInput } from '../utils/sanitize';
 import { validateLoginInput } from '../validators/userValidator';
 import { user } from '../models/init-models';
 import { comparePasswords } from '../utils/userPassword';
-import { generateAccessToken } from '../utils/tokenManagement';
 import type { Role } from '../validators/userValidator';
 import { logerror } from '../utils/logger';
-import { attachAccessToken } from '../utils/tokenManagement';
+import { attachAccessToken, generateAccessToken } from '../utils/tokenManagement';
 
 export const loginEmployeeController = asyncHandler(loginEmployeeHandler);
 
