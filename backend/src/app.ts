@@ -4,7 +4,6 @@ import express from 'express';
 import helmet, { contentSecurityPolicy } from 'helmet';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
-// import compression from 'compression';
 import { logerror } from './utils/logger';
 
 // Express
@@ -34,7 +33,7 @@ app.use(
 // Helmet for security headers + Content Security Policy (CSP) to prevent XSS attacks
 app.use(helmet());
 app.use(
-  contentSecurityPolicy({
+  helmet.contentSecurityPolicy({
     directives: {
       defaultSrc: ["'self'"], // Allow resources from self
       scriptSrc: ["'self'"], // Allow scripts from self
@@ -43,6 +42,7 @@ app.use(
       connectSrc: ["'self'", ...allowedOrigins], // Allow connections to the frontend
       objectSrc: ["'none'"], // Disallow all object sources
       upgradeInsecureRequests: [], // Upgrade HTTP to HTTPS
+      frameAncestors: ["'none'"], // Disallow all frame ancestors for protection against clickjacking
     },
   }),
 );

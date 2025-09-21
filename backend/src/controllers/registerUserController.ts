@@ -2,11 +2,10 @@ import { Request } from 'express';
 import { registerUser } from '../services/registerUserService';
 import { asyncHandler } from '../middlewares/asyncHandler';
 import { sanitizeRegisterInput } from '../utils/sanitize';
-import { validateRegisterInput } from '../validators/userValidator';
+import { validateRegisterInput, Role } from '../validators/userValidator';
 import { sendVerificationEmail } from '../utils/verificationEmail';
 import { errorResponse } from '../interfaces/serviceResponse';
 import { user } from '../models/init-models';
-import { Role } from '../validators/userValidator';
 import { logerror } from '../utils/logger';
 
 export const registerUserController = asyncHandler(registerUserHandler);

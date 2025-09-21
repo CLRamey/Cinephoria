@@ -24,7 +24,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   userRole: Role | null = null;
 
   // Store subscriptions for cleanup
-  private subscriptions: Subscription = new Subscription();
+  private readonly subscriptions: Subscription = new Subscription();
 
   // Constructor that injects the AuthService to manage authentication state.
   constructor(

@@ -1,6 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CinemaInfoService } from '../../services/cinema-info.service';
-import { OnInit, OnDestroy } from '@angular/core';
 import { CinemaInfo } from '../../interfaces/cinema';
 import { Subscription } from 'rxjs';
 

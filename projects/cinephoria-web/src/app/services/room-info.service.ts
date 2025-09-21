@@ -11,7 +11,7 @@ export class RoomInfoService {
   // Base URL for the API, taken from environment configuration.
   private readonly baseUrl = environment.apiURL;
   // Constructor that injects the HttpClient for making HTTP requests.
-  constructor(private http: HttpClient) {}
+  constructor(private readonly http: HttpClient) {}
 
   // Method to fetch the room information.
   // Returns an observable that emits an object containing an array of RoomInfo or null in case of an error.

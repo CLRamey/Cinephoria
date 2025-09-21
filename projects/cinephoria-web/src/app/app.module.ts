@@ -1,4 +1,4 @@
-import { APP_INITIALIZER, NgModule } from '@angular/core';
+import { APP_INITIALIZER, NgModule, LOCALE_ID } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
@@ -31,10 +31,7 @@ import { ScreeningCardComponent } from './utils/screening-card/screening-card.co
 import { ReservationCardComponent } from './utils/reservation-card/reservation-card.component';
 import { SeatSelectionComponent } from './utils/seat-selection/seat-selection.component';
 
-// Locale configuration
-import { LOCALE_ID } from '@angular/core';
 import { environment } from '../environments/environment';
-
 import { API_URL } from 'projects/auth/src/lib/shared/utils/api-url.token';
 
 // Interceptor

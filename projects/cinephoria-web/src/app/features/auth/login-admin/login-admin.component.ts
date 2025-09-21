@@ -28,7 +28,7 @@ export class LoginAdminComponent {
   // Constructor that initializes the form and injects necessary services.
   // It also sets up the form with validators for each field.
   constructor(
-    private fb: FormBuilder,
+    private readonly fb: FormBuilder,
     private readonly authService: AuthService,
     private readonly router: Router,
     private readonly snackBar: MatSnackBar,
@@ -57,30 +57,36 @@ export class LoginAdminComponent {
         .pipe(take(1))
         .subscribe({
           next: async () => {
-            const isAuth = await firstValueFrom(
-              this.authService.isAuthenticated$.pipe(
-                filter(isAuth => isAuth === true),
-                timeout(3000),
-                take(1),
-              ),
-            );
-            const role = await firstValueFrom(
-              this.authService.userRole$.pipe(
-                filter(role => role === Role.ADMIN),
-                timeout(3000),
-                take(1),
-              ),
-            );
-            if (!isAuth || role !== Role.ADMIN) {
+            try {
+              const isAuth = await firstValueFrom(
+                this.authService.isAuthenticated$.pipe(
+                  filter(isAuth => isAuth === true),
+                  timeout(3000),
+                  take(1),
+                ),
+              );
+              const role = await firstValueFrom(
+                this.authService.userRole$.pipe(
+                  filter(role => role === Role.ADMIN),
+                  timeout(3000),
+                  take(1),
+                ),
+              );
+              if (!isAuth || role !== Role.ADMIN) {
+                this.loginError = true;
+                errorForm(this.loginForm);
+                return;
+              }
+              this.loginError = false;
+              resetForm(this.loginForm);
+              loginSuccessSnackBar(this.snackBar);
+              // Navigate to dashboard with full refreshed state
+              this.router.navigate(['/admin']);
+            } catch (err) {
+              console.error('Role or authentication check failed:', err);
               this.loginError = true;
               errorForm(this.loginForm);
-              return;
             }
-            this.loginError = false;
-            resetForm(this.loginForm);
-            loginSuccessSnackBar(this.snackBar);
-            // Navigate to dashboard with full refreshed state
-            this.router.navigate(['/admin']);
           },
           error: err => {
             console.error('Login failed:', err);

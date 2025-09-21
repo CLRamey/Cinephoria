@@ -22,8 +22,8 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   // Constructor to inject services and router
   constructor(
-    private filmInfoService: FilmInfoService,
-    private router: Router,
+    private readonly filmInfoService: FilmInfoService,
+    private readonly router: Router,
   ) {}
 
   // Subscription to manage observables

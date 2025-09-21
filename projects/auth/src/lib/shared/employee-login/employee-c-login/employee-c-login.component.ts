@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { NgIf } from '@angular/common';
-import { FormBuilder, Validators, FormGroup } from '@angular/forms';
+import { FormBuilder, Validators, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../../../services/auth.service';
 import { passwordStrengthValidator } from '../../../validators/auth-validators';
 
@@ -14,7 +14,6 @@ import {
   resetForm,
   errorForm,
 } from '../../utils/shared-responses';
-import { ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
@@ -45,7 +44,7 @@ export class EmployeeCLoginComponent {
   // Constructor that initializes the form and injects necessary services.
   // It also sets up the form with validators for each field.
   constructor(
-    private fb: FormBuilder,
+    private readonly fb: FormBuilder,
     private readonly authService: AuthService,
     private readonly router: Router,
     private readonly snackBar: MatSnackBar,

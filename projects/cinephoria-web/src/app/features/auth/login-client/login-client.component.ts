@@ -29,7 +29,7 @@ export class LoginClientComponent {
   // Constructor that initializes the form and injects necessary services.
   // It also sets up the form with validators for each field.
   constructor(
-    private fb: FormBuilder,
+    private readonly fb: FormBuilder,
     private readonly authService: AuthService,
     private readonly router: Router,
     private readonly snackBar: MatSnackBar,

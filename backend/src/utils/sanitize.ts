@@ -1,6 +1,5 @@
 import sanitizeHtml from 'sanitize-html';
-import { RegisterInput, LoginUserInput } from '../validators/userValidator';
-import { Role } from '../validators/userValidator';
+import { RegisterInput, LoginUserInput, Role } from '../validators/userValidator';
 
 export function sanitizeUserInput(input: string): string {
   return sanitizeHtml(input, {

@@ -152,7 +152,7 @@ jobs:
           -Dsonar.sources=.
           -Dsonar.host.url=https://sonarcloud.io
           -Dsonar.login=${{ secrets.SONAR_TOKEN }}
-          -Dsonar.exclusions=**/node_modules/**,**/dist/**,**/coverage/**,**/docker/**,**/scripts/**,**/*.spec.ts,**/*.test.ts,**/*.d.ts,**/*.js,**/*.json,**/*.yml,**/*.yaml,**/*.md,**/*.html,**/*.css,**/*.scss
+          -Dsonar.exclusions=**/node_modules/**,**/dist/**,**/coverage/**,**/docker/**,**/scripts/**,**/*.d.ts,**/*.js,**/*.json,**/*.yml,**/*.yaml,**/*.md,**/*.html,**/*.css,**/*.scss
 
     - name: Stop Docker containers
       if: always()

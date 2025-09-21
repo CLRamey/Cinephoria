@@ -11,7 +11,7 @@ export class ApiService {
   private readonly baseUrl = environment.apiURL;
 
   // Constructor
-  constructor(private http: HttpClient) {}
+  constructor(private readonly http: HttpClient) {}
 
   // Method to get the API status
   getStatus(): Observable<{ status: string }> {
