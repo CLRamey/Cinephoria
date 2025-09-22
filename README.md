@@ -6,19 +6,27 @@ Cinéphoria est une plateforme complète composée de trois applications : web, 
 
 Liens des documents :
 
-Charte graphique : 
-
-Wireframes :
-
-Maquettes :  
-
 Documentation technique :
-
-Gestion de projet :
-
-Manuel d'utilisation : 
+[Cinéphoria - Documentation technique]
 
 Transaction SQL :
+[Transaction.sql](sql/transaction/transaction.sql)
+[Cinéphoria - Transaction](documentation/Transaction_Cinéphoria.pdf)
+
+Manuel d'utilisation : 
+[Cinéphoria - Manuel d'utilisation](documentation/Manuel_d'utilisation_Cinéphoria.pdf)
+
+Gestion de projet :
+[Cinéphoria - Gestion de projet]
+
+Charte graphique : 
+[Cinéphoria - Charte graphique](documentation/Charte_graphique_Cinéphoria.pdf)
+
+Wireframes :
+[Cinéphoria - Wireframes]
+
+Maquettes :
+[Cinéphoria - Maquettes](documentation/Cinéphoria_Maquette_Desktop.pdf)
 
 ## Structure du projet
 
@@ -45,7 +53,7 @@ Le projet est organisé dans un workspace Angular, avec un backend (Node.js + Ex
  2. Installez les dépendances : npm install (frontend et backend)
  3. Naviguez vers le dossier backend 
  4. Lancez les conteneurs Docker pour les bases de données en exécutant la commande : npm run docker:db
- 5. Naviguez vers le dossier racine, puis lancez l’application cinephoria-web en mode développement : npm run dev
+ 5. Naviguez vers le dossier racine, puis lancez l’application cinephoria-web en mode développement avec la commande : npm run dev
 
 L’application web sera accessible à l’adresse suivante : http://localhost:4200
 
