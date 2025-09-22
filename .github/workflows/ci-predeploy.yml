@@ -90,7 +90,7 @@ jobs:
             owner: context.repo.owner,
             repo: context.repo.repo,
             workflow_id: "ci-deploy.yml",
-            ref: "main",
+            ref: "development",
             inputs: {
               env: "production"
             }
