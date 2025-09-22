@@ -44,12 +44,14 @@ jobs:
     - name: Build frontend image for Trivy
       run: |
         echo "Building frontend image for scanning..."
-        docker build -t cinephoria-front ./projects/cinephoria-web
+        docker build -f ./projects/cinephoria-web/Dockerfile \
+        -t cinephoria-front .
 
     - name: Build backend image for Trivy
       run: |
         echo "Building backend image for scanning..."
-        docker build -t cinephoria-back ./backend
+        docker build -f ./backend/Dockerfile \
+        -t cinephoria-back ./backend
 
     - name: Scan frontend with Trivy
       uses: aquasecurity/trivy-action@master
@@ -62,7 +64,7 @@ jobs:
         ignore-unfixed: true
         cache-dir: /tmp/.trivycache
         timeout: 10m
-      continue-on-error: true  # Continue even if vulnerabilities are found
+      continue-on-error: true
 
     - name: Scan backend with Trivy
       uses: aquasecurity/trivy-action@master
