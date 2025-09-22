@@ -58,7 +58,7 @@ env:
   SUPER_ADMIN_PASSWORD: ${{ secrets.SUPER_ADMIN_PASSWORD }}
   # SSL
   DB_SSL: ${{ secrets.DB_SSL }}
-  SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
 
 jobs:
   build-and-test:
@@ -126,7 +126,7 @@ jobs:
       if: ${{ success() }}
       uses: actions/github-script@v7
       with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
+        github-token: ${{ secrets.PAT_TOKEN }}
         script: |
           console.log("All tests past! Triggering CI Pre-deploy workflow...");
           await github.rest.actions.createWorkflowDispatch({

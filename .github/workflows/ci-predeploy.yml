@@ -14,6 +14,9 @@ on:
         required: true
         default: 'pre-deployment'
 
+env:
+  PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
+
 jobs:
   scan:
     runs-on: ubuntu-latest
@@ -83,7 +86,7 @@ jobs:
       if: ${{ success() }}
       uses: actions/github-script@v7
       with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
+        github-token: ${{ secrets.PAT_TOKEN }}
         script: |
           console.log("All tests past! Triggering CI Deploy workflow...");
           await github.rest.actions.createWorkflowDispatch({
