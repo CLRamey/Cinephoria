@@ -1,18 +1,10 @@
+# This workflow will be triggered manually to run the Docker Compose test suite.
+# It will run the build and test commands to ensure that the code is working correctly with an additional layer.
 
-# This workflow will be triggered on every pull to the main branch.
-# It will run the build and test commands to ensure that the code is working correctly.
-# It will launch the ci-deploy.yml to deploy the application if all tests pass on this workflow.
-
-name: CI  Main Branch
-
-permissions:
-  contents: read
-  actions: write
+name: Manual Docker-compose-test Run
 
 on:
-  pull_request:
-    branches: ["main"]
-    types: [opened, synchronize, reopened]
+  workflow_dispatch:
 
 env: 
   NODE_ENV: ${{ secrets.NODE_ENV }}
@@ -54,17 +46,21 @@ env:
   CLIENT_TEST_USER_EMAIL: ${{ secrets.CLIENT_TEST_USER_EMAIL }}
   EMPLOYEE_TEST_USER_EMAIL: ${{ secrets.EMPLOYEE_TEST_USER_EMAIL }}
   ADMIN_TEST_USER_EMAIL: ${{ secrets.ADMIN_TEST_USER_EMAIL }}
-  # Secure database management user
-  SUPER_ADMIN: ${{ secrets.SUPER_ADMIN }}
-  SUPER_ADMIN_PASSWORD: ${{ secrets.SUPER_ADMIN_PASSWORD }}
-  # SSL
+  # Secure admin account for initial setup
+  ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
+  ADMIN_USERNAME: ${{ secrets.ADMIN_USERNAME }}
+  ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+  # Secure employee account for initial setup
+  EMPLOYEE_EMAIL: ${{ secrets.EMPLOYEE_EMAIL }}
+  EMPLOYEE_USERNAME: ${{ secrets.EMPLOYEE_USERNAME }}
+  EMPLOYEE_PASSWORD: ${{ secrets.EMPLOYEE_PASSWORD }}
+  # SSL 
   DB_SSL: ${{ secrets.DB_SSL }}
-  SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
-    environment: test
+    environment: development
     strategy:
       matrix:
         node-version: [22.x]
@@ -80,7 +76,7 @@ jobs:
         cache: 'npm'
         cache-dependency-path: '**/package-lock.json'
 
-    - name: Install dependencies
+    - name: Install frontend dependencies
       run: npm ci
       working-directory: ./
 
@@ -100,7 +96,7 @@ jobs:
       run: npm run lint
       working-directory: ./
 
-    - name: Start Docker containers (production testing)
+    - name: Start Docker containers
       run: npm run docker:test
       working-directory: ./
 
@@ -109,33 +105,46 @@ jobs:
         echo "Launching the cinephoria test app..."  
         docker compose -f docker-compose-test.yml exec -T cinephoria-test nohup npm run dev:test > /dev/null 2>&1 &
 
-    - name: Wait for cinephoria app to be ready for testing
+    - name: Wait for cinephoria test app to be ready
       run: |
         echo "Waiting for the app to be ready..."
         sleep 45
 
-    - name: Run All Tests
+    - name: Run Unit Tests
       run: |
-        echo "Running all tests (unit, integration and functional)..."
-        docker compose -f docker-compose-test.yml exec -T cinephoria-test npm run test:all
+        echo "Running unit tests..."
+        docker compose -f docker-compose-test.yml exec -T cinephoria-test npm run test:unit:all:docker
+
+    - name: Run Integration Tests
+      run: |
+        echo "Running integration tests..."
+        docker compose -f docker-compose-test.yml exec -T cinephoria-test npm run test:integration:all:docker
+
+    - name: Run Functional Tests
+      run: |
+        echo "Running functional tests..."
+        docker compose -f docker-compose-test.yml exec -T cinephoria-test npm run test:functional:all:docker
+
+    - name: Initialize test users
+      run: |
+        echo "Seeding test users..."
+        docker compose -f docker-compose-test.yml exec -T cinephoria-test npm run backend:seeder
+
+    - name: Wait for cinephoria test app to be ready
+      run: |
+        echo "Waiting for the app to be ready..."
+        sleep 120
+      
+    - name: Run E2E cypress Tests
+      run: |
+        echo "Running e2e cypress tests..."
+        docker compose -f docker-compose-test.yml exec -T cinephoria-test npm run test:e2e:run:ci
+
+    - name: Removing test users
+      run: |
+        echo "Removing test users..."
+        docker compose -f docker-compose-test.yml exec -T cinephoria-test npm run backend:seeder:remove
 
     - name: Stop Docker containers
       if: always()
       run: npm run docker:test:down
-    
-    - name: Trigger CI Pre-Deployment workflow
-      if: ${{ success() }}
-      uses: actions/github-script@v7
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        script: |
-          console.log("All tests past! Triggering CI Pre-deploy workflow...");
-          await github.actions.createWorkflowDispatch({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            workflow_id: "ci-predeploy.yml",
-            ref: "main",
-            inputs: {
-              env: "production"
-            }
-          })

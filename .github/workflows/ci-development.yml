@@ -113,11 +113,6 @@ jobs:
         echo "Waiting for the app to be ready..."
         sleep 45
 
-    - name: Initialize test users
-      run: |
-        echo "Seeding test users..."
-        docker compose -f docker-compose-test.yml exec -T cinephoria-test npm run backend:seeder
- 
     - name: Run Unit Tests
       run: |
         echo "Running unit tests..."
@@ -132,21 +127,6 @@ jobs:
       run: |
         echo "Running functional tests..."
         docker compose -f docker-compose-test.yml exec -T cinephoria-test npm run test:functional:all:docker
-
-    - name: Wait for cinephoria test app to be ready
-      run: |
-        echo "Waiting for the app to be ready..."
-        sleep 45
-
-    - name: Run E2E cypress Tests
-      run: |
-        echo "Running e2e cypress tests..."
-        docker compose -f docker-compose-test.yml exec -T cinephoria-test npm run test:e2e:run:ci
-    
-    - name: Removing test users
-      run: |
-        echo "Removing test users..."
-        docker compose -f docker-compose-test.yml exec -T cinephoria-test npm run backend:seeder:remove
 
     - name: Stop Docker containers
       if: always()
