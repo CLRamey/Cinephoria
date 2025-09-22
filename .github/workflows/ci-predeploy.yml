@@ -86,7 +86,7 @@ jobs:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
           console.log("All tests past! Triggering CI Deploy workflow...");
-          await github.actions.createWorkflowDispatch({
+          await github.rest.actions.createWorkflowDispatch({
             owner: context.repo.owner,
             repo: context.repo.repo,
             workflow_id: "ci-deploy.yml",

@@ -135,6 +135,6 @@ jobs:
             workflow_id: "ci-predeploy.yml",
             ref: "main",
             inputs: {
-              env: "production"
+              env: "pre-deployment"
             }
           })
