@@ -98,6 +98,9 @@
 **/ci-development.yml
 **/ci-feature.yml
 **/ci-main.yml
+**/ci-docker-test.yml
+**/ci-predeploy.yml
+**/github/**
 
 # Initial database files that should not be baked into the image
 **/sql
@@ -119,3 +122,6 @@
 
 # SAST
 **/sonar-project.properties
+
+# Documentation
+**/documentation

@@ -5,30 +5,27 @@ import { ReservationService } from '../../projects/cinephoria-web/src/app/servic
 import { FilmInfoService } from '../../projects/cinephoria-web/src/app/services/film-info.service';
 import { CinemaInfoService } from '../../projects/cinephoria-web/src/app/services/cinema-info.service';
 import { Router, ActivatedRoute } from '@angular/router';
-import { of, throwError } from 'rxjs';
+import { BehaviorSubject, of, throwError } from 'rxjs';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { AuthService } from '../../projects/auth/src/lib/services/auth.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { FilmInfo } from '../../projects/cinephoria-web/src/app/interfaces/film';
 import { CinemaInfo } from '../../projects/cinephoria-web/src/app/interfaces/cinema';
 import { FormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
-import { MatOptionModule } from '@angular/material/core';
+import { MatOptionModule, MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatInputModule } from '@angular/material/input';
-import { MatNativeDateModule } from '@angular/material/core';
 import { MatListModule } from '@angular/material/list';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
 import {
   Seat,
   SavedReservation,
 } from '../../projects/cinephoria-web/src/app/interfaces/reservation';
 import { ExtendedScreening } from '../../projects/cinephoria-web/src/app/interfaces/screening';
-import { BehaviorSubject } from 'rxjs';
 import { Role } from '../../projects/auth/src/lib/interfaces/auth-interfaces';
 
 describe('ReservationComponent', () => {

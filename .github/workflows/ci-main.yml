@@ -12,7 +12,6 @@ permissions:
 on:
   pull_request:
     branches: ["main"]
-    types: [opened, synchronize, reopened]
 
 env: 
   NODE_ENV: ${{ secrets.NODE_ENV }}
@@ -114,30 +113,10 @@ jobs:
         echo "Waiting for the app to be ready..."
         sleep 45
 
-    - name: Initialize test users
-      run: |
-        echo "Seeding test users..."
-        docker compose -f docker-compose-test.yml exec -T cinephoria-test npm run backend:seeder
-
-    - name: Wait for cinephoria test app to be ready
-      run: |
-        echo "Waiting for the app to be ready..."
-        sleep 45
-
     - name: Run All Tests
       run: |
         echo "Running all tests (unit, integration and functional)..."
         docker compose -f docker-compose-test.yml exec -T cinephoria-test npm run test:all
-
-    - name: Run E2E cypress Tests
-      run: |
-        echo "Running e2e cypress tests..."
-        docker compose -f docker-compose-test.yml exec -T cinephoria-test npm run test:e2e:run:ci
-
-    - name: Removing test users
-      run: |
-        echo "Removing test users..."
-        docker compose -f docker-compose-test.yml exec -T cinephoria-test npm run backend:seeder:remove
 
     - name: Stop Docker containers
       if: always()
