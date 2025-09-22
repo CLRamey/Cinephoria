@@ -133,7 +133,7 @@ jobs:
             owner: context.repo.owner,
             repo: context.repo.repo,
             workflow_id: "ci-predeploy.yml",
-            ref: "development",
+            ref: "main",
             inputs: {
               env: "pre-deployment"
             }
