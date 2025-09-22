@@ -1,0 +1,53 @@
+<div class="film-card-container">
+  <mat-card
+    role="button"
+    attr.aria-label="Film {{ film.filmTitle }}"
+    (click)="onFilmClick()"
+    class="clickable"
+  >
+    <img mat-card-image [src]="film.filmImg" [alt]="'Affiche du film ' + film.filmTitle" />
+    <div *ngIf="film.filmFavorite" class="favorite-badge" aria-label="Coup de cœur">
+      <mat-icon color="warn" class="heart-icon">favorite</mat-icon>
+      <span>Coup de cœur</span>
+    </div>
+
+    <mat-card-header class="film-card-header">
+      <mat-card-title>
+        <p class="film-title">
+          {{ film.filmTitle }}
+        </p>
+      </mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+      <p class="description">{{ film.filmDescription }}</p>
+      <mat-divider class="age-divider"></mat-divider>
+      <p class="age">
+        <strong>Âge minimum :</strong>
+        {{ film.filmMinimumAge }} ans
+      </p>
+      <p class="duration">
+        <strong>Durée :</strong>
+        {{ film.filmDuration }} minutes
+      </p>
+      <mat-divider class="rating-divider"></mat-divider>
+      <div
+        class="rating"
+        *ngIf="film.filmAverageRating !== undefined"
+        aria-label="Note moyenne du film"
+      >
+        <ng-container
+          *ngIf="film.filmAverageRating !== null && film.filmAverageRating >= 0; else noRating"
+        >
+          <mat-icon *ngFor="let icon of starIcons" color="accent">
+            {{ icon }}
+          </mat-icon>
+          <span class="average-rating">{{ film.filmAverageRating }} / 5</span>
+        </ng-container>
+        <ng-template #noRating>
+          <span class="no-rating-text">Pas de note disponible</span>
+        </ng-template>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

@@ -1,0 +1,10 @@
+<caw-navbar></caw-navbar>
+<main role="main" class="main">
+  <ng-container *ngIf="status === 'Loading...'">
+    <mat-spinner diameter="50"></mat-spinner>
+  </ng-container>
+  <ng-container *ngIf="status !== 'Loading...'">
+    <router-outlet></router-outlet>
+  </ng-container>
+</main>
+<caw-footer></caw-footer>

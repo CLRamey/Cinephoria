@@ -1,0 +1,83 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "paths": {
+      "auth": [
+        "./dist/auth",
+        "@csh/auth",
+        "@csh/auth/*"
+      ]
+    },
+    "baseUrl": "./",
+    "outDir": "./dist/out-tsc",
+    "strict": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "skipLibCheck": true,
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "sourceMap": true,
+    "declaration": false,
+    "experimentalDecorators": true,
+    "moduleResolution": "bundler",
+    "importHelpers": true,
+    "target": "ES2022",
+    "module": "ES2022",
+    "lib": [
+      "ES2022",
+      "dom"
+    ]
+  },
+  "angularCompilerOptions": {
+    "enableI18nLegacyMessageIdFormat": false,
+    "strictInjectionParameters": true,
+    "strictInputAccessModifiers": true,
+    "strictTemplates": true
+    },
+  "include": [
+    "projects/cinephoria-web/**/*.ts",
+    "projects/cinephoria-web/**/*.{html,scss}", "tests/unit/footer.component.spec.ts", "tests/unit/cinema-info.service.spec.ts", "tests/unit/film-info.service.spec.ts", "tests/unit/films.component.spec.ts", "tests/unit/film-card.component.spec.ts", "tests/unit/film-details.component.spec.ts", "tests/unit/film-list.component.spec.ts", "tests/unit/room-info.service.spec.ts", "tests/unit/screening-info.service.spec.ts", "tests/unit/quality-info.service.spec.ts", "tests/unit/genre-info.service.spec.ts", "projects/cinephoria-web/src/app/features/contact/contact.component.spec.ts", "tests/unit/screening-card.component.spec.ts", "tests/unit/home.component.spec.ts", "tests/unit/login-client.component.spec.ts", "tests/unit/register-client.component.spec.ts", "tests/unit/privacy-policy.component.spec.ts", "tests/unit/cgu-cgv.component.spec.ts", "tests/unit/verify-email.component.spec.ts", "tests/integration/intVerification.service.spec.ts", "tests/unit/auth.service.spec.ts", "projects/cinephoria-web/src/app/features/employee/employee.component.spec.ts", "tests/unit/login-employee.component.spec.ts", "tests/unit/login-admin.component.spec.ts", "tests/unit/reservation-card.component.spec.ts", "tests/unit/reservation.component.spec.ts", "tests/unit/clientReservation.service.spec.ts", "tests/unit/reserve.component.spec.ts", "tests/unit/seat-selection.component.spec.ts", "tests/unit/reservation.service.spec.ts", "tests/unit/client.component.spec.ts",
+  ],
+  "exclude": [
+    "**/node_modules",
+    "**/dist",
+    "**/coverage",
+    "**/out-tsc",
+    "**/tsconfig.spec.json",
+    "**/tests",
+    "**/*.spec.ts",
+    "**/*.test.ts",
+    "**/*.e2e-spec.ts",
+    "**/*.svg",
+    "**/*.png",
+    "**/*.jpg",
+    "**/*.jpeg",
+    "**/*.gif",
+    "**/*.webp",
+    "**/.env",
+    "**/.env.*",
+    "**/*.env",
+    "**/.dockerignore",
+    "**/docker-compose.yml",
+    "**/docker-compose-test.yml",
+    "**/Dockerfile",
+    "**/.editorconfig",
+    "**/.gitignore",
+    "**/.prettierrc",
+    "**/.prettierignore",
+    "**/.eslintrc.config.mjs",
+    "**/README.md",
+    "**/LICENSE",
+    "**/.editorconfig",
+    "**/sql",
+    "**/nosql",
+    "**/backend",
+    "**/projects/cinephoria-mobile",
+    "**/projects/cinephoria-desktop",
+    "**/vscode",
+    "**/github",
+    "**/angular",
+  ]
+}

@@ -1,0 +1,59 @@
+# Docker compose for docker databases and local dev interaction
+
+services:
+  mariadb:
+    build:
+      context: ../sql
+      dockerfile: Dockerfile
+    container_name: cinephoria-sqldb
+    restart: unless-stopped
+    env_file:
+      - path: .env
+        required: true
+    environment:
+      - TZ=Europe/Paris
+      - MARIADB_DATABASE=${MARIADB_DATABASE}
+      - MARIADB_USER=${MARIADB_USER}
+      - MARIADB_PASSWORD=${MARIADB_PASSWORD}
+      - MARIADB_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD}
+      - SUPER_ADMIN=${SUPER_ADMIN}
+      - SUPER_ADMIN_PASSWORD=${SUPER_ADMIN_PASSWORD}
+    ports:
+      - "3307:3306"
+    volumes:
+      - mariadb_data:/var/lib/mysql
+      - ../sql/init:/docker-entrypoint-initdb.d:ro
+      - mariadb_backup:/backup
+    networks:
+      - cinephoria-network
+
+  mongo:
+    image: mongo:8.0
+    container_name: cinephoria-nosqldb
+    restart: unless-stopped
+    env_file:
+      - path: .env
+        required: true
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
+      - MONGO_INITDB_DATABASE=${MONGO_INITDB_DATABASE}
+      - MONGO_URI=${MONGO_URI}
+      - MONGO_USERNAME=${MONGO_USERNAME}
+      - MONGO_PASSWORD=${MONGO_PASSWORD}
+    ports:
+      - "27018:27017"
+    volumes:
+      - mongo_data:/data/db
+      - ../nosql/init:/docker-entrypoint-initdb.d:ro
+    networks:
+      - cinephoria-network
+
+networks:
+  cinephoria-network:
+    driver: bridge
+
+volumes:
+  mariadb_data:
+  mariadb_backup:
+  mongo_data:

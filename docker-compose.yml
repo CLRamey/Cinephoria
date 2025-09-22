@@ -1,0 +1,116 @@
+# Objectif : Production cinephoria application using nginx + angular + nodejs + mariadb + mongoDB
+# Removed ports for security 
+# Secrets are securely passed through Github Actions
+
+# FOR DEPLOYMENT REMOVE THE INITIALIZED USERS EITHER FROM THE SQL 02_init_data FILE OR THE DATABASE DIRECTLY TO AVOID SECURITY BREACHES !
+
+services:
+  mariadb:
+    build:
+      context: ./sql
+      dockerfile: Dockerfile
+    container_name: cinephoria-sqldb
+    restart: unless-stopped
+    environment:
+      - TZ=Europe/Paris
+      - MARIADB_DATABASE=${MARIADB_DATABASE}
+      - MARIADB_USER=${MARIADB_USER}
+      - MARIADB_PASSWORD=${MARIADB_PASSWORD}
+      - MARIADB_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD}
+      - SUPER_ADMIN=${SUPER_ADMIN}
+      - SUPER_ADMIN_PASSWORD=${SUPER_ADMIN_PASSWORD}
+    volumes:
+      - mariadb_data:/var/lib/mysql
+      - ./sql/init:/docker-entrypoint-initdb.d:ro
+      - mariadb_backup:/backup
+      - ../app/certs/db-server-cert.pem:/etc/mysql/ssl/server-cert.pem:ro
+      - ../app/certs/db-server-key.pem:/etc/mysql/ssl/server-key.pem:ro
+      - ../app/certs/ca-cert.pem:/etc/mysql/ssl/ca-cert.pem:ro
+    networks:
+      - cinephoria-network
+
+  mongo:
+    image: mongo:8.0
+    container_name: cinephoria-nosqldb
+    restart: unless-stopped
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
+      - MONGO_INITDB_DATABASE=${MONGO_INITDB_DATABASE}
+      - MONGO_URI=${MONGO_URI}
+      - MONGO_USERNAME=${MONGO_USERNAME}
+      - MONGO_PASSWORD=${MONGO_PASSWORD}
+    volumes:
+      - mongo_data:/data/db
+      - ./nosql/init:/docker-entrypoint-initdb.d:ro
+      - ../app/certs/mongo-server-cert.pem:/etc/ssl/mongodb/server-cert.pem:ro
+      - ../app/certs/mongo-server-key.pem:/etc/ssl/mongodb/server-key.pem:ro
+      - ../app/certs/mongo-ca-cert.pem:/etc/ssl/mongodb/ca-cert.pem:ro
+    networks:
+      - cinephoria-network
+
+  cinephoria-back:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    image: app-backend
+    container_name: cinephoria-back
+    restart: on-failure
+    environment:
+      - NODE_ENV=${NODE_ENV}
+      - MARIADB_DATABASE=${MARIADB_DATABASE}
+      - DATABASE_URL=${DATABASE_URL}
+      - MONGO_URI=${MONGO_URI}
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_EXPIRES_IN=${JWT_EXPIRES_IN}
+      - CORS_ORIGIN=${CORS_ORIGIN}
+      - COOKIE_SECRET=${COOKIE_SECRET}
+      - PORT=${PORT}
+      - API_URL=${API_URL}
+      - BASE_URL=${BASE_URL}
+      - ADMIN_EMAIL=${ADMIN_EMAIL}
+      - ADMIN_USERNAME=${ADMIN_USERNAME}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD}
+      - EMPLOYEE_EMAIL=${EMPLOYEE_EMAIL}
+      - EMPLOYEE_USERNAME=${EMPLOYEE_USERNAME}
+      - EMPLOYEE_PASSWORD=${EMPLOYEE_PASSWORD}
+      - DB_SSL=${DB_SSL}
+      - DB_SSL_CA=${DB_SSL_CA}
+      - DB_SSL_KEY=${DB_SSL_KEY}
+      - DB_SSL_CERT=${DB_SSL_CERT}
+      - MONGO_CA=${MONGO_CA}
+      - MONGO_CLIENT_COMBINED=${MONGO_CLIENT_COMBINED}
+      - DOMAIN_NAME=${DOMAIN_NAME}
+    depends_on:
+      - mariadb
+      - mongo
+    networks:
+      - cinephoria-network
+      
+  cinephoria-front:
+    build:
+      context: .
+      dockerfile: projects/cinephoria-web/Dockerfile
+    image: app-frontend
+    container_name: cinephoria-front
+    restart: always
+    ports:
+      - "443:443"
+    environment:
+      - API_URL=${API_URL}
+    volumes:
+      - ../app/certs/fullchain.pem:/etc/ssl/certs/app.crt:ro
+      - ../app/certs/privkey.pem:/etc/ssl/private/app.key:ro
+    depends_on:
+      - cinephoria-back
+    networks:
+      - cinephoria-network
+
+networks:
+  cinephoria-network:
+    driver: bridge
+
+volumes:
+  mariadb_data:
+  mariadb_backup:
+  mongo_data:

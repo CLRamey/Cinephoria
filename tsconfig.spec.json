@@ -1,0 +1,16 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./out-tsc/spec",
+    "types": ["node", "jest"],
+    "allowJs": false,
+    "sourceMap": true,
+    "noEmit": true,
+  },
+  "include": [
+    "tests/*.ts",
+    "tests/**/*.ts", 
+    "projects/cinephoria-web/src/**/*",
+    "projects/auth/src/**/*",
+  ],
+}

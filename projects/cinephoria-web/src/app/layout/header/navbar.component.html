@@ -1,0 +1,109 @@
+<header class="navbar-header">
+  <mat-toolbar
+    routerLinkActive="active"
+    [routerLinkActiveOptions]="{ exact: true }"
+    color="primary"
+    class="navbar"
+  >
+    <a routerLink="/accueil" class="logo" aria-label="Accueil Cinéphoria">
+      <img src="assets/cinephoria-logo.webp" alt="Cinéphoria Logo" class="cinephoria-logo" />
+    </a>
+
+    <span class="spacer"></span>
+
+    <!-- Desktop navigation -->
+    <nav
+      class="nav-links desktop"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+      aria-label="Menu principal"
+    >
+      <a mat-button routerLink="/accueil">Accueil</a>
+      <a mat-button routerLink="/films">Films</a>
+      <a mat-button routerLink="/reservation">Réservation</a>
+      <a mat-button routerLink="/contact">Contact</a>
+
+      <!-- Desktop connexion dropdown -->
+      <ng-container *ngIf="(isAuthenticated$ | async) === false">
+        <button
+          mat-button
+          [matMenuTriggerFor]="connexionMenu"
+          aria-label="Ouvrir le menu de connexion"
+        >
+          Connexion
+        </button>
+        <mat-menu #connexionMenu="matMenu" class="connexion-menu">
+          <a mat-menu-item routerLink="/login-client">Espace Client</a>
+          <mat-divider></mat-divider>
+          <a mat-menu-item routerLink="/login-employee">Espace Employé</a>
+          <mat-divider></mat-divider>
+          <a mat-menu-item routerLink="/login-admin">Espace Administrateur</a>
+        </mat-menu>
+      </ng-container>
+      <ng-container *ngIf="(isAuthenticated$ | async) === true && (userRole$ | async) !== null">
+        <button mat-button [matMenuTriggerFor]="accountMenu" aria-label="Ouvrir le menu de compte">
+          Mon Compte
+        </button>
+        <mat-menu #accountMenu="matMenu" class="account-menu">
+          <a mat-menu-item [routerLink]="profileUrl">Mon espace</a>
+          <mat-divider></mat-divider>
+          <button mat-menu-item (click)="logout()" aria-label="Déconnexion">Déconnexion</button>
+        </mat-menu>
+      </ng-container>
+    </nav>
+
+    <!-- Mobile Toggle Icon -->
+    <button
+      mat-icon-button
+      class="mobile-toggle"
+      (click)="open()"
+      aria-label="Ouvrir le menu mobile"
+    >
+      <mat-icon>menu</mat-icon>
+    </button>
+    <div class="decorative-band"></div>
+  </mat-toolbar>
+
+  <!-- Mobile Nav Drawer -->
+  <mat-drawer-container class="mobile-drawer-container" autosize>
+    <mat-drawer #drawer mode="over" position="end" class="mobile-drawer">
+      <mat-drawer-content>
+        <mat-toolbar color="primary" class="navbar">
+          <button mat-icon-button (click)="close()" aria-label="Fermer le menu mobile">
+            <mat-icon>close</mat-icon>
+          </button>
+        </mat-toolbar>
+        <mat-nav-list
+          class="nav-links mobile"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+        >
+          <a mat-list-item routerLink="/accueil" (click)="close()">Accueil</a>
+          <mat-divider></mat-divider>
+          <a mat-list-item routerLink="/films" (click)="close()">Films</a>
+          <mat-divider></mat-divider>
+          <a mat-list-item routerLink="/reservation" (click)="close()">Réservation</a>
+          <mat-divider></mat-divider>
+          <a mat-list-item routerLink="/contact" (click)="close()">Contact</a>
+          <mat-divider></mat-divider>
+          <ng-container *ngIf="(isAuthenticated$ | async) === false">
+            <a mat-list-item routerLink="/login-client" (click)="close()">Espace Client</a>
+            <mat-divider></mat-divider>
+            <a mat-list-item routerLink="/login-employee" (click)="close()">Espace Employé</a>
+            <mat-divider></mat-divider>
+            <a mat-list-item routerLink="/login-admin" (click)="close()">Espace Administrateur</a>
+            <mat-divider></mat-divider>
+          </ng-container>
+          <ng-container *ngIf="(isAuthenticated$ | async) === true && (userRole$ | async) !== null">
+            <a mat-list-item [routerLink]="profileUrl" (click)="close()">Mon Espace</a>
+            <mat-divider></mat-divider>
+            <button mat-menu-item (click)="logout(); close()" aria-label="Déconnexion">
+              Déconnexion
+            </button>
+            <mat-divider></mat-divider>
+          </ng-container>
+        </mat-nav-list>
+      </mat-drawer-content>
+    </mat-drawer>
+  </mat-drawer-container>
+</header>

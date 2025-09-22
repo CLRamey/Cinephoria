@@ -1,0 +1,66 @@
+// File: backend/src/config/databaseSql.ts
+// Database configuration for SQL (MariaDB) connection, sequelize and model initialization
+import { Sequelize } from 'sequelize';
+import { initModels } from '../models/init-models';
+import dotenv from 'dotenv';
+dotenv.config(); // Load environment variables FIRST safely
+import { log, logerror } from '../utils/logger';
+
+// Determine if the environment is production or development
+const isProduction = process.env['NODE_ENV'] === 'production';
+// Temporary disable SSL until this is obtained
+const useSSL = process.env['DB_SSL'] === 'true';
+
+// Define dialect options based on the environment
+const dialectOptions = {
+  connectTimeout: 60000, // Connection timeout (ms)
+  ...(useSSL
+    ? {
+        ssl: {
+          rejectUnauthorized: true, // Reject unauthorized SSL certificates in production for security
+          ca: process.env['DB_SSL_CA'], // SSL CA certificate
+          key: process.env['DB_SSL_KEY'], // Client database key for TLS
+          cert: process.env['DB_SSL_CERT'], // Client database certificate for TLS
+        },
+        allowPublicKeyRetrieval: false, // Disable public key retrieval in production for security
+      }
+    : {
+        allowPublicKeyRetrieval: true, // Enable public key retrieval in development for easier connection
+      }),
+};
+
+// Create Sequelize instance for SQL connection
+const databaseUrl = process.env['DATABASE_URL'];
+if (!databaseUrl) {
+  throw new Error('DATABASE_URL environment variable is not defined');
+}
+
+// Sequelize instance configuration
+export const sequelize = new Sequelize(databaseUrl, {
+  dialect: 'mariadb',
+  logging: !isProduction ? console.log : false, // Enabled for development, disabled in production
+  timezone: 'Europe/Paris',
+  dialectOptions: dialectOptions,
+  pool: {
+    max: 5, // Max open connections
+    min: 0, // Min open connections
+    acquire: 30000, // Max time trying to connect to the database (ms)
+    idle: 10000, // Max time a connection can be idle before being released (ms)
+  },
+});
+
+// Connection to the database + sequelize authentication
+export const connectMariaDB = async () => {
+  try {
+    await sequelize.authenticate();
+    log('Sql connected successfully.');
+  } catch (error) {
+    logerror('Unable to connect to the sql database:', error);
+    throw error;
+  }
+};
+
+// Initialize models
+export const models = initModels(sequelize);
+log('Models initialized successfully.', Object.keys(models));
+// Export models for use in other parts of the application

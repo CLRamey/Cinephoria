@@ -1,0 +1,81 @@
+<div class="film-details-container">
+  <ng-container *ngIf="isLoading; else mainContent">
+    <mat-spinner diameter="50"></mat-spinner>
+  </ng-container>
+
+  <ng-template #mainContent>
+    <ng-container *ngIf="hasError; else contentBlock">
+      <p>
+        Une erreur est survenue lors du chargement des détails du film. Veuillez réessayer plus
+        tard.
+      </p>
+    </ng-container>
+
+    <ng-template #loadingOrEmpty>
+      <p>Chargement des détails du film...</p>
+      <mat-spinner diameter="50"></mat-spinner>
+    </ng-template>
+
+    <ng-template #contentBlock>
+      <ng-container *ngIf="film; else loadingOrEmpty">
+        <div class="top-section">
+          <div class="image-container">
+            <img
+              [src]="film.filmImg"
+              [alt]="'Affiche du film ' + film.filmTitle"
+              class="film-img-left"
+            />
+          </div>
+
+          <section class="details-container">
+            <h2>{{ film.filmTitle }}</h2>
+            <p class="description">{{ film.filmDescription }}</p>
+            <p>
+              <strong>Âge minimum :</strong>
+              {{ film.filmMinimumAge }} ans
+            </p>
+            <p>
+              <strong>Durée :</strong>
+              {{ film.filmDuration }} minutes
+            </p>
+          </section>
+        </div>
+
+        <section class="screenings-container" #screeningsSection>
+          <div class="screening-title">
+            <h3>Séances disponibles</h3>
+          </div>
+          <div class="screenings-grid">
+            <ng-container *ngIf="seances?.length; else noScreenings">
+              <caw-screening-card
+                *ngFor="let screening of seances"
+                [screening]="screening"
+                (reserveScreening)="onReserveScreening($event)"
+              ></caw-screening-card>
+            </ng-container>
+            <ng-template #noScreenings>
+              <p>Aucune séance disponible pour l'instant.</p>
+            </ng-template>
+          </div>
+        </section>
+
+        <section class="customer-reviews">
+          <div class="review-title">
+            <h3>Avis des clients</h3>
+          </div>
+          <div class="review-grid">
+            <ng-container *ngIf="!review || review.length === 0">
+              <p>Aucun avis disponible pour ce film.</p>
+            </ng-container>
+            <ng-container *ngIf="review && review.length > 0">
+              <div class="review" *ngFor="let r of review">
+                <p>Rating : étoiles</p>
+                <p></p>
+              </div>
+            </ng-container>
+          </div>
+        </section>
+      </ng-container>
+    </ng-template>
+  </ng-template>
+</div>

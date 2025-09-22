@@ -1,0 +1,30 @@
+<div class="verification-container">
+  <ng-container *ngIf="isLoading">
+    <mat-progress-spinner mode="indeterminate" diameter="50"></mat-progress-spinner>
+    <br />
+    <p>Vérification en cours...</p>
+  </ng-container>
+
+  <ng-container *ngIf="!isLoading && isSuccess">
+    <mat-icon color="primary" aria-hidden="false" aria-label="Success">check_circle</mat-icon>
+    <h2>Votre e-mail a été vérifié avec succès !</h2>
+    <p>Vous pouvez maintenant vous connecter à votre compte.</p>
+    <br />
+    <p class="redirection">Redirection vers la page de connexion en cours...</p>
+    <p class="redirect">
+      Si vous n'êtes pas redirigé automatiquement, veuillez cliquer sur le bouton ci-dessous :
+    </p>
+    <button mat-raised-button color="primary" (click)="goToLogin()">
+      Aller à la page de connexion
+    </button>
+  </ng-container>
+
+  <ng-container *ngIf="!isLoading && !isSuccess">
+    <mat-icon color="warn" aria-hidden="false" aria-label="Error">error</mat-icon>
+    <h2>Échec de la vérification</h2>
+    <p>Échec de la vérification de votre adresse e-mail. Veuillez réessayer.</p>
+    <button class="return" mat-raised-button color="primary" (click)="goToLogin()">
+      Retour à la page de connexion
+    </button>
+  </ng-container>
+</div>

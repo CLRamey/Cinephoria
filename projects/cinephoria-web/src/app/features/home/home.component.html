@@ -1,0 +1,75 @@
+<div class="home-page-container">
+  <div class="home-page-intro" aria-label="Introduction-cinéphoria" role="region">
+    <h1 id="Introduction-cinéphoria" class="title">Bienvenue chez Cinéphoria !</h1>
+    <p class="intro">
+      Plongez dans l'univers du cinéma avec notre sélection des derniers films disponibles.
+      <br />
+      Laissez-vous emporter par la magie du grand écran.
+    </p>
+  </div>
+
+  <div class="carousel-container">
+    <ng-container *ngIf="isLoading; else carouselContent">
+      <mat-spinner diameter="50"></mat-spinner>
+    </ng-container>
+
+    <ng-template #carouselContent>
+      <ng-container *ngIf="hasError; else carouselBlock">
+        <p role="alert">
+          De nouvelles sorties arrivent bientôt.
+          <br />
+          En attendant, nous vous invitons à explorer notre collection de films disponibles.
+        </p>
+      </ng-container>
+    </ng-template>
+
+    <ng-template #carouselBlock>
+      <ng-container *ngIf="latestFilms.length > 0; else noFilms">
+        <ng-container *ngIf="latestFilms.length > 1">
+          <button
+            mat-icon-button
+            class="scroll-btn left"
+            (click)="scrollLeft()"
+            aria-label="Défiler vers la gauche"
+          >
+            <mat-icon>chevron_left</mat-icon>
+          </button>
+        </ng-container>
+        <div class="carousel-scroll" #carousel role="list" aria-label="Liste des derniers films">
+          <caw-film-card
+            *ngFor="let film of latestFilms"
+            [film]="film"
+            (click)="showFilmDetails(film)"
+            role="listitem"
+          ></caw-film-card>
+        </div>
+        <ng-container *ngIf="latestFilms.length > 1">
+          <button
+            mat-icon-button
+            class="scroll-btn right"
+            (click)="scrollRight()"
+            aria-label="Défiler vers la droite"
+          >
+            <mat-icon>chevron_right</mat-icon>
+          </button>
+        </ng-container>
+      </ng-container>
+      <ng-template #noFilms>
+        <p role="status">
+          Aucun film récent à afficher pour l'instant.
+          <br />
+          En attendant, nous vous invitons à explorer notre collection de films disponibles.
+        </p>
+      </ng-template>
+    </ng-template>
+  </div>
+  <button
+    mat-raised-button
+    color="primary"
+    aria-label="Voir la liste complète des films"
+    (click)="goToAllFilms()"
+    class="films-button"
+  >
+    Voir tous les films >
+  </button>
+</div>

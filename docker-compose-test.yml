@@ -1,0 +1,119 @@
+# Objective: Tests angular + nodejs + mariadb + mongoDB with jest and cypress in a container docker environment.
+
+# This docker-compose-test.yml file will not provide a visual of the website.
+# It is intended for running tests in a headless environment to test the cinephoria web application
+# in a CI/CD pipeline or locally within a contained docker environment.
+
+# CI/CD Configured accordingly, for local testing, follow the below steps:
+# 1. Ensure you adjust the environment variables accordingly for DOCKER-TEST.
+# 2. Call the docker-compose-test.yml with "npm run docker:test" in the terminal.
+# 3. Once running, open bash terminal and launch the app inside the container "docker exec -it cinephoria-test bash" then, "npm run dev"
+# 4. Open a new bash terminal  and enter the docker container "docker exec -it cinephoria-test bash" >>
+# 5. Use the jest scripts to test e.g. "npm run test:all"
+# 6. Add test users "npm run backend:seeder"
+# 7. Ensure that the /sql/init/02_init_data.sql file has some films with last Wednesdays date or some tests will fail
+# 8. Test with cypress: "npm run test:e2e:run:ci"
+# 9. To stop the containers: "npm run docker:test:down"
+
+services:
+  mariadb:
+    image: mariadb:11.7.2
+    container_name: cinephoria-sqldb
+    restart: unless-stopped
+    # env_file: ".env" # Uncomment for local use only, comment for commits
+    environment:
+      - TZ=Europe/Paris
+      - MARIADB_DATABASE=${MARIADB_DATABASE}
+      - MARIADB_USER=${MARIADB_USER}
+      - MARIADB_PASSWORD=${MARIADB_PASSWORD}
+      - MARIADB_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD}
+    ports:
+      - "3307:3306"
+    volumes:
+      - mariadb_data:/var/lib/mysql
+      - ./sql/init:/docker-entrypoint-initdb.d:ro
+    networks:
+      - cinephoria-network
+
+  mongo:
+    image: mongo:8.0
+    container_name: cinephoria-nosqldb
+    restart: unless-stopped
+    # env_file: ".env" # Uncomment for local use only, comment for commits
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
+      - MONGO_INITDB_DATABASE=${MONGO_INITDB_DATABASE}
+      - MONGO_URI=${MONGO_URI}
+      - MONGO_USERNAME=${MONGO_USERNAME}
+      - MONGO_PASSWORD=${MONGO_PASSWORD}
+    ports:
+      - "27018:27017"
+    volumes:
+      - mongo_data:/data/db
+      - ./nosql/init:/docker-entrypoint-initdb.d:ro
+    networks:
+      - cinephoria-network
+
+  cinephoria-test:
+      build:
+        context: .
+        dockerfile: Dockerfile
+      image: app-test
+      container_name: cinephoria-test
+      restart: always
+      ports:
+        - "4200:4200"
+        - "3000:3000"
+      # env_file: ".env" # Uncomment for local use only, comment for commits
+      environment:
+        - NODE_ENV=${NODE_ENV}
+        - MARIADB_DATABASE=${MARIADB_DATABASE}
+        - MARIADB_USER=${MARIADB_USER}
+        - MARIADB_PASSWORD=${MARIADB_PASSWORD}
+        - MARIADB_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD}
+        - MARIADB_HOST=${MARIADB_HOST}
+        - MARIADB_PORT=${MARIADB_PORT}
+        - DATABASE_URL=${DATABASE_URL}
+        - MONGO_USERNAME=${MONGO_USERNAME}
+        - MONGO_PASSWORD=${MONGO_PASSWORD}
+        - MONGO_HOST=${MONGO_HOST}
+        - MONGO_PORT=${MONGO_PORT}
+        - MONGO_URI=${MONGO_URI}
+        - JWT_SECRET=${JWT_SECRET}
+        - JWT_EXPIRES_IN=${JWT_EXPIRES_IN}
+        - CORS_ORIGIN=${CORS_ORIGIN}
+        - COOKIE_SECRET=${COOKIE_SECRET}
+        - PORT=${PORT}
+        - API_URL=${API_URL}
+        - BASE_URL=${BASE_URL}
+        - TEST_USER_PASSWORD=${TEST_USER_PASSWORD}
+        - CLIENT_TEST_USER_EMAIL=${CLIENT_TEST_USER_EMAIL}
+        - EMPLOYEE_TEST_USER_EMAIL=${EMPLOYEE_TEST_USER_EMAIL}
+        - ADMIN_TEST_USER_EMAIL=${ADMIN_TEST_USER_EMAIL}
+        - ADMIN_EMAIL=${ADMIN_EMAIL}
+        - ADMIN_USERNAME=${ADMIN_USERNAME}
+        - ADMIN_PASSWORD=${ADMIN_PASSWORD}
+        - EMPLOYEE_EMAIL=${EMPLOYEE_EMAIL}
+        - EMPLOYEE_USERNAME=${EMPLOYEE_USERNAME}
+        - EMPLOYEE_PASSWORD=${EMPLOYEE_PASSWORD}
+        - DB_SSL=${DB_SSL}
+      volumes:
+        - .:/app
+        - /app/node_modules
+      depends_on:
+        - mariadb
+        - mongo
+      networks:
+        - cinephoria-network
+      working_dir: /app
+      tty: true
+      stdin_open: true
+
+networks:
+  cinephoria-network:
+    driver: bridge
+
+volumes:
+  mariadb_data:
+  mongo_data:
