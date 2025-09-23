@@ -1,7 +1,7 @@
 export const environment = {
   production: true,
-  apiURL: '${API_URL}',
-  frontendDomain: '${FRONTEND_DOMAIN}',
+  apiURL: 'https://caw25.dev/api',
+  frontendDomain: 'https://caw25.dev',
   enableConsole: false, //Disable console logs in production
 };
 
