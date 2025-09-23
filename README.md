@@ -17,16 +17,16 @@ Manuel d'utilisation :
 [Cinéphoria - Manuel d'utilisation](documentation/Manuel_d'utilisation_Cinéphoria.pdf)
 
 Gestion de projet :
-[Cinéphoria - Gestion de projet]
+[Cinéphoria - Gestion de projet](documentation/Gestion_de_Projet_Cinéphoria.pdf)
 
 Charte graphique : 
 [Cinéphoria - Charte graphique](documentation/Charte_graphique_Cinéphoria.pdf)
 
-Wireframes :
-[Cinéphoria - Wireframes]
-
 Maquettes :
 [Cinéphoria - Maquettes](documentation/Cinéphoria_Maquette_Desktop.pdf)
+
+Wireframes :
+[Cinéphoria - Wireframes]
 
 ## Structure du projet
 
