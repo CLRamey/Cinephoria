@@ -1,4 +1,4 @@
-FROM mariadb:11.7.2
+FROM mariadb:11.8
 
 # Copy backup script
 COPY ./backup/backup.sh /usr/local/bin/backup.sh

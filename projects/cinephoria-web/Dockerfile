@@ -21,7 +21,7 @@ COPY . .
 RUN npm run build cinephoria-web --configuration=production
 
 # Stage 2: NGINX server
-FROM nginx:stable-alpine3.20
+FROM nginx:stable-alpine3.21
 
 # Copy cinephoria-web build to the NGINX html directory (staging)
 COPY projects/cinephoria-web/nginx/nginx.conf /etc/nginx/conf.d/default.conf
