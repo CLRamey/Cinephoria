@@ -107,30 +107,6 @@ jobs:
         run: |
           rsync -av --exclude='git' -e "ssh -p $VPS_PORT" ./ $VPS_USER@$VPS_HOST:$APP_PATH
 
-      - name: Generate nginx.conf from template
-        run: |
-          ssh -p $VPS_PORT $VPS_USER@$VPS_HOST << 'EOF'
-            cd $APP_PATH
-            if [ -f projects/cinephoria-web/nginx/nginx.conf.template ]; then
-              export DOMAIN_NAME=${DOMAIN_NAME}
-              envsubst '${DOMAIN_NAME}' < projects/cinephoria-web/nginx/nginx.conf.template > projects/cinephoria-web/nginx/nginx.conf.generated
-              mv projects/cinephoria-web/nginx/nginx.conf.generated projects/cinephoria-web/nginx/nginx.conf
-            fi
-          EOF
-
-      - name: Replace angular enviornment variables for production
-        run: |
-          ssh -p $VPS_PORT $VPS_USER@$VPS_HOST << 'EOF'
-            cd $APP_PATH
-            if [ -f projects/cinephoria-web/src/environments/environment.ts ]; then
-              echo "Replacing environment variables in environment.ts..."
-              export API_URL=${API_URL}
-              export FRONTEND_DOMAIN=${FRONTEND_DOMAIN}
-              envsubst '${API_URL} ${FRONTEND_DOMAIN}' < projects/cinephoria-web/src/environments/environment.ts > projects/cinephoria-web/src/environments/environment.generated.ts
-              mv projects/cinephoria-web/src/environments/environment.generated.ts projects/cinephoria-web/src/environments/environment.ts
-            fi
-          EOF
-
       - name: Deploy application using docker-compose on VPS
         run: |
           echo "Deploying application..."
@@ -141,36 +117,4 @@ jobs:
             docker compose -f $DOCKER_COMPOSE_FILE build
             docker compose -f $DOCKER_COMPOSE_FILE up -d
           EOF
-
-      - name: Wait for cinephoria app to be ready
-        run: |
-          echo "Waiting for the app to be ready..."
-          sleep 45
-
-      - name: SQL database security
-        run: |
-          ssh -p $VPS_PORT $VPS_USER@$VPS_HOST << 'EOF'
-            cd $APP_PATH
-            docker-compose -f $DOCKER_COMPOSE_FILE exec -T $SECURE_CONTAINER sh -c "$SECURE_COMMAND"
-          EOF
-
-      - name: Copy compiled js seeder to VPS
-        run: |
-          ssh -p $VPS_PORT $VPS_USER@$VPS_HOST "mkdir -p $SEED_PATH"
-          scp -P $VPS_PORT -r ./$SEEDER_PATH/seed_admin_employee.js $VPS_USER@$VPS_HOST:$SEED_PATH/
-
-      - name: Run seeder in a temporary container
-        run: |
-          ssh -p $VPS_PORT $VPS_USER@$VPS_HOST << 'EOF'
-            docker run --rm --network cinephoria-network \
-            -v $SEED_PATH/seed_admin_employee.js:/seed_admin_employee.js \
-            cinephoria-back node /seed_admin_employee.js
-          EOF
-
-      - name: SQL database backup via VPS
-        run: |
-          ssh -i ~/.ssh/id_ed25519 -p $VPS_PORT $VPS_USER@$VPS_HOST << 'EOF'
-            cd $APP_PATH
-            docker-compose -f $DOCKER_COMPOSE_FILE exec -T $SECURE_CONTAINER sh -c \
-            "mariadb-dump -u $SUPER_ADMIN -p$SUPER_ADMIN_PASSWORD --databases $MARIADB_DATABASE --single-transaction  --quick  --lock-tables=false > $BACKUP_FILE"
-          EOF
+          
