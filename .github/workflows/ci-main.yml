@@ -132,9 +132,9 @@ jobs:
           await github.rest.actions.createWorkflowDispatch({
             owner: context.repo.owner,
             repo: context.repo.repo,
-            workflow_id: "ci-deploy.yml",
+            workflow_id: "ci-predeploy.yml",
             ref: "main",
             inputs: {
-              environment: "production"
+              environment: "pre-deployment"
             }
           })

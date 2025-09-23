@@ -7,7 +7,7 @@ Cinéphoria est une plateforme complète composée de trois applications : web, 
 Liens des documents :
 
 Documentation technique :
-[Cinéphoria - Documentation technique]
+[Cinéphoria - Documentation technique](documentation/Documentation_Technique%20_Cinéphoria.pdf)
 
 Transaction SQL :
 [Transaction.sql](sql/transaction/transaction.sql)
