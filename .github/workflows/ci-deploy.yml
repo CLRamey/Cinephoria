@@ -105,7 +105,7 @@ jobs:
 
       - name: Copy deployment files to VPS
         run: |
-          scp -P $VPS_PORT -r ./ $VPS_USER@$VPS_HOST:$APP_PATH
+          rsync -av --exclude='git' -e "ssh -p $VPS_PORT" ./ $VPS_USER@$VPS_HOST:$APP_PATH
 
       - name: Generate nginx.conf from template
         run: |
