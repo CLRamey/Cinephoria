@@ -19,8 +19,6 @@ const dialectOptions = {
         ssl: {
           rejectUnauthorized: true, // Reject unauthorized SSL certificates in production for security
           ca: process.env['DB_SSL_CA'], // SSL CA certificate
-          key: process.env['DB_SSL_KEY'], // Client database key for TLS
-          cert: process.env['DB_SSL_CERT'], // Client database certificate for TLS
         },
         allowPublicKeyRetrieval: false, // Disable public key retrieval in production for security
       }
