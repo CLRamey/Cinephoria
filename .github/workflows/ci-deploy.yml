@@ -82,6 +82,9 @@ env:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    container:
+      image: docker:24
+      options: --user 1000:1000
     environment: Production
 
     steps:
@@ -91,27 +94,27 @@ jobs:
       - name: Install SSH client
         run: sudo apt-get update && sudo apt-get install -y openssh-client sshpass
 
-      - name: Save VPS SSH Key
+      - name: Load VPS SSH Key for dedicated user
         uses: webfactory/ssh-agent@v0.5.4
         with:
           ssh-private-key: ${{ secrets.VPS_SSH }}
 
       - name: Add VPS to known hosts
         run: |
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
           ssh-keyscan -p $VPS_PORT -H $VPS_HOST >> ~/.ssh/known_hosts
+          chmod 644 ~/.ssh/known_hosts
 
       - name: Copy deployment files to VPS
         run: |
-          echo "Copying files to VPS..."
-          scp -i ~/.ssh/id_ed25519 -P $VPS_PORT -r ./ $VPS_USER@$VPS_HOST:$APP_PATH
+          scp -P $VPS_PORT -r ./ $VPS_USER@$VPS_HOST:$APP_PATH
 
       - name: Generate nginx.conf from template
         run: |
-          echo "Generating nginx.conf from template..."
-          ssh -i ~/.ssh/id_ed25519 -p $VPS_PORT $VPS_USER@$VPS_HOST << EOF
+          ssh -p $VPS_PORT $VPS_USER@$VPS_HOST << EOF
             cd $APP_PATH
             if [ -f projects/cinephoria-web/nginx/nginx.conf.template ]; then
-              echo "Generating nginx.conf from template..."
               export DOMAIN_NAME=${DOMAIN_NAME}
               envsubst '${DOMAIN_NAME}' < projects/cinephoria-web/nginx/nginx.conf.template > projects/cinephoria-web/nginx/nginx.conf.generated
               mv projects/cinephoria-web/nginx/nginx.conf.generated projects/cinephoria-web/nginx/nginx.conf
@@ -120,8 +123,7 @@ jobs:
 
       - name: Replace angular enviornment variables for production
         run: |
-          echo "Replacing Angular environment variables for production..."
-          ssh -i ~/.ssh/id_ed25519 -p $VPS_PORT $VPS_USER@$VPS_HOST << EOF
+          ssh -p $VPS_PORT $VPS_USER@$VPS_HOST << EOF
             cd $APP_PATH
             if [ -f projects/cinephoria-web/src/environments/environment.ts ]; then
               echo "Replacing environment variables in environment.ts..."
@@ -135,7 +137,7 @@ jobs:
       - name: Deploy application using docker-compose on VPS
         run: |
           echo "Deploying application..."
-          ssh -i ~/.ssh/id_ed25519 -p $VPS_PORT $VPS_USER@$VPS_HOST << EOF
+          ssh -p $VPS_PORT $VPS_USER@$VPS_HOST << EOF
             cd $APP_PATH
             docker-compose -f $DOCKER_COMPOSE_FILE down
             docker-compose -f $DOCKER_COMPOSE_FILE pull
@@ -149,22 +151,19 @@ jobs:
 
       - name: SQL database security
         run: |
-          echo "Ensuring SQL database security..."
-          ssh -i ~/.ssh/id_ed25519 -p $VPS_PORT $VPS_USER@$VPS_HOST << EOF
+          ssh -p $VPS_PORT $VPS_USER@$VPS_HOST << EOF
             cd $APP_PATH
             docker-compose -f $DOCKER_COMPOSE_FILE exec -T $SECURE_CONTAINER sh -c "$SECURE_COMMAND"
           EOF
 
       - name: Copy compiled js seeder to VPS
         run: |
-          echo "Copying seeder files..."
-          ssh -i ~/.ssh/id_ed25519 -p $VPS_PORT $VPS_USER@$VPS_HOST "mkdir -p $SEED_PATH"
-          scp -i ~/.ssh/id_ed25519 -r ./$SEEDER_PATH/seed_admin_employee.js $VPS_USER@$VPS_HOST:$SEED_PATH/
+          ssh -p $VPS_PORT $VPS_USER@$VPS_HOST "mkdir -p $SEED_PATH"
+          scp -P $VPS_PORT -r ./$SEEDER_PATH/seed_admin_employee.js $VPS_USER@$VPS_HOST:$SEED_PATH/
 
       - name: Run seeder in a temporary container
         run: |
-          echo "Running seeder..."
-          ssh -i ~/.ssh/id_ed25519 -p $VPS_PORT $VPS_USER@$VPS_HOST << EOF
+          ssh -p $VPS_PORT $VPS_USER@$VPS_HOST << EOF
             docker run --rm --network cinephoria-network \
             -v $SEED_PATH/seed_admin_employee.js:/seed_admin_employee.js \
             cinephoria-back node /seed_admin_employee.js
@@ -172,7 +171,6 @@ jobs:
 
       - name: SQL database backup via VPS
         run: |
-          echo "Starting SQL database backup..."
           ssh -i ~/.ssh/id_ed25519 -p $VPS_PORT $VPS_USER@$VPS_HOST << EOF
             cd $APP_PATH
             docker-compose -f $DOCKER_COMPOSE_FILE exec -T $SECURE_CONTAINER sh -c \
