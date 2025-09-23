@@ -83,8 +83,6 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     container:
-      image: docker:24
-      options: --user 1000:1000
     environment: Production
 
     steps:
