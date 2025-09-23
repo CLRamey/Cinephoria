@@ -82,7 +82,6 @@ env:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    container:
     environment: Production
 
     steps:
@@ -110,7 +109,7 @@ jobs:
 
       - name: Generate nginx.conf from template
         run: |
-          ssh -p $VPS_PORT $VPS_USER@$VPS_HOST << EOF
+          ssh -p $VPS_PORT $VPS_USER@$VPS_HOST << 'EOF'
             cd $APP_PATH
             if [ -f projects/cinephoria-web/nginx/nginx.conf.template ]; then
               export DOMAIN_NAME=${DOMAIN_NAME}
@@ -121,7 +120,7 @@ jobs:
 
       - name: Replace angular enviornment variables for production
         run: |
-          ssh -p $VPS_PORT $VPS_USER@$VPS_HOST << EOF
+          ssh -p $VPS_PORT $VPS_USER@$VPS_HOST << 'EOF'
             cd $APP_PATH
             if [ -f projects/cinephoria-web/src/environments/environment.ts ]; then
               echo "Replacing environment variables in environment.ts..."
@@ -135,7 +134,7 @@ jobs:
       - name: Deploy application using docker-compose on VPS
         run: |
           echo "Deploying application..."
-          ssh -p $VPS_PORT $VPS_USER@$VPS_HOST << EOF
+          ssh -p $VPS_PORT $VPS_USER@$VPS_HOST << 'EOF'
             cd $APP_PATH
             docker-compose -f $DOCKER_COMPOSE_FILE down
             docker-compose -f $DOCKER_COMPOSE_FILE pull
@@ -149,7 +148,7 @@ jobs:
 
       - name: SQL database security
         run: |
-          ssh -p $VPS_PORT $VPS_USER@$VPS_HOST << EOF
+          ssh -p $VPS_PORT $VPS_USER@$VPS_HOST << 'EOF'
             cd $APP_PATH
             docker-compose -f $DOCKER_COMPOSE_FILE exec -T $SECURE_CONTAINER sh -c "$SECURE_COMMAND"
           EOF
@@ -161,7 +160,7 @@ jobs:
 
       - name: Run seeder in a temporary container
         run: |
-          ssh -p $VPS_PORT $VPS_USER@$VPS_HOST << EOF
+          ssh -p $VPS_PORT $VPS_USER@$VPS_HOST << 'EOF'
             docker run --rm --network cinephoria-network \
             -v $SEED_PATH/seed_admin_employee.js:/seed_admin_employee.js \
             cinephoria-back node /seed_admin_employee.js
@@ -169,7 +168,7 @@ jobs:
 
       - name: SQL database backup via VPS
         run: |
-          ssh -i ~/.ssh/id_ed25519 -p $VPS_PORT $VPS_USER@$VPS_HOST << EOF
+          ssh -i ~/.ssh/id_ed25519 -p $VPS_PORT $VPS_USER@$VPS_HOST << 'EOF'
             cd $APP_PATH
             docker-compose -f $DOCKER_COMPOSE_FILE exec -T $SECURE_CONTAINER sh -c \
             "mariadb-dump -u $SUPER_ADMIN -p$SUPER_ADMIN_PASSWORD --databases $MARIADB_DATABASE --single-transaction  --quick  --lock-tables=false > $BACKUP_FILE"
