@@ -138,8 +138,7 @@ jobs:
             cd $APP_PATH
             docker compose -f $DOCKER_COMPOSE_FILE down
             docker compose -f $DOCKER_COMPOSE_FILE pull
-            docker compose -f $DOCKER_COMPOSE_FILE build
-            docker compose -f $DOCKER_COMPOSE_FILE up --detach
+            docker compose -f $DOCKER_COMPOSE_FILE up --build -d
           EOF
 
       - name: Wait for cinephoria app to be ready
