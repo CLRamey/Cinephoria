@@ -136,16 +136,16 @@ jobs:
           echo "Deploying application..."
           ssh -p $VPS_PORT $VPS_USER@$VPS_HOST << 'EOF'
             cd $APP_PATH
-            docker compose -f $DOCKER_COMPOSE_FILE down
+            docker compose -f $DOCKER_COMPOSE_FILE down -v
             docker compose -f $DOCKER_COMPOSE_FILE pull
             docker compose -f $DOCKER_COMPOSE_FILE build
-            docker compose -f $DOCKER_COMPOSE_FILE up
+            docker compose -f $DOCKER_COMPOSE_FILE up -d
           EOF
 
       - name: Wait for cinephoria app to be ready
         run: |
           echo "Waiting for the app to be ready..."
-          sleep 500
+          sleep 45
 
       - name: SQL database security
         run: |
