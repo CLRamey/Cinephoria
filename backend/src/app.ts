@@ -8,6 +8,7 @@ import { logerror } from './utils/logger';
 
 // Express
 export const app = express();
+app.set('trust proxy', 1); // Trust first proxy (Nginx)
 
 // Allowed origins for CORS
 const corsOriginEnv = process.env.CORS_ORIGIN;

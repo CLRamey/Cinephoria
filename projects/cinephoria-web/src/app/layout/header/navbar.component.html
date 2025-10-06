@@ -45,7 +45,7 @@
           Mon Compte
         </button>
         <mat-menu #accountMenu="matMenu" class="account-menu">
-          <a mat-menu-item [routerLink]="profileUrl">Mon espace</a>
+          <a mat-menu-item [routerLink]="profileUrl">{{ accountLabel }}</a>
           <mat-divider></mat-divider>
           <button mat-menu-item (click)="logout()" aria-label="Déconnexion">Déconnexion</button>
         </mat-menu>

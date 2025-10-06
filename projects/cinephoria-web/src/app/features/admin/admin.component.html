@@ -1,1 +1,25 @@
-<p>admin works!</p>
+<div class="reservations-container">
+  <div class="top-section">
+    <h1 class="title">Administration</h1>
+    <p>Voici la liste de toutes les réservations récentes.</p>
+
+    <ng-container *ngIf="isLoading">
+      <p>Chargement de vos commandes...</p>
+      <mat-spinner diameter="50"></mat-spinner>
+    </ng-container>
+
+    <ng-container *ngIf="hasError">
+      <p class="error-text">
+        Erreur lors du chargement des statistiques. Veuillez réessayer plus tard.
+      </p>
+    </ng-container>
+
+    <ng-container *ngIf="!isLoading && !hasError && statistics.length === 0">
+      <p>Vous n'avez aucune statistique pour le moment.</p>
+    </ng-container>
+  </div>
+
+  <div class="statistics-container">
+    <h2>Statistiques des réservations</h2>
+  </div>
+</div>

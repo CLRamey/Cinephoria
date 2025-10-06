@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { AdminComponent } from './admin.component';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { AdminComponent } from '../../projects/cinephoria-web/src/app/features/admin/admin.component';
 
 describe('AdminComponent', () => {
   let component: AdminComponent;
@@ -9,6 +9,7 @@ describe('AdminComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [AdminComponent],
+      providers: [provideHttpClientTesting()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AdminComponent);
@@ -16,7 +17,12 @@ describe('AdminComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  afterEach(() => {
+    jest.restoreAllMocks();
+    jest.clearAllMocks();
+  });
+
+  it('should create the component', () => {
     expect(component).toBeTruthy();
   });
 });

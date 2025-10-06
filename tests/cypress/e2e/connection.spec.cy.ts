@@ -4,7 +4,7 @@ describe('Client login e2e Tests', () => {
   beforeEach(() => {
     cy.visit('/accueil');
     cy.contains('button', 'Connexion').click();
-    cy.wait(2000);
+    cy.wait(1000);
     cy.get('div.mat-mdc-menu-content')
       .should('be.visible')
       .within(() => {

@@ -72,6 +72,20 @@ export class NavbarComponent implements OnInit, OnDestroy {
     }
   }
 
+  // Method to get the account label based on the user role
+  get accountLabel(): string {
+    switch (this.userRole as Role) {
+      case Role.CLIENT:
+        return 'Mon espace';
+      case Role.EMPLOYEE:
+        return 'Intranet';
+      case Role.ADMIN:
+        return 'Administration';
+      default:
+        return 'Mon Espace';
+    }
+  }
+
   // Method to log out the user
   logout(): void {
     this.reservationService.clearStoredReservation();
