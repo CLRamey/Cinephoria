@@ -95,7 +95,7 @@
             <mat-divider></mat-divider>
           </ng-container>
           <ng-container *ngIf="(isAuthenticated$ | async) === true && (userRole$ | async) !== null">
-            <a mat-list-item [routerLink]="profileUrl" (click)="close()">Mon Espace</a>
+            <a mat-list-item [routerLink]="profileUrl" (click)="close()">{{ accountLabel }}</a>
             <mat-divider></mat-divider>
             <button mat-menu-item (click)="logout(); close()" aria-label="Déconnexion">
               Déconnexion

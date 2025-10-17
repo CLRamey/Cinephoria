@@ -20,9 +20,9 @@ INSERT INTO Genre (genre_type) VALUES
 
 -- Insert Films --- error in the original code: film_active_date should be a DATE, not a DATETIME
 INSERT INTO Film (film_title, film_description, film_img, film_duration, film_favorite, film_minimum_age, film_active_date, film_publishing_state, film_average_rating) VALUES
-('Les Ombres du Passé', 'Un voyage aventureux à travers des secrets oubliés.', 'assets/img/les_ombres_du_passe.webp', 115, FALSE, 12, '2025-10-01', 'active', 4.2),                   -- Film example 1
-('Échos de la Ville', 'Une course effrénée mêlant action et suspense urbain.', 'assets/img/echos_de_la_ville.webp', 105, FALSE, 16, '2025-10-01', 'active', 3.9),                     -- Film example 2
-('Murmures dans la Forêt', 'Une histoire de peur et de survie dans un environnement hostile.', 'assets/img/murmures_dans_la_foret.webp', 95, FALSE, 18, '2025-10-01', 'active', 4.5), -- Film example 3
+('Les Ombres du Passé', 'Un voyage aventureux à travers des secrets oubliés.', 'assets/img/les_ombres_du_passe.webp', 115, FALSE, 12, '2025-10-15', 'active', 4.2),                   -- Film example 1
+('Échos de la Ville', 'Une course effrénée mêlant action et suspense urbain.', 'assets/img/echos_de_la_ville.webp', 105, FALSE, 16, '2025-10-15', 'active', 3.9),                     -- Film example 2
+('Murmures dans la Forêt', 'Une histoire de peur et de survie dans un environnement hostile.', 'assets/img/murmures_dans_la_foret.webp', 95, FALSE, 18, '2025-10-15', 'active', 4.5), -- Film example 3
 ('Les Couleurs de l''Innocence', 'Une comédie touchante sur les relations humaines.', 'assets/img/les_couleurs_de_l_innocence.webp', 110, FALSE, 0, '2025-10-01', 'active', 0),       -- Film example 4
 ('Nuits Blanches à Lyon', 'Un thriller comique mêlant mystère et rires.', 'assets/img/nuits_blanches_a_lyon.webp', 100, FALSE, 12, '2025-06-16', 'active', 3.8),                      -- Film example 5
 ('Le Chant des Étoiles', 'Un voyage fantastique à travers l''univers.', 'assets/img/le_chant_des_etoiles.webp', 120, TRUE, 12, '2025-07-23', 'active', 4.7),                          -- Film example 6
@@ -168,7 +168,7 @@ VALUES
 INSERT INTO Reservation (user_id, screening_id, reservation_total_price, reservation_status, reservation_created_at, reservation_qr_code, deleted_at)
 VALUES
 (1, 2, 10.00, 'paid', '2025-07-12 10:00:00', UUID(), NULL),
-(1, 9, 10.00, 'reserved', '2025-07-12 10:05:00', UUID(), NULL),
+(1, 9, 10.00, 'reserved', '2025-10-12 10:05:00', UUID(), NULL),
 (1, 14, 20.00, 'cancelled', '2025-07-12 10:10:00', UUID(), NULL),
 (1, 20, 28.00, 'pending', '2025-07-12 10:15:00', UUID(), NULL);
 

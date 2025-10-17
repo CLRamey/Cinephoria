@@ -17,3 +17,5 @@ export * from './lib/shared/utils/shared-responses';
 export * from './lib/services/clientReservations.service';
 export * from './lib/interfaces/user-interfaces';
 export * from './lib/shared/utils/api-url.token';
+export * from './lib/services/staff-actions.service';
+export * from './lib/shared/staff-actions/staff-actions.component';

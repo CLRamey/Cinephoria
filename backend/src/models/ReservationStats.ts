@@ -10,7 +10,7 @@ export interface IReservationStat extends Document {
 const ReservationStatSchema = new Schema<IReservationStat>({
   filmId: { type: Number, required: true },
   filmTitle: { type: String, required: true },
-  date: { type: String, required: true }, // store as string for YYYY-MM-DD
+  date: { type: String, required: true },
   reservationCount: { type: Number, required: true },
 });
 
@@ -20,5 +20,6 @@ ReservationStatSchema.index({ filmId: 1, date: 1 }, { unique: true });
 export const ReservationStat = mongoose.model<IReservationStat>(
   'ReservationStat',
   ReservationStatSchema,
-  'res_stats', // collection name
+  'res_stats',
 );
+// collection name is 'res_stats'

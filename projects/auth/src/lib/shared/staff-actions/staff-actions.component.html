@@ -1,0 +1,318 @@
+<div class="staff-container">
+  <div class="film-section">
+    <h2>Les Films</h2>
+    <p>Veuillez trouver ci-dessous les films actifs :</p>
+
+    <ng-container *ngIf="filmsLoading">
+      <p>Chargement des films...</p>
+      <mat-spinner diameter="50"></mat-spinner>
+    </ng-container>
+
+    <ng-container *ngIf="filmsError">
+      <p class="error-text">Erreur lors du chargement des films. Veuillez réessayer plus tard.</p>
+    </ng-container>
+
+    <ng-container *ngIf="!filmsLoading && !filmsError && staffFilms.length === 0">
+      <p>Vous n'avez aucun film pour le moment.</p>
+    </ng-container>
+
+    <div class="add-film-button">
+      <button mat-raised-button color="primary" (click)="onAddFilm()">
+        <mat-icon>add</mat-icon>
+        Ajouter un Film
+      </button>
+    </div>
+  </div>
+
+  <div class="table-section" *ngIf="!filmsLoading && !filmsError && staffFilms.length > 0">
+    <table mat-table [dataSource]="staffFilms" class="mat-elevation-z8 responsive-table">
+      <ng-container matColumnDef="filmTitle">
+        <th mat-header-cell *matHeaderCellDef>Film</th>
+        <td mat-cell *matCellDef="let element">{{ element.filmTitle }}</td>
+      </ng-container>
+      <ng-container matColumnDef="filmDuration">
+        <th mat-header-cell *matHeaderCellDef>Durée</th>
+        <td mat-cell *matCellDef="let element" class="hide-on-mobile">
+          {{ element.filmDuration }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="filmFavorite">
+        <th mat-header-cell *matHeaderCellDef>Favori</th>
+        <td mat-cell *matCellDef="let element" class="hide-on-mobile">
+          {{ element.filmFavorite ? "Oui" : "Non" }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="filmMinimumAge">
+        <th mat-header-cell *matHeaderCellDef>Âge Minimum</th>
+        <td mat-cell *matCellDef="let element" class="hide-on-mobile">
+          {{ element.filmMinimumAge }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="filmActiveDate">
+        <th mat-header-cell *matHeaderCellDef>Date de Sortie</th>
+        <td mat-cell *matCellDef="let element" class="hide-on-mobile">
+          {{ element.filmActiveDate }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Actions</th>
+        <td mat-cell *matCellDef="let element" class="action-buttons">
+          <button
+            mat-icon-button
+            color="primary"
+            aria-label="Modifier"
+            (click)="onModifyFilm(element)"
+          >
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button
+            mat-icon-button
+            color="warn"
+            aria-label="Désactiver"
+            (click)="onDeactivateFilm(element)"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="filmColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: filmColumns"></tr>
+    </table>
+  </div>
+
+  <mat-divider></mat-divider>
+
+  <div class="cinema-section">
+    <h2>Sélectionnez un Cinéma</h2>
+    <p>Veuillez sélectionner un cinéma pour voir les salles et les séances :</p>
+
+    <ng-container *ngIf="cinemasLoading">
+      <p>Chargement des cinémas...</p>
+      <mat-spinner diameter="50"></mat-spinner>
+    </ng-container>
+
+    <ng-container *ngIf="cinemasError">
+      <p class="error-text">Erreur lors du chargement des cinémas. Veuillez réessayer plus tard.</p>
+    </ng-container>
+
+    <ng-container *ngIf="!cinemasLoading && !cinemasError">
+      <mat-form-field appearance="outline">
+        <mat-label>Choisir un cinéma</mat-label>
+        <mat-select [(ngModel)]="selectedCinemaId" (selectionChange)="onCinemaSelect($event.value)">
+          <mat-option [value]="null">— Sélectionnez —</mat-option>
+          <mat-option *ngFor="let c of cinemas" [value]="c.cinemaId">
+            {{ c.cinemaName }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-container>
+
+    <ng-container *ngIf="!cinemasLoading && !cinemasError && cinemas.length === 0">
+      <p>Vous n'avez aucun cinéma pour le moment.</p>
+    </ng-container>
+  </div>
+
+  <mat-divider></mat-divider>
+
+  <div class="room-section">
+    <h2>Les Salles</h2>
+    <ng-container *ngIf="!selectedCinemaId">
+      <p>Veuillez sélectionner un cinéma pour voir les salles disponibles.</p>
+    </ng-container>
+    <ng-container *ngIf="selectedCinemaId">
+      <p>Veuillez trouver ci-dessous les salles disponibles dans le cinéma :</p>
+
+      <ng-container *ngIf="roomsLoading">
+        <p>Chargement des salles...</p>
+        <mat-spinner diameter="50"></mat-spinner>
+      </ng-container>
+
+      <ng-container *ngIf="roomsError">
+        <p class="error-text">
+          Erreur lors du chargement des salles. Veuillez réessayer plus tard.
+        </p>
+      </ng-container>
+
+      <ng-container *ngIf="!roomsLoading && !roomsError && staffRooms.length === 0">
+        <p>Vous n'avez aucune salle pour le moment.</p>
+      </ng-container>
+
+      <div class="add-room-button">
+        <button mat-raised-button color="primary" (click)="onAddRoom()">
+          <mat-icon>add</mat-icon>
+          Ajouter une Salle
+        </button>
+      </div>
+    </ng-container>
+  </div>
+
+  <div class="table-section" *ngIf="!roomsLoading && !roomsError && staffRooms.length > 0">
+    <table mat-table [dataSource]="staffRooms" class="mat-elevation-z8 responsive-table">
+      <ng-container matColumnDef="roomNumber">
+        <th mat-header-cell *matHeaderCellDef>Numéro</th>
+        <td mat-cell *matCellDef="let element">{{ element.roomNumber }}</td>
+      </ng-container>
+      <ng-container matColumnDef="roomCapacity">
+        <th mat-header-cell *matHeaderCellDef>Capacité Totale</th>
+        <td mat-cell *matCellDef="let element">{{ element.roomCapacity }}</td>
+      </ng-container>
+      <ng-container matColumnDef="quality.qualityProjectionType">
+        <th mat-header-cell *matHeaderCellDef>Qualité</th>
+        <td mat-cell *matCellDef="let element" class="hide-on-mobile">
+          {{ element.quality?.qualityProjectionType }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="cinema.cinemaName">
+        <th mat-header-cell *matHeaderCellDef>Cinéma</th>
+        <td mat-cell *matCellDef="let element" class="hide-on-mobile">
+          {{ element.cinema?.cinemaName }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Actions</th>
+        <td mat-cell *matCellDef="let element" class="action-buttons">
+          <button
+            mat-icon-button
+            color="primary"
+            aria-label="Modifier"
+            (click)="onModifyRoom(element)"
+          >
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button
+            mat-icon-button
+            color="warn"
+            aria-label="Désactiver"
+            (click)="onDeleteRoom(element)"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="roomColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: roomColumns"></tr>
+    </table>
+  </div>
+
+  <mat-divider></mat-divider>
+
+  <div class="screening-section">
+    <h2>Les Séances</h2>
+    <ng-container *ngIf="!selectedCinemaId">
+      <p>Veuillez sélectionner un cinéma pour voir les séances programmées :</p>
+    </ng-container>
+    <ng-container *ngIf="selectedCinemaId">
+      <p>Veuillez sélectionner une salle pour voir les séances programmées.</p>
+      <mat-form-field appearance="outline">
+        <mat-label>Choisir une salle</mat-label>
+        <mat-select [(ngModel)]="selectedRoomId" (selectionChange)="onRoomSelect($event.value)">
+          <mat-option [value]="null">— Sélectionnez —</mat-option>
+          <mat-option *ngFor="let r of rooms" [value]="r.roomId">
+            {{ r.roomNumber }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <p *ngIf="selectedCinemaId && selectedRoomId && !selectedFilmId">
+        Si vous aimeriez consulter les séances pour un film spécifique ou créer un film, veuillez
+        sélectionner le film :
+      </p>
+      <mat-form-field appearance="outline">
+        <mat-label>Choisir un film</mat-label>
+        <mat-select [(ngModel)]="selectedFilmId" (selectionChange)="onFilmSelect($event.value)">
+          <mat-option [value]="null">— Sélectionnez —</mat-option>
+          <mat-option *ngFor="let f of films" [value]="f.filmId">
+            {{ f.filmTitle }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <br />
+      <p *ngIf="selectedCinemaId && selectedRoomId">
+        Veuillez trouver ci-dessous les séances programmées dans le cinéma sélectionnés :
+      </p>
+
+      <ng-container *ngIf="screeningsLoading">
+        <p>Chargement des séances...</p>
+        <mat-spinner diameter="50"></mat-spinner>
+      </ng-container>
+
+      <ng-container *ngIf="screeningsError">
+        <p class="error-text">
+          Erreur lors du chargement des séances. Veuillez réessayer plus tard.
+        </p>
+      </ng-container>
+
+      <ng-container
+        *ngIf="
+          selectedRoomId && !screeningsLoading && !screeningsError && staffScreenings.length === 0
+        "
+      >
+        <p>Vous n'avez aucune séance pour le moment.</p>
+      </ng-container>
+    </ng-container>
+
+    <ng-container *ngIf="selectedCinemaId && selectedRoomId && selectedFilmId && !screeningsError">
+      <div class="add-screening-button">
+        <button mat-raised-button color="primary" (click)="onAddScreening()">
+          <mat-icon>add</mat-icon>
+          Ajouter une Séance
+        </button>
+      </div>
+    </ng-container>
+  </div>
+
+  <div
+    class="table-section"
+    *ngIf="!screeningsLoading && !screeningsError && staffScreenings.length > 0"
+  >
+    <table mat-table [dataSource]="staffScreenings" class="mat-elevation-z8 responsive-table">
+      <ng-container matColumnDef="screeningDate">
+        <th mat-header-cell *matHeaderCellDef>Date & Heure</th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.screeningDate | date: "short" }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="cinema.cinemaName">
+        <th mat-header-cell *matHeaderCellDef>Cinéma</th>
+        <td mat-cell *matCellDef="let element" class="hide-on-mobile">
+          {{ element.cinema?.cinemaName }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="room.roomNumber">
+        <th mat-header-cell *matHeaderCellDef>Salle</th>
+        <td mat-cell *matCellDef="let element" class="hide-on-mobile">
+          {{ element.room?.roomNumber }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="film.filmTitle">
+        <th mat-header-cell *matHeaderCellDef>Film</th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.film?.filmTitle || "-" }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Actions</th>
+        <td mat-cell *matCellDef="let element" class="action-buttons">
+          <button
+            mat-icon-button
+            color="primary"
+            aria-label="Modifier"
+            (click)="onModifyScreening(element)"
+          >
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button
+            mat-icon-button
+            color="warn"
+            aria-label="Supprimer"
+            (click)="onDeleteScreening(element)"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="screeningColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: screeningColumns"></tr>
+    </table>
+  </div>
+  <br />
+</div>

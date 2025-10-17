@@ -7,6 +7,11 @@ import {
   StatisticsSuccessResponse,
   StatisticsErrorResponse,
 } from '../interfaces/reservation';
+import {
+  Employees,
+  EmployeeSuccessResponse,
+  EmployeeErrorResponse,
+} from '../interfaces/staff-interfaces';
 
 @Injectable({
   providedIn: 'root',
@@ -43,6 +48,34 @@ export class AdminZoneService {
           return { statistics: [] };
         }),
         catchError(() => of({ statistics: [] })),
+      );
+  }
+
+  getAllEmployees(): Observable<{ employees: Employees[] }> {
+    return this.http
+      .get<
+        EmployeeSuccessResponse | EmployeeErrorResponse
+      >(`${this.baseUrl}/employees`, { responseType: 'json', withCredentials: true })
+      .pipe(
+        take(1),
+        map((response: EmployeeSuccessResponse | EmployeeErrorResponse) => {
+          if ('success' in response && response.success && 'data' in response) {
+            const data = (response as EmployeeSuccessResponse).data;
+            let employees: Employees[] = [];
+            if (Array.isArray(data)) {
+              employees = (data as Employees[]).map(emp => ({
+                userId: emp.userId,
+                userFirstName: emp.userFirstName,
+                userLastName: emp.userLastName,
+                userEmail: emp.userEmail,
+                userRole: emp.userRole,
+              }));
+            }
+            return { employees };
+          }
+          return { employees: [] };
+        }),
+        catchError(() => of({ employees: [] })),
       );
   }
 }

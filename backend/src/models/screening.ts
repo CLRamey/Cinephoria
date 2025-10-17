@@ -9,7 +9,7 @@ export interface screeningAttributes {
   screeningId: number;
   screeningDate: Date;
   screeningStatus?: 'active' | 'ended' | 'deleted';
-  deletedAt?: Date;
+  deletedAt?: Date | null;
   cinemaId: number;
   filmId: number;
   roomId: number;
@@ -30,7 +30,7 @@ export class screening
   screeningId!: number;
   screeningDate!: Date;
   screeningStatus?: 'active' | 'ended' | 'deleted';
-  deletedAt?: Date;
+  deletedAt?: Date | null;
   cinemaId!: number;
   filmId!: number;
   roomId!: number;

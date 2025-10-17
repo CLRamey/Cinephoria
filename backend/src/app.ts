@@ -60,11 +60,13 @@ import cinemaRoutes from './routes/cinemaRoutes';
 import filmRoutes from './routes/filmRoutes';
 import roomRoutes from './routes/roomRoutes';
 import genreRoutes from './routes/genreRoutes';
+import qualityRoutes from './routes/qualityRoutes';
 
 // Register, login and protected routes
 import clientRoutes from './routes/clientRoutes';
 import employeeRoutes from './routes/employeeRoutes';
 import adminRoutes from './routes/adminRoutes';
+import staffRoutes from './routes/staffRoutes';
 
 import sharedRoutes from './routes/sharedRoutes';
 
@@ -77,10 +79,12 @@ app.use('/api', cinemaRoutes);
 app.use('/api', filmRoutes);
 app.use('/api', roomRoutes);
 app.use('/api', genreRoutes);
+app.use('/api', qualityRoutes);
 
 app.use('/api', clientRoutes);
 app.use('/api', employeeRoutes);
 app.use('/api', adminRoutes);
+app.use('/api', staffRoutes);
 
 app.use('/api', sharedRoutes);
 app.use('/api', reservationRoutes);
