@@ -1,7 +1,7 @@
 import { Injectable, Inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, tap, BehaviorSubject, of } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { Observable, BehaviorSubject, of } from 'rxjs';
+import { catchError, tap, take } from 'rxjs/operators';
 import { TokenService } from './token.service';
 import {
   RegisterUser,
@@ -190,21 +190,22 @@ export class AuthService {
     return this.http
       .get<AuthCookieResponse>(`${this.baseUrl}/cookie-check`, { withCredentials: true })
       .pipe(
+        take(1),
         tap((response: AuthCookieResponse) => {
-          if (response.success && response.data.userRole) {
+          const role = response.data?.userRole ?? null;
+          if (response.success && role) {
             this.isAuthenticatedSubject.next(true);
-            this.userRoleSubject.next(response.data.userRole);
-            this.userRole = response.data.userRole;
+            this.userRoleSubject.next(role);
+            this.userRole = role;
           } else {
             this.isAuthenticatedSubject.next(false);
             this.userRoleSubject.next(null);
             this.userRole = null;
           }
         }),
-        catchError(_err => {
-          this.isAuthenticatedSubject.next(false);
-          this.userRoleSubject.next(null);
-          this.userRole = null;
+        catchError(err => {
+          console.error('Error checking authentication via cookies:', err);
+          this.logoutSecurely();
           return of({ success: false } as AuthCookieResponse);
         }),
       );
@@ -213,10 +214,12 @@ export class AuthService {
   // Method to check authentication status as a promise for the initializer
   checkAuthPromise(): Promise<void> {
     return new Promise<void>(resolve => {
-      this.checkAuth().subscribe({
-        next: () => resolve(),
-        error: () => resolve(), // resolve anyway to not block app init
-      });
+      this.checkAuth()
+        .pipe(take(1))
+        .subscribe({
+          next: () => resolve(),
+          error: () => resolve(), // resolve anyway to not block app init
+        });
     });
   }
 

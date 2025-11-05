@@ -20,7 +20,7 @@ export async function getReservationStats(): Promise<ServiceResponse<Reservation
     // Fetch reservation data from SQL
     const data = await reservation.findAll({
       attributes: [
-        [fn('DATE', col('screening.screening_date')), 'date'],
+        [fn('DATE', col('reservation.reservation_created_at')), 'date'],
         [col('screening.film_id'), 'filmId'],
         [col('screening.film.film_title'), 'filmTitle'],
         [fn('COUNT', col('reservation_id')), 'reservationCount'],
@@ -30,10 +30,10 @@ export async function getReservationStats(): Promise<ServiceResponse<Reservation
           model: screening,
           as: 'screening',
           attributes: ['screening_id', 'screening_date', 'film_id'],
-          where: { screeningDate: { [Op.gte]: sevenDaysAgo } },
           include: [{ model: film, as: 'film', attributes: ['film_id', 'film_title'] }],
         },
       ],
+      where: { reservationCreatedAt: { [Op.gte]: sevenDaysAgo } },
       group: ['screening.film_id', 'screening->film.film_id', 'date'],
       order: [[col('date'), 'ASC']],
     });
@@ -82,14 +82,7 @@ export async function listEmployees(): Promise<ServiceResponse<user[]>> {
     // Fetch employee data from the database
     const employees = await user.findAll({
       where: { userRole: Role.EMPLOYEE },
-      attributes: [
-        'userId',
-        'userFirstName',
-        'userLastName',
-        'userEmail',
-        'createdAt',
-        'updatedAt',
-      ],
+      attributes: ['userId', 'userFirstName', 'userLastName', 'userUsername', 'userEmail'],
       order: [['userLastName', 'ASC']],
     });
 

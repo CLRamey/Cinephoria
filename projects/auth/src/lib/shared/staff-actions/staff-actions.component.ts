@@ -115,6 +115,7 @@ export class StaffActionsComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.loadFilmData();
     this.loadCinemaData();
+    this.updateColumns(window.innerWidth);
     window.addEventListener('resize', () => {
       this.updateColumns(window.innerWidth);
     });
@@ -299,10 +300,15 @@ export class StaffActionsComponent implements OnInit, OnDestroy {
     if (!cinemaId) return;
     else if (cinemaId === 0) {
       this.selectedCinema = false;
+      this.selectedCinemaId = null;
       this.staffRooms = [];
       this.staffScreenings = [];
+      this.selectedRoomId = null;
+      this.selectedFilmId = null;
     } else {
       this.selectedCinema = true;
+      this.onRoomSelect(null);
+      this.onFilmSelect(null);
       this.loadRoomData();
     }
   }
@@ -312,8 +318,9 @@ export class StaffActionsComponent implements OnInit, OnDestroy {
     this.selectedRoomId = roomId;
     if (!this.selectedCinemaId) return;
     if (!roomId) return;
-    else if (roomId === 0) {
+    else if (roomId === 0 || this.selectedRoomId === null) {
       this.selectedRoom = false;
+      this.selectedRoomId = null;
       this.staffScreenings = [];
     } else {
       this.selectedRoom = true;
@@ -326,9 +333,10 @@ export class StaffActionsComponent implements OnInit, OnDestroy {
     this.selectedFilmId = filmId;
     if (!this.selectedCinemaId || !this.selectedRoomId) return;
     if (!filmId) return;
-    else if (filmId === 0) {
+    else if (filmId === 0 || this.selectedFilmId === null) {
       this.selectedFilm = false;
-      this.staffScreenings = [];
+      this.selectedFilmId = 0;
+      this.onRoomSelect(this.selectedRoomId);
     } else {
       this.selectedFilm = true;
       this.loadScreeningData();
@@ -453,13 +461,13 @@ export class StaffActionsComponent implements OnInit, OnDestroy {
           const deactivateRoomSub = this.staffActionsService.deactivateRoom(room.roomId).subscribe({
             next: response => {
               if (response === true) {
-                this.snackBar.open(`Salle "${room.roomNumber}" désactivée avec succès.`, 'Fermer', {
+                this.snackBar.open(`Salle "${room.roomNumber}" supprimée avec succès.`, 'Fermer', {
                   duration: 3000,
                 });
                 this.loadRoomData();
               } else {
                 this.snackBar.open(
-                  `Erreur lors de la désactivation de la salle "${room.roomNumber}".`,
+                  `Erreur lors de la suppression de la salle "${room.roomNumber}".`,
                   'Fermer',
                   {
                     duration: 3000,
@@ -469,7 +477,7 @@ export class StaffActionsComponent implements OnInit, OnDestroy {
             },
             error: () => {
               this.snackBar.open(
-                `Erreur lors de la désactivation de la salle "${room.roomNumber}".`,
+                `Erreur lors de la suppression de la salle "${room.roomNumber}".`,
                 'Fermer',
                 {
                   duration: 3000,
@@ -559,7 +567,6 @@ export class StaffActionsComponent implements OnInit, OnDestroy {
 
   // Method to modify a screening
   onModifyScreening(screening: Screenings): void {
-    console.log('Modifying screening:', screening);
     this.dialog
       .open(ScreeningFormComponent, {
         data: screening,
@@ -621,7 +628,7 @@ export class StaffActionsComponent implements OnInit, OnDestroy {
               next: response => {
                 if (response === true) {
                   this.snackBar.open(
-                    `Séance "${screening.screeningDate}" désactivée avec succès.`,
+                    `Séance "${screeningToDelete}" désactivée avec succès.`,
                     'Fermer',
                     {
                       duration: 3000,
@@ -630,7 +637,7 @@ export class StaffActionsComponent implements OnInit, OnDestroy {
                   this.loadScreeningData();
                 } else {
                   this.snackBar.open(
-                    `Erreur lors de la désactivation de la séance "${screening.screeningDate}".`,
+                    `Erreur lors de la désactivation de la séance "${screeningToDelete}".`,
                     'Fermer',
                     {
                       duration: 3000,
@@ -640,7 +647,7 @@ export class StaffActionsComponent implements OnInit, OnDestroy {
               },
               error: () => {
                 this.snackBar.open(
-                  `Erreur lors de la désactivation de la séance "${screening.screeningDate}".`,
+                  `Erreur lors de la désactivation de la séance "${screeningToDelete}".`,
                   'Fermer',
                   {
                     duration: 3000,

@@ -137,7 +137,6 @@ export class ScreeningFormComponent implements OnInit, OnDestroy {
   onSubmit(): void {
     if (this.screeningForm.valid) {
       const { date, time } = this.screeningForm.value;
-      // Combine date + time into single datetime
       const [hours, minutes] = time.split(':').map((x: string) => parseInt(x, 10));
       const screeningDate = new Date(date);
       screeningDate.setHours(hours, minutes, 0, 0);
@@ -145,7 +144,6 @@ export class ScreeningFormComponent implements OnInit, OnDestroy {
       const cinemaId = this.data?.cinema?.cinemaId || this.data?.cinemaId;
       const roomId = this.data?.room?.roomId || this.data?.roomId;
       const filmId = this.data?.film?.filmId || this.data?.filmId;
-      console.log('Submitting screening form:', { cinemaId, roomId, filmId, formattedDate });
       const screeningData = {
         cinemaId: cinemaId,
         roomId: roomId,

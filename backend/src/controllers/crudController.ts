@@ -28,7 +28,6 @@ export async function createFilmHandler(req: Request) {
     ];
     for (const attr of requiredAttributes) {
       if (filmData[attr] === undefined || filmData[attr] === null) {
-        console.log(`Missing film attribute: ${attr}`);
         return errorResponse(`Missing film attribute`, 'BAD_REQUEST');
       }
     }
@@ -63,7 +62,6 @@ export async function listFilmsHandler(req: Request) {
     }
     // Call the service to list films
     const response = await crudService.listFilms();
-
     if (!response.success) return errorResponse(response.error.message, response.error.code);
     return { success: true, data: response.data };
   } catch (err) {
@@ -81,7 +79,6 @@ export async function modifyFilmHandler(req: Request) {
     }
     const { filmId } = req.params;
     let { filmData, genreIds } = req.body;
-
     // Ensure all film attributes are present for film modification
     const requiredAttributes = [
       'filmTitle',
@@ -114,7 +111,6 @@ export async function modifyFilmHandler(req: Request) {
     filmData = validateFilmInput(sanitizeFilmData);
     // Call the service to modify the film
     const response = await crudService.modifyFilm(Number(filmId), filmData, genreIds);
-
     if (!response.success) return errorResponse(response.error.message, response.error.code);
     return { success: true, data: response.data };
   } catch (err) {
@@ -132,12 +128,12 @@ export async function deleteFilmHandler(req: Request) {
     }
     const { filmId } = req.params;
     // Validate film ID
-    if (!filmId || !isPositiveNumber(filmId)) {
+    const filmIdToDelete = Number(filmId);
+    if (!filmIdToDelete || !isPositiveNumber(filmIdToDelete)) {
       return errorResponse('Invalid film ID', 'BAD_REQUEST');
     }
     // Call the service to delete the film
     const response = await crudService.deleteFilm(Number(filmId));
-
     if (!response.success) return errorResponse(response.error.message, response.error.code);
     return { success: true, data: response.data };
   } catch (err) {
@@ -180,7 +176,6 @@ export async function createRoomHandler(req: Request) {
     }
     // Call the service to create the room
     const response = await crudService.createRoom(roomData, numRows, seatsPerRow);
-
     if (!response.success) return errorResponse(response.error.message, response.error.code);
     return { success: true, data: response.data };
   } catch (err) {
@@ -204,7 +199,6 @@ export async function listRoomsHandler(req: Request) {
 
     const response = await crudService.listRooms(Number(cinemaId));
     if (!response.success) return errorResponse(response.error.message, response.error.code);
-
     return { success: true, data: response.data };
   } catch (err) {
     logerror(err);
@@ -221,7 +215,6 @@ export async function modifyRoomHandler(req: Request) {
     }
     const { roomId } = req.params;
     const { roomData, numRows, seatsPerRow } = req.body;
-
     // Validate room ID
     if (!roomId || !isPositiveNumber(roomId)) {
       return errorResponse('Invalid room ID', 'BAD_REQUEST');
@@ -230,18 +223,14 @@ export async function modifyRoomHandler(req: Request) {
       return errorResponse('Missing required room data or seating info', 'BAD_REQUEST');
     }
     // Ensure all room attributes are present for room modification
-    const requiredAttributes = ['roomNumber', 'qualityId', 'cinemaId'];
+    const requiredAttributes = ['qualityId', 'cinemaId'];
     for (const attr of requiredAttributes) {
       if (!roomData[attr]) {
         return errorResponse(`Missing room attribute`, 'BAD_REQUEST');
       }
     }
     // Validate room attributes
-    if (
-      !isPositiveNumber(roomData.roomNumber) ||
-      !isPositiveNumber(roomData.qualityId) ||
-      !isPositiveNumber(roomData.cinemaId)
-    ) {
+    if (!isPositiveNumber(roomData.qualityId) || !isPositiveNumber(roomData.cinemaId)) {
       return errorResponse('Room attributes must be positive integers', 'BAD_REQUEST');
     }
     // Validate seating attributes
@@ -250,7 +239,6 @@ export async function modifyRoomHandler(req: Request) {
     }
     // Call the service to modify the room
     const response = await crudService.modifyRoom(Number(roomId), roomData, numRows, seatsPerRow);
-
     if (!response.success) return errorResponse(response.error.message, response.error.code);
     return { success: true, data: response.data };
   } catch (err) {
@@ -272,7 +260,6 @@ export async function deleteRoomHandler(req: Request) {
     }
     // Call the service to delete the room
     const response = await crudService.deleteRoom(Number(roomId));
-
     if (!response.success) return errorResponse(response.error.message, response.error.code);
     return { success: true, data: response.data };
   } catch (err) {
@@ -296,7 +283,6 @@ export async function createScreeningHandler(req: Request) {
 
     for (const attr of requiredAttributes) {
       if (!screeningData[attr]) {
-        console.log(`Missing screening attribute: ${attr}`);
         return errorResponse(`Missing screening attributes`, 'BAD_REQUEST');
       }
     }
@@ -331,7 +317,6 @@ export async function listScreeningsHandler(req: Request) {
       return errorResponse('User not authorized', 'UNAUTHORIZED');
     }
     const { cinemaId, roomId, filmId } = req.params;
-
     // Validate cinema and room IDs
     if (!isPositiveNumber(cinemaId) || !isPositiveNumber(roomId) || filmId === undefined) {
       return errorResponse('Cinema and Room IDs must be positive integers', 'BAD_REQUEST');
@@ -346,7 +331,6 @@ export async function listScreeningsHandler(req: Request) {
       Number(roomId),
       Number(filmId),
     );
-
     if (!response.success) return errorResponse(response.error.message, response.error.code);
     return { success: true, data: response.data };
   } catch (err) {
@@ -367,13 +351,6 @@ export async function modifyScreeningHandler(req: Request) {
     if (!screeningData) {
       return errorResponse('Missing screening data', 'BAD_REQUEST');
     }
-    console.log('Modifying screening:', {
-      screeningId,
-      cinemaId: screeningData.cinemaId,
-      roomId: screeningData.roomId,
-      filmId: screeningData.filmId,
-      screeningDate: screeningData.screeningDate,
-    });
     // Validate screening ID
     if (!screeningId || !isPositiveNumber(screeningId)) {
       return errorResponse('Invalid screening ID', 'BAD_REQUEST');
@@ -397,7 +374,6 @@ export async function modifyScreeningHandler(req: Request) {
     }
     const response = await crudService.modifyScreening(Number(screeningId), screeningData);
     if (!response.success) return errorResponse(response.error.message, response.error.code);
-
     return { success: true, data: response.data };
   } catch (err) {
     logerror(err);

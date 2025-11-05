@@ -269,7 +269,6 @@ export class StaffActionsService {
 
   // Method to update an existing screening
   updateScreening(screeningId: number, screeningData: Partial<Screenings>): Observable<boolean> {
-    console.log('Updating screening ID:', screeningId, 'with data:', screeningData);
     return this.http
       .put<{ success: boolean }>(`${this.baseUrl}/staff/screenings/${screeningId}`, screeningData, {
         responseType: 'json',

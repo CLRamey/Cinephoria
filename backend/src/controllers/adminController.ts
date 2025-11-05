@@ -48,30 +48,44 @@ export async function createEmployeeAccountHandler(req: Request) {
     if (!req.user || req.user.userRole !== Role.ADMIN) {
       return errorResponse('User not authorized', 'UNAUTHORIZED');
     }
+    const { employeeData } = req.body;
+
+    // Set default agreements for employees
+    employeeData.agreedPolicy = true;
+    employeeData.agreedCgvCgu = true;
+
+    // Ensure all required fields are present
     const {
       userFirstName,
       userLastName,
       userUsername,
       userEmail,
       userPassword,
-      userRole = Role.EMPLOYEE,
-    } = req.body;
+      userRole,
+      agreedPolicy,
+      agreedCgvCgu,
+    } = employeeData || {};
     if (
       !userFirstName ||
       !userLastName ||
       !userUsername ||
       !userEmail ||
       !userPassword ||
-      !userRole
+      !userRole ||
+      agreedPolicy === undefined ||
+      agreedCgvCgu === undefined
     ) {
-      return errorResponse('Missing required fields', 'BAD_REQUEST');
+      return errorResponse('Missing employee attribute', 'BAD_REQUEST');
     }
-    // Set default agreements for employees
-    req.body.agreedPolicy = true;
-    req.body.agreedCgvCgu = true;
 
     // Validate input
-    const sanitized = sanitizeEmployeeInput(req.body);
+    const sanitized = sanitizeEmployeeInput(employeeData);
+    // Ensure the role is EMPLOYEE
+    if (employeeData.userRole === 'employee') {
+      employeeData.userRole = Role.EMPLOYEE;
+    } else {
+      return errorResponse('Invalid role for employee account', 'BAD_REQUEST');
+    }
     const validatedData = await validateRegisterInput(sanitized);
 
     // Create employee in DB
@@ -149,8 +163,11 @@ export async function modifyEmployeePasswordHandler(req: Request) {
     if (req.user.userRole !== Role.ADMIN) {
       return errorResponse('User not authorized', 'UNAUTHORIZED');
     }
+    // Extract reset data from request body
+    const { resetData } = req.body;
+    const { userId, newPassword } = resetData || {};
 
-    const { userId, newPassword } = req.body;
+    // Ensure all required fields are present
     if (!userId || !newPassword) {
       return errorResponse('Missing required fields', 'BAD_REQUEST');
     }

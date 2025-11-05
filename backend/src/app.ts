@@ -8,7 +8,9 @@ import { logerror } from './utils/logger';
 
 // Express
 export const app = express();
-app.set('trust proxy', 1); // Trust first proxy (Nginx)
+if (process.env.NODE_ENV === 'production') {
+  app.set('trust proxy', 1); // Trust first proxy (Nginx) for production
+}
 
 // Allowed origins for CORS
 const corsOriginEnv = process.env.CORS_ORIGIN;
@@ -74,6 +76,11 @@ import sharedRoutes from './routes/sharedRoutes';
 import reservationRoutes from './routes/reservationRoutes';
 import { generalRateLimiter } from './middlewares/rateLimiter';
 
+// Health check route
+app.get('/api/health', (_req, res) => {
+  res.status(200).json({ status: 'ok' });
+});
+
 // Routes
 app.use('/api', cinemaRoutes);
 app.use('/api', filmRoutes);
@@ -84,10 +91,10 @@ app.use('/api', qualityRoutes);
 app.use('/api', clientRoutes);
 app.use('/api', employeeRoutes);
 app.use('/api', adminRoutes);
-app.use('/api', staffRoutes);
 
-app.use('/api', sharedRoutes);
 app.use('/api', reservationRoutes);
+app.use('/api', sharedRoutes);
+app.use('/api', staffRoutes);
 
 // General test rate limiter route
 if (process.env.NODE_ENV !== 'production') {
@@ -95,11 +102,6 @@ if (process.env.NODE_ENV !== 'production') {
     res.status(200).send('OK');
   });
 }
-
-// Health check route
-app.get('/api/health', (_req, res) => {
-  res.status(200).json({ status: 'ok' });
-});
 
 // 404 not found Error handler
 app.use((_req, res) => {

@@ -24,7 +24,11 @@
     </div>
   </div>
 
-  <div class="table-section" *ngIf="!filmsLoading && !filmsError && staffFilms.length > 0">
+  <div
+    class="table-section"
+    data-cy="film-table"
+    *ngIf="!filmsLoading && !filmsError && staffFilms.length > 0"
+  >
     <table mat-table [dataSource]="staffFilms" class="mat-elevation-z8 responsive-table">
       <ng-container matColumnDef="filmTitle">
         <th mat-header-cell *matHeaderCellDef>Film</th>
@@ -146,7 +150,11 @@
     </ng-container>
   </div>
 
-  <div class="table-section" *ngIf="!roomsLoading && !roomsError && staffRooms.length > 0">
+  <div
+    class="table-section"
+    data-cy="room-table"
+    *ngIf="!roomsLoading && !roomsError && staffRooms.length > 0 && selectedCinemaId !== null"
+  >
     <table mat-table [dataSource]="staffRooms" class="mat-elevation-z8 responsive-table">
       <ng-container matColumnDef="roomNumber">
         <th mat-header-cell *matHeaderCellDef>Numéro</th>
@@ -262,7 +270,14 @@
 
   <div
     class="table-section"
-    *ngIf="!screeningsLoading && !screeningsError && staffScreenings.length > 0"
+    data-cy="screening-table"
+    *ngIf="
+      !screeningsLoading &&
+      !screeningsError &&
+      staffScreenings.length > 0 &&
+      selectedCinemaId !== null &&
+      selectedRoomId !== null
+    "
   >
     <table mat-table [dataSource]="staffScreenings" class="mat-elevation-z8 responsive-table">
       <ng-container matColumnDef="screeningDate">

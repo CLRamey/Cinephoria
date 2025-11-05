@@ -6,6 +6,7 @@ import {
   adminReservationsController,
   listEmployeeAccountsController,
   modifyEmployeePasswordController,
+  createEmployeeAccountController,
 } from '../controllers/adminController';
 import { generalRateLimiter } from '../middlewares/rateLimiter';
 
@@ -20,8 +21,9 @@ router.get(
   adminReservationsController,
 );
 router.get('/employees', adminAuthMiddleware, generalRateLimiter, listEmployeeAccountsController);
-router.patch(
-  '/employees/:id/password',
+router.post('/employee', adminAuthMiddleware, generalRateLimiter, createEmployeeAccountController);
+router.put(
+  '/employee/password',
   adminAuthMiddleware,
   generalRateLimiter,
   modifyEmployeePasswordController,
