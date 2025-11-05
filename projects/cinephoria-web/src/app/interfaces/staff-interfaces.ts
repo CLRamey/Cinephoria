@@ -2,8 +2,8 @@ export interface Employees {
   userId: number;
   userFirstName: string;
   userLastName: string;
+  userUsername: string;
   userEmail: string;
-  userRole: string;
 }
 
 export interface EmployeeSuccessResponse {
@@ -23,14 +23,13 @@ export interface CreateEmployee {
   userUsername: string;
   userPassword: string;
   userRole: EmployeeRole.EMPLOYEE;
-  agreedPolicy: boolean;
-  agreedCgvCgu: boolean;
 }
 
 export enum EmployeeRole {
   EMPLOYEE = 'employee',
 }
 
-export interface EmployeeCreationResponse {
-  success: boolean;
+export interface EmployeeResetPassword {
+  userId: number;
+  newPassword: string;
 }

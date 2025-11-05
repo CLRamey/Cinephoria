@@ -19,7 +19,7 @@
 h2 {
   font-size: 1.6rem;
   font-weight: 400;
-  color: #f49100;
+  color: #686868;
   text-decoration: underline;
 }
 
@@ -30,6 +30,24 @@ h2 {
   margin-top: 1rem;
   margin-bottom: 2rem;
   width: 80vw;
+}
+
+.employees-container {
+  width: 100vw;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  margin-top: 2rem;
+  justify-content: left;
+  max-width: 80vw;
+
+  h1 {
+    font-size: 2.5rem;
+    font-family:
+      "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande", "Lucida Sans", Arial, sans-serif;
+    margin-bottom: 1rem;
+    color: rgb(31, 48, 37);
+  }
 }
 
 mat-divider {

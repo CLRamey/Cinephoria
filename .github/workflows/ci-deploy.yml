@@ -105,7 +105,28 @@ jobs:
 
       - name: Copy deployment files to VPS
         run: |
-          rsync -av --exclude='git' -e "ssh -p $VPS_PORT" ./ $VPS_USER@$VPS_HOST:$APP_PATH
+          rsync -av \
+            --exclude='.git' \
+            --exclude='.github' \
+            --exclude='node_modules' \
+            --exclude='.editorconfig' \
+            --exclude='.prettier*' \
+            --exclude='.eslint*' \
+            --exclude='.example.env' \
+            --exclude='*/.example.env' \
+            --exclude='.env' \
+            --exclude='*/.env' \
+            --exclude='.production.env' \
+            --exclude='backend/seeders/' \
+            --exclude='backend/docker-compose-db.yml' \
+            --exclude='backend/tests/' \
+            --exclude='tests/' \
+            --exclude='docker-compose-staging.yml' \
+            --exclude='docker-compose-test.yml' \
+            --exclude='Dockerfile' \
+            --exclude='sql/security_options/' \
+            --exclude='README.md' \
+            -e "ssh -p $VPS_PORT" ./ $VPS_USER@$VPS_HOST:$APP_PATH
 
       - name: Deploy application using docker-compose on VPS
         run: |

@@ -113,7 +113,10 @@ export class FilmDetailsComponent implements OnInit, OnDestroy {
       )
       .subscribe(extendedScreenings => {
         this.seances = (extendedScreenings as (ExtendedScreening | null)[])
-          .filter((screening): screening is ExtendedScreening => screening !== null)
+          .filter(
+            (screening): screening is ExtendedScreening =>
+              screening !== null && screening.screeningStatus === 'active',
+          )
           .filter(screening => screening.screeningDate >= new Date())
           .sort((a, b) => a.screeningDate.getTime() - b.screeningDate.getTime());
         this.isLoading = false;

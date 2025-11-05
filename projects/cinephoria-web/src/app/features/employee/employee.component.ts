@@ -5,4 +5,8 @@ import { Component } from '@angular/core';
   templateUrl: './employee.component.html',
   styleUrl: './employee.component.scss',
 })
-export class EmployeeComponent {}
+export class EmployeeComponent {
+  // Loading and error states
+  isLoading: boolean = false;
+  hasError: boolean = false;
+}

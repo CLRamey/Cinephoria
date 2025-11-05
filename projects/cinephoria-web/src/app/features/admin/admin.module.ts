@@ -6,8 +6,11 @@ import { AdminComponent } from './admin.component';
 import { MatTableModule } from '@angular/material/table';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDivider } from '@angular/material/divider';
+import { MatIconModule } from '@angular/material/icon';
 import { StaffActionsComponent } from 'projects/auth/src/lib/shared/staff-actions/staff-actions.component';
 import { EmployeeAccountComponent } from './employee-account/employee-account.component';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
 
 const routes: Routes = [
   {
@@ -17,14 +20,18 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  declarations: [AdminComponent, EmployeeAccountComponent],
+  declarations: [AdminComponent],
   imports: [
     CommonModule,
     RouterModule.forChild(routes),
     MatProgressSpinnerModule,
     MatTableModule,
     MatDivider,
+    MatDialogModule,
+    MatIconModule,
+    MatButtonModule,
     StaffActionsComponent,
+    EmployeeAccountComponent,
   ],
   providers: [AdminZoneService],
   exports: [AdminComponent],

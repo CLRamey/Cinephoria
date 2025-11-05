@@ -9,8 +9,11 @@ import {
 } from '../interfaces/reservation';
 import {
   Employees,
+  CreateEmployee,
   EmployeeSuccessResponse,
   EmployeeErrorResponse,
+  EmployeeRole,
+  EmployeeResetPassword,
 } from '../interfaces/staff-interfaces';
 
 @Injectable({
@@ -51,6 +54,7 @@ export class AdminZoneService {
       );
   }
 
+  // Method to get all employees
   getAllEmployees(): Observable<{ employees: Employees[] }> {
     return this.http
       .get<
@@ -67,8 +71,9 @@ export class AdminZoneService {
                 userId: emp.userId,
                 userFirstName: emp.userFirstName,
                 userLastName: emp.userLastName,
+                userUsername: emp.userUsername,
                 userEmail: emp.userEmail,
-                userRole: emp.userRole,
+                userRole: EmployeeRole.EMPLOYEE,
               }));
             }
             return { employees };
@@ -76,6 +81,54 @@ export class AdminZoneService {
           return { employees: [] };
         }),
         catchError(() => of({ employees: [] })),
+      );
+  }
+
+  // Method to add a new employee
+  addEmployee(employeeData: CreateEmployee): Observable<boolean> {
+    return this.http
+      .post<{ success: boolean }>(`${this.baseUrl}/employee`, employeeData, {
+        responseType: 'json',
+        withCredentials: true,
+      })
+      .pipe(
+        take(1),
+        map(response => {
+          if (response.success === true) {
+            return true;
+          }
+          return false;
+        }),
+        catchError(err => {
+          console.error('Error adding employee:', err);
+          return of(false);
+        }),
+      );
+  }
+
+  // Method to reset an employee's password
+  resetEmployeePassword(resetData: EmployeeResetPassword): Observable<boolean> {
+    return this.http
+      .put<{ success: boolean }>(
+        `${this.baseUrl}/employee/password`,
+        { resetData },
+        {
+          responseType: 'json',
+          withCredentials: true,
+        },
+      )
+      .pipe(
+        take(1),
+        map(response => {
+          if (response.success === true) {
+            return true;
+          }
+          return false;
+        }),
+        catchError(err => {
+          console.error('Error resetting password:', err);
+          return of(false);
+        }),
       );
   }
 }

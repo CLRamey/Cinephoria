@@ -39,7 +39,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   // Lifecycle hook that runs when the component is initialized.
   ngOnInit(): void {
     const authSub = this.authService.isAuthenticated$.subscribe(isAuthenticated => {
-      if (isAuthenticated) {
+      if (isAuthenticated === true) {
         const roleSub = this.authService.userRole$.subscribe(role => {
           this.userRole = role;
         });
