@@ -18,6 +18,7 @@ const config: Config = {
   detectLeaks: false,
   detectOpenHandles: true,
   forceExit: false,
+  coveragePathIgnorePatterns: ['../src/models/', '../src/config/'],
 };
 
 export default config;

@@ -5,7 +5,7 @@ import {
   noWhitespaceValidator,
   passwordStrengthValidator,
   passwordMatchValidator,
-} from '../../projects/auth/src/lib/validators/auth-validators'; // Adjust the import path
+} from '../../projects/auth/src/lib/validators/auth-validators';
 
 describe('Custom Validators', () => {
   describe('nameValidator', () => {

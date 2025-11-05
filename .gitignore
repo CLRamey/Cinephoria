@@ -79,3 +79,7 @@
 
 # SAST
 **/sonar-project.properties
+
+# VPS security files
+**/VPS_security
+

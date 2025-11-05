@@ -33,7 +33,7 @@ export interface AuthResponse {
 export interface AuthCookieResponse {
   success: boolean;
   data: {
-    userRole: Role;
+    userRole: Role | null;
   };
 }
 

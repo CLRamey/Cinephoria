@@ -3,7 +3,7 @@
 describe('Footer e2e Tests', () => {
   beforeEach(() => {
     cy.visit('/accueil');
-    cy.wait(3000);
+    cy.wait(1000);
   });
 
   it('should have a responsive footer that is visible on mobile, tablet, and desktop', () => {

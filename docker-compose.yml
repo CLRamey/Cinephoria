@@ -5,6 +5,7 @@ services:
       dockerfile: Dockerfile
     container_name: cinephoria-sqldb
     restart: unless-stopped
+    # env_file: .env # Optional: load environment variables from a file
     environment:
       - TZ=Europe/Paris
       - MARIADB_DATABASE=${MARIADB_DATABASE}
@@ -17,9 +18,9 @@ services:
       - mariadb_data:/var/lib/mysql
       - ./sql/init:/docker-entrypoint-initdb.d:ro
       - mariadb_backup:/backup
-      - ../app/certs/db-server-cert.pem:/etc/mysql/ssl/server-cert.pem:ro
-      - ../app/certs/db-server-key.pem:/etc/mysql/ssl/server-key.pem:ro
-      - ../app/certs/ca-cert.pem:/etc/mysql/ssl/ca-cert.pem:ro
+      - ../certs/db-server-cert.pem:/etc/mysql/ssl/server-cert.pem:ro
+      - ../certs/db-server-key.pem:/etc/mysql/ssl/server-key.pem:ro
+      - ../certs/ca-cert.pem:/etc/mysql/ssl/ca-cert.pem:ro
     networks:
       - cinephoria-network
 
@@ -27,6 +28,7 @@ services:
     image: mongo:8.0
     container_name: cinephoria-nosqldb
     restart: unless-stopped
+    # env_file: .env # Optional: load environment variables from a file
     environment:
       - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
       - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
@@ -37,9 +39,9 @@ services:
     volumes:
       - mongo_data:/data/db
       - ./nosql/init:/docker-entrypoint-initdb.d:ro
-      - ../app/certs/mongo-server-cert.pem:/etc/ssl/mongodb/server-cert.pem:ro
-      - ../app/certs/mongo-server-key.pem:/etc/ssl/mongodb/server-key.pem:ro
-      - ../app/certs/mongo-ca-cert.pem:/etc/ssl/mongodb/ca-cert.pem:ro
+      - ../certs/mongo-server-cert.pem:/etc/ssl/mongodb/server-cert.pem:ro
+      - ../certs/mongo-server-key.pem:/etc/ssl/mongodb/server-key.pem:ro
+      - ../certs/mongo-ca-cert.pem:/etc/ssl/mongodb/ca-cert.pem:ro
     networks:
       - cinephoria-network
 
@@ -50,6 +52,7 @@ services:
     image: app-backend
     container_name: cinephoria-back
     restart: on-failure
+    # env_file: .env # Optional: load environment variables from a file
     environment:
       - NODE_ENV=${NODE_ENV}
       - MARIADB_DATABASE=${MARIADB_DATABASE}
@@ -62,6 +65,12 @@ services:
       - PORT=${PORT}
       - API_URL=${API_URL}
       - BASE_URL=${BASE_URL}
+      - SMTP_HOST=${SMTP_HOST}
+      - SMTP_PORT=${SMTP_PORT}
+      - SMTP_SECURE=${SMTP_SECURE}
+      - SMTP_USER=${SMTP_USER}
+      - SMTP_PASS=${SMTP_PASS}
+      - FRONTEND_URL=${FRONTEND_URL}
       - ADMIN_EMAIL=${ADMIN_EMAIL}
       - ADMIN_USERNAME=${ADMIN_USERNAME}
       - ADMIN_PASSWORD=${ADMIN_PASSWORD}
@@ -74,7 +83,8 @@ services:
       - DB_SSL_CERT=${DB_SSL_CERT}
       - MONGO_CA=${MONGO_CA}
       - MONGO_CLIENT_COMBINED=${MONGO_CLIENT_COMBINED}
-      - DOMAIN_NAME=${DOMAIN_NAME}
+    volumes:
+      - ../clientcerts:/etc/ssl/clientcerts:ro
     depends_on:
       - mariadb
       - mongo
@@ -90,11 +100,12 @@ services:
     restart: always
     ports:
       - "443:443"
+    # env_file: .env # Optional: load environment variables from a file
     environment:
       - API_URL=${API_URL}
     volumes:
-      - ../app/certs/fullchain.pem:/etc/ssl/certs/app.crt:ro
-      - ../app/certs/privkey.pem:/etc/ssl/private/app.key:ro
+      - ../https/fullchain.pem:/etc/ssl/certs/app.crt:ro
+      - ../https/privkey.pem:/etc/ssl/private/app.key:ro
     depends_on:
       - cinephoria-back
     networks:

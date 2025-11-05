@@ -5,6 +5,7 @@ import { initModels } from '../models/init-models';
 import dotenv from 'dotenv';
 dotenv.config(); // Load environment variables FIRST safely
 import { log, logerror } from '../utils/logger';
+import path from 'path';
 
 // Determine if the environment is production or development
 const isProduction = process.env['NODE_ENV'] === 'production';
@@ -18,7 +19,12 @@ const dialectOptions = {
     ? {
         ssl: {
           rejectUnauthorized: true, // Reject unauthorized SSL certificates in production for security
-          ca: process.env['DB_SSL_CA'], // SSL CA certificate
+          ca: path.resolve(
+            process.env['DB_SSL_CA'] ??
+              (() => {
+                throw new Error('DB_SSL_CA env variable needed');
+              })(),
+          ),
         },
         allowPublicKeyRetrieval: false, // Disable public key retrieval in production for security
       }

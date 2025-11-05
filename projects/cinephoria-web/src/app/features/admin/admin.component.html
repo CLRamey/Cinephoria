@@ -1,1 +1,109 @@
-<p>admin works!</p>
+<div class="statistics-container">
+  <div class="statistics-section">
+    <h1 class="title">Administration</h1>
+    <h2>Réservations récentes</h2>
+    <p>
+      Veuillez trouver ci-dessous le nombre total de réservations par film au cours des 7 derniers
+      jours :
+    </p>
+
+    <ng-container *ngIf="isLoading">
+      <p>Chargement des statistiques...</p>
+      <mat-spinner diameter="50"></mat-spinner>
+    </ng-container>
+
+    <ng-container *ngIf="hasError">
+      <p class="error-text">
+        Erreur lors du chargement des statistiques. Veuillez réessayer plus tard.
+      </p>
+    </ng-container>
+
+    <ng-container *ngIf="!isLoading && !hasError && statistics.length === 0">
+      <p>Vous n'avez aucune statistique pour le moment.</p>
+    </ng-container>
+  </div>
+
+  <div class="table-section" *ngIf="!isLoading && !hasError && statistics.length > 0">
+    <table mat-table [dataSource]="statistics" class="mat-elevation-z8">
+      <ng-container matColumnDef="filmTitle">
+        <th mat-header-cell *matHeaderCellDef>Film</th>
+        <td mat-cell *matCellDef="let element">{{ element.filmTitle }}</td>
+      </ng-container>
+      <ng-container matColumnDef="reservationCount">
+        <th mat-header-cell *matHeaderCellDef>Réservations</th>
+        <td mat-cell *matCellDef="let element">{{ element.reservationCount }}</td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+  </div>
+</div>
+
+<mat-divider></mat-divider>
+
+<div class="crud-container">
+  <csh-staff-actions></csh-staff-actions>
+</div>
+
+<mat-divider></mat-divider>
+
+<div class="employees-container">
+  <div class="employees-section">
+    <h2>Comptes Employés</h2>
+    <p>Gérez les comptes des employés du cinéma :</p>
+    <br />
+    <div class="add-employee-button">
+      <button mat-raised-button color="primary" (click)="onAddEmployee()">
+        <mat-icon>person_add</mat-icon>
+        Créer un compte employé
+      </button>
+    </div>
+    <br />
+    <ng-container *ngIf="employeesLoading">
+      <p>Chargement des comptes employés...</p>
+      <mat-spinner diameter="50"></mat-spinner>
+    </ng-container>
+
+    <ng-container *ngIf="employeesError">
+      <p class="error-text">
+        Erreur lors du chargement des comptes employés. Veuillez réessayer plus tard.
+      </p>
+    </ng-container>
+
+    <div class="table-section" *ngIf="!employeesLoading && !employeesError && employees.length > 0">
+      <table mat-table [dataSource]="employees" class="mat-elevation-z8 responsive-table">
+        <ng-container matColumnDef="userFirstName">
+          <th mat-header-cell *matHeaderCellDef>Prénom</th>
+          <td mat-cell *matCellDef="let element">{{ element.userFirstName }}</td>
+        </ng-container>
+        <ng-container matColumnDef="userLastName">
+          <th mat-header-cell *matHeaderCellDef>Nom</th>
+          <td mat-cell *matCellDef="let element">{{ element.userLastName }}</td>
+        </ng-container>
+        <ng-container matColumnDef="userEmail">
+          <th mat-header-cell *matHeaderCellDef>Email</th>
+          <td mat-cell *matCellDef="let element">{{ element.userEmail }}</td>
+        </ng-container>
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Actions</th>
+          <td mat-cell *matCellDef="let element" class="action-buttons">
+            <button
+              mat-icon-button
+              color="accent"
+              aria-label="Réinitialiser le mot de passe"
+              (click)="onResetPassword(element)"
+            >
+              <mat-icon>lock_reset</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="employeeColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: employeeColumns"></tr>
+      </table>
+    </div>
+
+    <ng-container *ngIf="!employeesLoading && !employeesError && employees.length === 0">
+      <p>Aucun employé trouvé.</p>
+    </ng-container>
+  </div>
+</div>

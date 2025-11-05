@@ -109,7 +109,7 @@ export class EmployeeCLoginComponent {
       this.loginError = true;
       catchErrorSnackBar(this.snackBar);
       resetForm(this.loginForm);
-      this.authService.logout();
+      this.authService.logoutSecurely();
       this.router.navigate(['/accueil']);
       return;
     }

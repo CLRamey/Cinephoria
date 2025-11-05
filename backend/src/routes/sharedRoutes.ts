@@ -6,7 +6,7 @@ import { cookieCheckController } from '../controllers/cookieController';
 
 const router = express.Router();
 
-router.get('/cookie-check', generalRateLimiter, cookieCheckController);
+router.get('/cookie-check', generalAuthMiddleware, generalRateLimiter, cookieCheckController);
 router.post('/logout', generalAuthMiddleware, generalRateLimiter, logoutController);
 
 export default router;

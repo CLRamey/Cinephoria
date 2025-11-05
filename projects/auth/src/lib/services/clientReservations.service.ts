@@ -23,7 +23,7 @@ export class ClientReservationsService {
     return this.http
       .get<
         ReservationSuccessResponse | ReservationErrorResponse
-      >(`${this.baseUrl}/client-reservations`, { responseType: 'json' })
+      >(`${this.baseUrl}/client-reservations`, { responseType: 'json', withCredentials: true })
       .pipe(
         take(1),
         map((response: ReservationSuccessResponse | ReservationErrorResponse) => {

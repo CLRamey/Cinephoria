@@ -34,6 +34,11 @@ describe('ClientComponent', () => {
     fixture.detectChanges();
   });
 
+  afterEach(() => {
+    jest.restoreAllMocks();
+    jest.clearAllMocks();
+  });
+
   it('should create the component', () => {
     expect(component).toBeTruthy();
   });

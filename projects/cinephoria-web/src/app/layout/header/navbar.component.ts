@@ -39,7 +39,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   // Lifecycle hook that runs when the component is initialized.
   ngOnInit(): void {
     const authSub = this.authService.isAuthenticated$.subscribe(isAuthenticated => {
-      if (isAuthenticated) {
+      if (isAuthenticated === true) {
         const roleSub = this.authService.userRole$.subscribe(role => {
           this.userRole = role;
         });
@@ -69,6 +69,20 @@ export class NavbarComponent implements OnInit, OnDestroy {
         return '/admin';
       default:
         return '/accueil';
+    }
+  }
+
+  // Method to get the account label based on the user role
+  get accountLabel(): string {
+    switch (this.userRole as Role) {
+      case Role.CLIENT:
+        return 'Mon espace';
+      case Role.EMPLOYEE:
+        return 'Intranet';
+      case Role.ADMIN:
+        return 'Administration';
+      default:
+        return 'Mon Espace';
     }
   }
 

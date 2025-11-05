@@ -93,3 +93,9 @@ export const generalAuthMiddleware: RequestHandler[] = authMiddleware(
   Role.EMPLOYEE,
   Role.ADMIN,
 ) as RequestHandler[];
+
+// Staff specific middleware that ensures the user is authenticated, authorized (secure check that they are either an EMPLOYEE or ADMIN) and verified.
+export const staffAuthMiddleware: RequestHandler[] = authMiddleware(
+  Role.EMPLOYEE,
+  Role.ADMIN,
+) as RequestHandler[];

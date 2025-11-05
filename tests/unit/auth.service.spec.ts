@@ -6,11 +6,23 @@ import { TokenService } from '../../projects/auth/src/lib/services/token.service
 import { API_URL } from '../../projects/auth/src/lib/shared/utils/api-url.token';
 import { RegisterUser, Role } from '../../projects/auth/src/lib/interfaces/auth-interfaces';
 import { environment } from '../../projects/cinephoria-web/src/environments/environment';
+import { AuthCookieResponse } from '../../projects/auth/src/lib/interfaces/auth-interfaces';
+import { of } from 'rxjs';
 
 describe('AuthService', () => {
   let service: AuthService;
   let httpMock: HttpTestingController;
   const mockApiUrl = environment.apiURL;
+
+  const mockSuccessResponse: AuthCookieResponse = {
+    success: true,
+    data: { userRole: Role.EMPLOYEE },
+  };
+
+  const mockFailureResponse: AuthCookieResponse = {
+    success: false,
+    data: { userRole: null },
+  };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -377,6 +389,92 @@ describe('AuthService', () => {
       expect(role).toBe(null);
     });
     req.flush('Internal Server Error', { status: 500, statusText: 'Server Error' });
+  });
+
+  it('should call the checkAuth method and authenticate user in the checkAuthPromise', () => {
+    service.checkAuthPromise().then(response => {
+      expect(response).toBeTruthy();
+    });
+    const req = httpMock.expectOne(`${mockApiUrl}/cookie-check`);
+    expect(req.request.method).toBe('GET');
+    req.flush({ success: true, data: { userRole: Role.CLIENT } });
+    service.isAuthenticated$.subscribe(value => {
+      expect(value).toBe(true);
+    });
+    service.userRole$.subscribe(role => {
+      expect(role).toBe(Role.CLIENT);
+    });
+  });
+
+  it('should resolve to unauthenticated state in checkAuthPromise when checkAuth fails', () => {
+    service.checkAuthPromise().then(response => {
+      expect(response).toBeUndefined();
+    });
+    const req = httpMock.expectOne(`${mockApiUrl}/cookie-check`);
+    expect(req.request.method).toBe('GET');
+    req.flush('Unauthorized', { status: 401, statusText: 'Unauthorized' });
+    service.isAuthenticated$.subscribe(value => {
+      expect(value).toBe(false);
+    });
+    service.userRole$.subscribe(role => {
+      expect(role).toBe(null);
+    });
+  });
+
+  describe('checkAuth', () => {
+    it('should update auth and role if valid cookie session', () => {
+      const spyAuth = jest.spyOn(service['isAuthenticatedSubject'], 'next');
+      const spyRole = jest.spyOn(service['userRoleSubject'], 'next');
+
+      service.checkAuth().subscribe(response => {
+        expect(response).toEqual(mockSuccessResponse);
+        expect(spyAuth).toHaveBeenCalledWith(true);
+        expect(spyRole).toHaveBeenCalledWith('EMPLOYEE');
+        expect(service.userRole$).toBe('EMPLOYEE');
+      });
+      const req = httpMock.expectOne(`${environment.apiURL}/cookie-check`);
+      expect(req.request.method).toBe('GET');
+      expect(req.request.withCredentials).toBe(true);
+      req.flush(mockSuccessResponse);
+    });
+
+    it('should reset auth if response invalid', () => {
+      const spyAuth = jest.spyOn(service['isAuthenticatedSubject'], 'next');
+      const spyRole = jest.spyOn(service['userRoleSubject'], 'next');
+
+      service.checkAuth().subscribe(response => {
+        expect(response).toEqual(mockFailureResponse);
+        expect(spyAuth).toHaveBeenCalledWith(false);
+        expect(spyRole).toHaveBeenCalledWith(null);
+        expect(service.userRole$).toBeNull();
+      });
+      const req = httpMock.expectOne(`${environment.apiURL}/cookie-check`);
+      req.flush(mockFailureResponse);
+    });
+
+    it('should call logoutSecurely on network error', () => {
+      const spyLogout = jest.spyOn(service, 'logoutSecurely').mockImplementation(() => of());
+      service.checkAuth().subscribe(response => {
+        expect(spyLogout).toHaveBeenCalled();
+        expect(response.success).toBe(false);
+      });
+      const req = httpMock.expectOne(`${environment.apiURL}/cookie-check`);
+      req.error(new ProgressEvent('error'));
+    });
+  });
+
+  describe('checkAuthPromise', () => {
+    it('should resolve successfully even if checkAuth succeeds', async () => {
+      jest.spyOn(service, 'checkAuth').mockReturnValue(of(mockSuccessResponse));
+      await expect(service.checkAuthPromise()).resolves.toBeUndefined();
+    });
+
+    it('should resolve successfully even if checkAuth throws error', async () => {
+      jest.spyOn(service, 'checkAuth').mockImplementation(() => {
+        throw new Error('Network error');
+      });
+      await expect(service.checkAuthPromise()).rejects.toThrow('Network error');
+    });
   });
 
   it('should logout a user when logoutSecurely is called', () => {

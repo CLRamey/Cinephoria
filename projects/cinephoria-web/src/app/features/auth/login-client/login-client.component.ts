@@ -87,11 +87,11 @@ export class LoginClientComponent {
               this.router.navigate(['/client']).then(() => {
                 setTimeout(() => {
                   this.router.navigate(['/reservation']);
-                  return;
                 }, 1000);
               });
+              return;
             }
-            // Navigate to dashboard with full refreshed state
+            // Navigate to client space
             this.router.navigate(['/client']);
           },
           error: err => {
@@ -105,7 +105,7 @@ export class LoginClientComponent {
       this.loginError = true;
       catchErrorSnackBar(this.snackBar);
       resetForm(this.loginForm);
-      this.authService.logout();
+      this.authService.logoutSecurely();
       this.router.navigate(['/accueil']);
       return;
     }
