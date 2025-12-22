@@ -75,7 +75,7 @@ describe('FilmFormComponent', () => {
       filmDuration: 120,
       filmFavorite: true,
       filmMinimumAge: 12,
-      filmActiveDate: '2025-12-10',
+      filmActiveDate: '2026-03-04',
       genre1: 1,
       genre2: null,
     });
