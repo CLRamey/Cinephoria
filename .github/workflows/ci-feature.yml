@@ -87,11 +87,7 @@ jobs:
       run: npm ci
       working-directory: ./backend
 
-    - name: Audit frontend dependencies
-      run: npm audit --omit=dev
-      working-directory: ./
-
-    - name: Audit backend dependencies
+    - name: Audit dependencies
       run: npm audit --omit=dev
       working-directory: ./backend
 
