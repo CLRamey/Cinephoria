@@ -18,7 +18,7 @@ const mockData: Screenings = {
   cinema: { cinemaId: 1, cinemaName: 'CineMax' },
   room: { roomId: 1, roomNumber: 5 },
   film: { filmId: 1, filmTitle: 'Avatar' },
-  screeningDate: '2025-12-10T14:30:00',
+  screeningDate: '2026-04-10T14:30:00',
 };
 
 describe('ScreeningFormComponent', () => {
@@ -76,7 +76,7 @@ describe('ScreeningFormComponent', () => {
 
   it('should close dialog with formatted screeningData when form is valid and submitted', () => {
     component.screeningForm.setValue({
-      date: new Date('2025-12-10'),
+      date: new Date('2026-04-10'),
       time: '14:30',
     });
     component.onSubmit();
@@ -88,7 +88,7 @@ describe('ScreeningFormComponent', () => {
         cinemaId: 1,
         roomId: 1,
         filmId: 1,
-        screeningDate: '2025-12-10 14:30:00',
+        screeningDate: '2026-04-10 14:30:00',
       },
     });
   });
