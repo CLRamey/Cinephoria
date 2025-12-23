@@ -1,0 +1,7 @@
+{
+  "name": "cinephoria-mobile",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
