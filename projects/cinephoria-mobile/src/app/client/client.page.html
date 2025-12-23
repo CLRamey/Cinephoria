@@ -2,12 +2,8 @@
   <ion-toolbar>
     <img src="./assets/cinephoria-logo.webp" alt="Cinéphoria" class="logo-image" />
     <ion-buttons slot="end">
-      <ion-button
-        fill="clear"
-        aria-label="Se déconnecter"
-        (click)="logout()"
-      >
-      <ion-icon name="log-out-outline"></ion-icon>
+      <ion-button fill="clear" aria-label="Se déconnecter" (click)="logout()">
+        <ion-icon name="log-out-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
@@ -18,59 +14,66 @@
     <h1>Réservations</h1>
     <p class="res">Explorez vos réservations à venir :</p>
 
-  @if (isLoading) {
+    @if (isLoading) {
     <ion-item class="center">
       <ion-spinner name="crescent"></ion-spinner>
       <p>Chargement de vos réservations...</p>
     </ion-item>
-  }
-
-  @if (hasError) {
+    } @if (hasError) {
     <ion-text color="danger" class="center">
       <p>Erreur lors du chargement des réservations.</p>
       <p>Veuillez réessayer plus tard.</p>
     </ion-text>
-  }
-
-  @if (!isLoading && !hasError && reservations.length === 0) {
+    } @if (!isLoading && !hasError && reservations.length === 0) {
     <ion-text class="center">
       <p>Vous n'avez aucune réservation pour le moment.</p>
     </ion-text>
-  }
-
-  @if (!isLoading && !hasError && reservations.length > 0) {
+    } @if (!isLoading && !hasError && reservations.length > 0) {
     <ion-accordion-group expand="inset">
       @for (r of reservations; track r.reservationCode) {
-        <ion-accordion>
-          <ion-item slot="header">
-            <ion-label>
-              <h2>Réservation #{{ r.reservationCode }}</h2>
-              <p>{{ r.filmName }} - {{ r.screeningDate }}</p>
-            </ion-label>
-          </ion-item>
-          
-          <div slot="content" class="reservation-details">
-            <p><strong>Cinéma :</strong> {{ r.cinemaName }}</p>
-            <p><strong>Salle :</strong> {{ r.roomNumber }}</p>
-            <p><strong>Places :</strong> {{ r.quantity }}</p>
-            <p><strong>Sièges :</strong> {{ r.seatLabels }}</p>
-            <p>
-              <strong>Total :</strong>
-              {{ r.reservationTotalPrice | currency:'EUR':'symbol' }}
-            </p>
-            <p><strong>Statut :</strong> {{ r.reservationStage }}</p>
+      <ion-accordion>
+        <ion-item slot="header">
+          <ion-label>
+            <h2>Réservation #{{ r.reservationCode }}</h2>
+            <p>{{ r.filmName }} - {{ r.screeningDate }}</p>
+          </ion-label>
+        </ion-item>
 
-            @if (r.reservationStage === 'Réservé') {
-              <ion-text>
-                <p class="note">
-                  Paiement à régler au cinéma avant la séance.
-                </p>
-              </ion-text>
-            }
-          </div>
-        </ion-accordion>
+        <div slot="content" class="reservation-details">
+          <p>
+            <strong>Cinéma :</strong>
+            {{ r.cinemaName }}
+          </p>
+          <p>
+            <strong>Salle :</strong>
+            {{ r.roomNumber }}
+          </p>
+          <p>
+            <strong>Places :</strong>
+            {{ r.quantity }}
+          </p>
+          <p>
+            <strong>Sièges :</strong>
+            {{ r.seatLabels }}
+          </p>
+          <p>
+            <strong>Total :</strong>
+            {{ r.reservationTotalPrice | currency: "EUR" : "symbol" }}
+          </p>
+          <p>
+            <strong>Statut :</strong>
+            {{ r.reservationStage }}
+          </p>
+
+          @if (r.reservationStage === "Réservé") {
+          <ion-text>
+            <p class="note">Paiement à régler au cinéma avant la séance.</p>
+          </ion-text>
+          }
+        </div>
+      </ion-accordion>
       }
     </ion-accordion-group>
-  }
+    }
   </div>
 </ion-content>

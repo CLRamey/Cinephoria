@@ -29,6 +29,7 @@ export default defineConfig([globalIgnores([
     "**/*.env",
     "**/.env",
     "**/.env.*",
+    "./projects/cinephoria-mobile/**",
 ]), {
     files: ["**/*.ts"],
 

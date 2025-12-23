@@ -16,14 +16,13 @@
       </ion-item>
 
       @if (loginForm.get("email")?.invalid && loginForm.get("email")?.touched) {
-        <ion-text color="danger">
-          @if (loginForm.get("email")?.errors?.["required"]) {
-            <p class="warning">Veuillez entrer une adresse e-mail.</p>
-          }
-          @if (loginForm.get("email")?.errors?.["email"]) {
-            <p class="warning">Veuillez entrer une adresse e-mail valide.</p>
-          }
-        </ion-text>
+      <ion-text color="danger">
+        @if (loginForm.get("email")?.errors?.["required"]) {
+        <p class="warning">Veuillez entrer une adresse e-mail.</p>
+        } @if (loginForm.get("email")?.errors?.["email"]) {
+        <p class="warning">Veuillez entrer une adresse e-mail valide.</p>
+        }
+      </ion-text>
       }
       <ion-item>
         <ion-label position="floating">Mot de passe</ion-label>
@@ -44,16 +43,15 @@
         </ion-button>
       </ion-item>
       @if (loginForm.get("password")?.invalid && loginForm.get("password")?.touched) {
-        <ion-text>
-          <p class="warning">Veuillez entrer votre mot de passe.</p>
-        </ion-text>
-      }
-      @if (loginError) {
-        <ion-text>
-          <p class="warning">
-            Adresse e-mail ou mot de passe incorrect, veuillez corriger les informations saisies.
-          </p>
-        </ion-text>
+      <ion-text>
+        <p class="warning">Veuillez entrer votre mot de passe.</p>
+      </ion-text>
+      } @if (loginError) {
+      <ion-text>
+        <p class="warning">
+          Adresse e-mail ou mot de passe incorrect, veuillez corriger les informations saisies.
+        </p>
+      </ion-text>
       }
       <ion-button
         expand="full"
