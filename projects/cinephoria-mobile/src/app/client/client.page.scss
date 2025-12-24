@@ -99,3 +99,26 @@ ion-item {
   font-size: smaller;
   color: #f49100;
 }
+
+.qr-button {
+  border: rgb(99, 164, 122) 3px solid;
+  border-radius: 8px;
+}
+
+ion-modal {
+  --width: 350px;
+  --height: auto;
+  --border-radius: 12px;
+}
+
+ion-modal::part(content) {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.qr-wrapper {
+  display: flex;
+  justify-content: center;
+  margin: 2rem 0;
+}

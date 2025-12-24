@@ -14,12 +14,14 @@ import {
   IonButton,
   IonIcon,
   IonButtons,
+  IonModal,
 } from '@ionic/angular/standalone';
 import { Subscription } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { ClientReservationsService } from '../../../../auth/src/lib/services/clientReservations.service';
 import { Reservation } from '../../../../auth/src/lib/interfaces/user-interfaces';
+import { QRCodeComponent } from 'angularx-qrcode';
 
 @Component({
   selector: 'app-client',
@@ -27,6 +29,7 @@ import { Reservation } from '../../../../auth/src/lib/interfaces/user-interfaces
   templateUrl: './client.page.html',
   styleUrls: ['./client.page.scss'],
   imports: [
+    IonModal, 
     IonButtons,
     IonIcon,
     IonButton,
@@ -40,6 +43,7 @@ import { Reservation } from '../../../../auth/src/lib/interfaces/user-interfaces
     IonText,
     IonAccordion,
     IonAccordionGroup,
+    QRCodeComponent,
   ],
 })
 export class ClientPageComponent implements OnInit, OnDestroy {
@@ -49,6 +53,10 @@ export class ClientPageComponent implements OnInit, OnDestroy {
 
   // User reservations
   reservations: Reservation[] = [];
+
+  // QR handling
+  selectedQrCode: string | null = null;
+  isQrOpen = false;
 
   // Constructor to inject necessary services
   constructor(
@@ -94,6 +102,18 @@ export class ClientPageComponent implements OnInit, OnDestroy {
       },
     });
     this.subscriptions.add(resub);
+  }
+
+  // Method to open QR code modal
+  openQrCode(qrData: string): void {
+    this.selectedQrCode = qrData;
+    this.isQrOpen = true;
+  }
+
+  // Method to close QR code modal
+  closeQrCode(): void {
+    this.isQrOpen = false;
+    this.selectedQrCode = null;
   }
 
   // Method to handle user logout
