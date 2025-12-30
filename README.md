@@ -59,6 +59,12 @@ L’application web sera accessible à l’adresse suivante : http://localhost:4
 
 ### Application Mobile
 
+ 1. Après avoir terminé les étapes listées ci-dessus pour l’application web, copiez les fichiers de cinephoria-mobile si cela n’a pas déjà été fait.
+ 2. Placez-vous dans le dossier cinephoria-mobile et installez les dépendances en exécutant la commande : npm install
+ 3. Lancez l’application mobile avec la commande : ionic serve
+ 
+ L'application mobile sera accesible à l'adresse suivante : http://localhost:8100
+
 ### Application Bureautique
 
 ## Tests
