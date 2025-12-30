@@ -70,6 +70,15 @@
             <p class="note">Paiement à régler au cinéma avant la séance.</p>
           </ion-text>
           }
+          <ion-button
+            class="qr-button"
+            expand="block"
+            color="light"
+            size="small"
+            (click)="openQrCode(r.reservationQrCode)"
+          >
+            Afficher le QR Code
+          </ion-button>
         </div>
       </ion-accordion>
       }
@@ -77,3 +86,13 @@
     }
   </div>
 </ion-content>
+
+<ion-modal [isOpen]="isQrOpen" (didDismiss)="closeQrCode()">
+  <ion-content class="ion-padding">
+    @if (isQrOpen && selectedQrCode) {
+    <div class="qr-wrapper">
+      <qrcode [qrdata]="selectedQrCode" [width]="220" [errorCorrectionLevel]="'M'"></qrcode>
+    </div>
+    }
+  </ion-content>
+</ion-modal>
