@@ -3,6 +3,7 @@ export const environment = {
   apiURL: 'https://domain.dev/api',
   frontendDomain: 'https://domain.dev',
   enableConsole: false,
+  offlineMode: true, // Enable offline mode for desktop application
 };
 
-// PRODUCTION DOMAIN EXAMPLE: NOTE: Replace domain.dev with your domain
+// FOR PRODUCTION, replace 'domain.dev' with your actual domain.
