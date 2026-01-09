@@ -1,4 +1,4 @@
-import { filmAttributes, user } from '../models/init-models';
+import { filmAttributes, incidentAttributes, user } from '../models/init-models';
 import { isPasswordStrong } from '../utils/userPassword';
 import validator from 'validator';
 import { logwarn } from '../utils/logger';
@@ -233,4 +233,37 @@ export function isNonNegativeNumber(value: unknown): boolean {
 export function isFutureDate(value: string | Date): boolean {
   const date = new Date(value);
   return !isNaN(date.getTime()) && date > new Date();
+}
+
+// Validate incident input data
+export function validateIncidentData(
+  incidentData: Partial<incidentAttributes>,
+): Partial<incidentAttributes> {
+  const errors: Record<string, string> = {};
+  // Basic presence check
+  if (!incidentData) {
+    errors.general = 'No incident data provided.';
+  }
+  // Destructure and sanitize inputs
+  const incidentEquipment = String(incidentData.incidentEquipment);
+  const incidentDescription = String(incidentData.incidentDescription);
+
+  if (!incidentEquipment || !/^[A-Za-z0-9À-ÿ\s.,-]{3,100}$/.test(incidentEquipment)) {
+    errors.incidentEquipment = 'Incident equipment contains invalid characters.';
+  }
+
+  if (!incidentDescription || !/^[A-Za-zÀ-ÿ\s.,-]{10,255}$/.test(incidentDescription)) {
+    errors.incidentDescription = 'Incident description contains invalid characters.';
+  }
+
+  if (Object.keys(errors).length > 0) {
+    const error: ValidationError = new Error('Validation failed');
+    error.status = 400;
+    error.details = errors;
+    throw error;
+  }
+  return {
+    incidentEquipment,
+    incidentDescription,
+  };
 }

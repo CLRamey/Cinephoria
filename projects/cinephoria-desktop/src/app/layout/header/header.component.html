@@ -1,0 +1,42 @@
+<header class="desktop-header">
+  <mat-toolbar
+    routerLinkActive="active"
+    [routerLinkActiveOptions]="{ exact: true }"
+    color="primary"
+    class="navbar"
+  >
+    <a
+      *ngIf="logoClickEnabled; else staticLogo"
+      routerLink="/accueil"
+      class="logo"
+      aria-label="Accueil Cinéphoria"
+    >
+      <img src="assets/cinephoria-logo.webp" alt="Cinéphoria Logo" class="cinephoria-logo" />
+    </a>
+
+    <ng-template #staticLogo>
+      <div class="logo" aria-label="Cinéphoria Logo">
+        <img src="assets/cinephoria-logo.webp" alt="Cinéphoria Logo" class="cinephoria-logo" />
+      </div>
+    </ng-template>
+    <span class="spacer"></span>
+
+    <nav
+      class="nav-links desktop"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+      aria-label="Menu principal"
+    >
+      <ng-container *ngIf="(isAuthenticated$ | async) === true && (userRole$ | async) !== null">
+        <button mat-button [matMenuTriggerFor]="accountMenu" aria-label="Ouvrir le menu de compte">
+          Mon Compte
+        </button>
+        <mat-menu #accountMenu="matMenu" class="account-menu">
+          <a mat-menu-item [routerLink]="profileUrl">{{ accountLabel }}</a>
+          <mat-divider></mat-divider>
+          <button mat-menu-item (click)="logout()" aria-label="Déconnexion">Déconnexion</button>
+        </mat-menu>
+      </ng-container>
+    </nav>
+  </mat-toolbar>
+</header>

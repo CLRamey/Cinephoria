@@ -1,6 +1,7 @@
 import sanitizeHtml from 'sanitize-html';
 import { RegisterInput, LoginUserInput, Role } from '../validators/userValidator';
 import { filmAttributes } from '../models/film';
+import { incidentAttributes } from '../models/incident';
 
 // Function to sanitize a single string input
 export function sanitizeUserInput(input: string): string {
@@ -141,6 +142,23 @@ export function sanitizeFilmInput(data: Partial<filmAttributes>): Partial<filmAt
     sanitized.filmPublishingState = sanitizeUserInput(data.filmPublishingState) as
       | 'active'
       | 'inactive';
+  }
+  return sanitized;
+}
+
+// Function to sanitize incident input data
+export function sanitizeIncidentInput(
+  data: Partial<incidentAttributes>,
+): Partial<incidentAttributes> {
+  const sanitized: Partial<incidentAttributes> = { ...data };
+  if (data.incidentEquipment && typeof data.incidentEquipment === 'string') {
+    sanitized.incidentEquipment = sanitizeUserInput(data.incidentEquipment);
+  }
+  if (data.incidentDescription && typeof data.incidentDescription === 'string') {
+    sanitized.incidentDescription = sanitizeUserInput(data.incidentDescription);
+  }
+  if (data.incidentStatus && typeof data.incidentStatus === 'string') {
+    sanitized.incidentStatus = sanitizeUserInput(data.incidentStatus) as 'open' | 'resolved';
   }
   return sanitized;
 }

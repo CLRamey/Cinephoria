@@ -29,7 +29,7 @@ import { QRCodeComponent } from 'angularx-qrcode';
   templateUrl: './client.page.html',
   styleUrls: ['./client.page.scss'],
   imports: [
-    IonModal, 
+    IonModal,
     IonButtons,
     IonIcon,
     IonButton,
