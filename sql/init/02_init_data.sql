@@ -114,8 +114,7 @@ CROSS JOIN (
 WHERE (seat_map.row_num - 1) * 10 + seat_map.col_num <= r.room_capacity;
 
 -- Insert Screenings over a weekly period
-INSERT INTO Screening (screening_date, screening_status, deleted_at, cinema_id, film_id, room_id)
-VALUES
+INSERT INTO Screening (screening_date, screening_status, deleted_at, cinema_id, film_id, room_id) VALUES
 -- FILM 1 - Shown in: Nantes (1), Paris (3), Lille (5), Liège (7)
 ('2026-02-14 10:00:00', 'ended', NULL, 1, 1, 1),
 ('2026-02-15 13:00:00', 'ended', NULL, 3, 1, 3),
@@ -138,7 +137,7 @@ VALUES
 ('2026-02-25 10:00:00', 'active', NULL, 2, 4, 2),
 ('2026-02-27 13:00:00', 'active', NULL, 3, 4, 3),
 ('2026-02-28 16:00:00', 'active', NULL, 5, 4, 6),
-('2026-02-29 19:00:00', 'active', NULL, 7, 4, 8),
+('2026-02-28 19:00:00', 'active', NULL, 7, 4, 8),
 
 -- FI6M 5 - Shown in: Bordeaux (2), Paris (3), Lille (5)
 ('2026-02-16 11:00:00', 'ended', NULL, 2, 5, 2),
@@ -190,4 +189,6 @@ VALUES
 INSERT INTO Incident (incident_equipment, incident_description, incident_status, incident_created_at, incident_updated_at, deleted_at, room_id, user_id)
 VALUES 
 ('Projecteur','Le projecteur de la salle ne fonctionne plus correctement.', 'open', '2025-06-15 19:00:00', NULL, NULL, 3, 2),
-('Siège A1','présente un défaut, la couture est partiellement défaite.', 'resolved', '2025-06-12 11:00:00', '2025-06-12 16:00:00', NULL, 3, 2);
+('Siège A1','présente un défaut, la couture est partiellement défaite.', 'resolved', '2025-06-12 11:00:00', '2025-06-12 16:00:00', NULL, 3, 2),
+('Système Sonore','Le son est distordu dans certaines parties de la salle.', 'open', '2025-06-10 14:30:00', NULL, NULL, 5, 2),
+('Climatisation','La climatisation ne fonctionne pas correctement.', 'open', '2025-06-11 09:15:00', NULL, NULL, 1, 2);

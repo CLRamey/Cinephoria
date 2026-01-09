@@ -3,30 +3,50 @@ import { app, BrowserWindow } from 'electron';
 import * as path from 'path';
 import { ipcMain } from 'electron';
 import { log, logerror } from './utils/logger';
+import * as dotenv from 'dotenv';
+// Load environment variables from .env file safely
+dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 
 // Error Handling
 process.on('uncaughtException', error => {
   logerror('Unexpected error: ' + error);
 });
 // Function to create the main application window
-function createWindow() {
+async function createWindow() {
+  const backendUrl = process.env.BACKEND_URL || 'http://localhost:3000';
   const mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 900,
+    height: 700,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true, // Enable context isolation for security
       nodeIntegration: false, // Disable Node.js integration for security
+      sandbox: true, // Enable sandboxing for additional security
     },
   });
   // Use NODE_ENV to determine environment; default to development when not 'production'
   if (process.env.NODE_ENV === 'development') {
+    log('Running in development mode');
     mainWindow.loadURL('http://localhost:4201'); // Load the development server URL allowing hot-reloading
     mainWindow.webContents.openDevTools(); // Open DevTools for debugging
   } else {
-    mainWindow.loadFile('../../dist/cinephoria-desktop/browser/index.html'); // Load the main HTML file for production
+    const indexPath = path.join(__dirname, '../../dist/cinephoria-desktop/browser/index.html');
+    mainWindow.loadFile(indexPath); // Load the main HTML file for production
+    // CSP security implementation
+    mainWindow.webContents.session.webRequest.onHeadersReceived((details, callback) => {
+      callback({
+        responseHeaders: {
+          ...details.responseHeaders,
+          'Content-Security-Policy': [
+            `default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' https://fonts.gstatic.com; connect-src 'self' ${backendUrl}`,
+          ],
+          'Strict-Transport-Security': ['max-age=63072000; includeSubDomains; preload'],
+        },
+      });
+    });
   }
 }
+
 // When Electron has finished initialization this method creates browser windows.
 app.whenReady().then(() => {
   createWindow();

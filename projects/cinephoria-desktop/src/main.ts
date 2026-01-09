@@ -15,6 +15,7 @@ if (environment.production) {
 }
 
 registerLocaleData(localeFr, 'fr');
+
 platformBrowserDynamic()
   .bootstrapModule(AppModule, {
     ngZoneEventCoalescing: true,
