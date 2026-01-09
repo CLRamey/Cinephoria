@@ -1,12 +1,13 @@
 import request from 'supertest';
 import express from 'express';
-import employeeRoutes from '../../src/routes/employeeRoutes';
 import { user } from '../../src/models/init-models';
 import { comparePasswords } from '../../src/utils/userPassword';
 import { generateAccessToken, attachAccessToken } from '../../src/utils/tokenManagement';
 import { validateLoginInput } from '../../src/validators/userValidator';
 import { sanitizeLoginInput } from '../../src/utils/sanitize';
 import cookieParser from 'cookie-parser';
+import { loginEmployeeController } from '../../src/controllers/loginEmployeeController';
+import { loginRateLimiter } from '../../src/middlewares/rateLimiter';
 
 process.env.NODE_ENV = 'test';
 process.env.COOKIE_SECRET = 'testsecret';
@@ -14,7 +15,7 @@ process.env.COOKIE_SECRET = 'testsecret';
 const app = express();
 app.use(express.json());
 app.use(cookieParser(process.env.COOKIE_SECRET));
-app.use('/api', employeeRoutes);
+app.post('/api/login-employee', loginRateLimiter, loginEmployeeController);
 
 // Mock dependencies
 jest.mock('../../src/models/init-models', () => ({
