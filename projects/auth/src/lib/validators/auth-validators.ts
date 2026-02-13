@@ -68,3 +68,13 @@ export function passwordMatchValidator(passwordControlName: string): ValidatorFn
     }
   };
 }
+
+export function textValidator(): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null => {
+    const value = control.value;
+    if (!value) return null;
+
+    const valid = /^[A-Za-zÀ-ÿ\s.,-]{10,500}$/.test(value);
+    return valid ? null : { invalidText: true };
+  };
+}

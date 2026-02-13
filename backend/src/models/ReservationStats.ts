@@ -15,7 +15,13 @@ const ReservationStatSchema = new Schema<IReservationStat>({
 });
 
 // Unique index on (filmId, date)
-ReservationStatSchema.index({ filmId: 1, date: 1 }, { unique: true });
+ReservationStatSchema.index(
+  { filmId: 1, date: 1 },
+  {
+    unique: true,
+    expireAfterSeconds: 60 * 60 * 24 * 30, // 30 days expiration to limit storage
+  },
+);
 
 export const ReservationStat = mongoose.model<IReservationStat>(
   'ReservationStat',

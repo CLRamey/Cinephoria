@@ -111,12 +111,6 @@ ion-modal {
   --border-radius: 12px;
 }
 
-ion-modal::part(content) {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
 .qr-wrapper {
   display: flex;
   justify-content: center;

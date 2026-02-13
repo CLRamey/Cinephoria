@@ -5,13 +5,6 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-// Layout modules
-import { HeaderModule } from './layout/header/header.module';
-
-// Feature modules
-import { HomeModule } from './features/home/home.module';
-import { LoginEmployeeModule } from './features/login-employee/login-employee.module';
-import { EmployeeModule } from './features/employee/employee.module';
 
 // Utils and shared components
 import { environment } from '../environments/environment';
@@ -24,15 +17,7 @@ import { AuthService } from '../../../../projects/auth/src/lib/services/auth.ser
 
 @NgModule({
   declarations: [AppComponent],
-  imports: [
-    BrowserModule,
-    BrowserAnimationsModule,
-    AppRoutingModule,
-    HeaderModule,
-    HomeModule,
-    LoginEmployeeModule,
-    EmployeeModule,
-  ],
+  imports: [BrowserModule, BrowserAnimationsModule, AppRoutingModule],
   providers: [
     AuthService,
     { provide: 'AuthService', useExisting: AuthService },

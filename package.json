@@ -62,7 +62,7 @@
     "docker:stage:down": "docker compose -f docker-compose-staging.yml down -v",
     "docker:run": "docker compose -f docker-compose.yml up --build -d",
     "docker:stop": "docker compose -f docker-compose.yml down",
-    "desktop:angular": "ng serve cinephoria-desktop --configuration=development --port 4201",
+    "desktop": "ng serve cinephoria-desktop --configuration=development --port 4201",
     "desktop:electron:dev": "tsc -p electron/tsconfig.json && cross-env NODE_ENV=development && electron electron/dist/main.js",
     "desktop:dev": "concurrently -k \"npm run desktop:angular\" \"npm run desktop:electron:dev\"",
     "desktop:build": "ng build cinephoria-desktop --configuration=production --output-path=dist/cinephoria-desktop --base-href ./",

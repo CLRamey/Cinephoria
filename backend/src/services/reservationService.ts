@@ -13,6 +13,67 @@ import { Op, Transaction } from 'sequelize';
 import { sequelize } from '../config/databaseSql';
 import { logerror } from '../utils/logger';
 
+// Function to retrieve client reservations
+export async function getUserReservations(userId: number): Promise<ServiceResponse<Reservation[]>> {
+  try {
+    const reservations = await reservation.findAll({
+      where: { userId: userId },
+      include: [
+        {
+          model: reservationSeat,
+          as: 'reservationSeats',
+          include: [
+            {
+              model: seat,
+              as: 'seat',
+              include: [
+                {
+                  model: room,
+                  as: 'room',
+                  include: [{ model: quality, as: 'quality' }],
+                },
+              ],
+            },
+          ],
+        },
+        {
+          model: screening,
+          as: 'screening',
+          include: [
+            {
+              model: film,
+              as: 'film',
+            },
+            {
+              model: cinema,
+              as: 'cinema',
+            },
+            {
+              model: room,
+              as: 'room',
+              include: [{ model: quality, as: 'quality' }],
+            },
+          ],
+        },
+      ],
+      order: [['reservationId', 'DESC']],
+    });
+    // Check if reservations were found, else return error response
+    if (!reservations || reservations.length === 0) {
+      return errorResponse('No reservations found', 'RESERVATION_NOT_FOUND');
+    }
+    // Map reservations to plain objects
+    const reservationData: Reservation[] = reservations.map(
+      reservation => reservation.get({ plain: true }) as Reservation,
+    );
+    console.log('Retrieved reservations:', reservationData);
+    return successResponse(reservationData);
+  } catch (error) {
+    logerror('Error retrieving user reservations:', error);
+    return errorResponse('Failed to retrieve reservations', 'RESERVATION_ERROR');
+  }
+}
+
 export interface seatsWithStatus {
   seatId: number;
   seatRow: string;
@@ -245,161 +306,4 @@ export interface Reservation {
       filmTitle: string;
     };
   };
-}
-
-// Function to retrieve client reservations
-export async function getUserReservations(userId: number): Promise<ServiceResponse<Reservation[]>> {
-  try {
-    const reservations = await reservation.findAll({
-      where: { userId: userId },
-      include: [
-        {
-          model: reservationSeat,
-          as: 'reservationSeats',
-          include: [
-            {
-              model: seat,
-              as: 'seat',
-              include: [
-                {
-                  model: room,
-                  as: 'room',
-                  include: [{ model: quality, as: 'quality' }],
-                },
-              ],
-            },
-          ],
-        },
-        {
-          model: screening,
-          as: 'screening',
-          include: [
-            {
-              model: film,
-              as: 'film',
-            },
-            {
-              model: cinema,
-              as: 'cinema',
-            },
-            {
-              model: room,
-              as: 'room',
-              include: [{ model: quality, as: 'quality' }],
-            },
-          ],
-        },
-      ],
-      order: [['reservationId', 'DESC']],
-    });
-    // Map the raw results to the Reservation interface as Readonly plain objects
-    if (!reservations || reservations.length === 0) {
-      return errorResponse('No reservations found', 'RESERVATION_NOT_FOUND');
-    }
-    // Define a type for the plain reservation object with included associations
-    type PlainReservation = Omit<Reservation, 'reservationSeats' | 'screening'> & {
-      reservationSeats?: {
-        reservationId: number;
-        seatId: number;
-        seat?: {
-          seatId: number;
-          seatRow: string;
-          seatNumber: number;
-          pmrSeat: boolean;
-          roomId: number;
-          room?: {
-            roomId: number;
-            roomNumber: number;
-            roomCapacity: number;
-            qualityId: number;
-            quality?: {
-              qualityId: number;
-              qualityProjectionType?: string;
-              qualityProjectionPrice: number;
-            };
-          };
-        };
-      }[];
-      screening?: {
-        screeningId: number;
-        screeningDate: string;
-        screeningStatus?: string;
-        cinemaId: number;
-        filmId: number;
-        roomId: number;
-        cinema?: {
-          cinemaId: number;
-          cinemaName: string;
-        };
-        film?: {
-          filmId: number;
-          filmTitle: string;
-        };
-      };
-    };
-
-    const reservationData: Reservation[] = reservations.map(r => {
-      const plain = r.toJSON() as PlainReservation; // Use the defined type instead of 'any'
-      return {
-        reservationId: plain.reservationId,
-        screeningId: plain.screeningId,
-        reservationTotalPrice: plain.reservationTotalPrice,
-        reservationStatus: plain.reservationStatus ?? '',
-        reservationQrCode: plain.reservationQrCode ?? '',
-        reservationSeats:
-          plain.reservationSeats?.map(rs => ({
-            reservationId: rs.reservationId,
-            seatId: rs.seatId,
-            seat: {
-              seatId: rs.seat?.seatId ?? 0,
-              seatRow: rs.seat?.seatRow ?? '',
-              seatNumber: rs.seat?.seatNumber ?? 0,
-              pmrSeat: rs.seat?.pmrSeat ?? false,
-              roomId: rs.seat?.roomId ?? 0,
-              room: rs.seat?.room
-                ? {
-                    roomId: rs.seat.room.roomId,
-                    roomNumber: rs.seat.room.roomNumber,
-                    roomCapacity: rs.seat.room.roomCapacity,
-                    qualityId: rs.seat.room.qualityId,
-                    quality: rs.seat.room.quality
-                      ? {
-                          qualityId: rs.seat.room.quality.qualityId,
-                          qualityProjectionType: rs.seat.room.quality.qualityProjectionType,
-                          qualityProjectionPrice: rs.seat.room.quality.qualityProjectionPrice,
-                        }
-                      : undefined,
-                  }
-                : undefined,
-            },
-          })) ?? [],
-        screening: plain.screening
-          ? {
-              screeningId: plain.screening.screeningId,
-              screeningDate: plain.screening.screeningDate,
-              screeningStatus: plain.screening.screeningStatus,
-              cinemaId: plain.screening.cinemaId,
-              filmId: plain.screening.filmId,
-              roomId: plain.screening.roomId,
-              cinema: plain.screening.cinema
-                ? {
-                    cinemaId: plain.screening.cinema.cinemaId,
-                    cinemaName: plain.screening.cinema.cinemaName,
-                  }
-                : undefined,
-              film: plain.screening.film
-                ? {
-                    filmId: plain.screening.film.filmId,
-                    filmTitle: plain.screening.film.filmTitle,
-                  }
-                : undefined,
-            }
-          : undefined,
-      };
-    });
-    return successResponse(reservationData);
-  } catch (error) {
-    logerror('Error retrieving user reservations:', error);
-    return errorResponse('Failed to retrieve reservations', 'RESERVATION_ERROR');
-  }
 }

@@ -42,7 +42,7 @@ describe('Footer e2e Tests', () => {
       cy.contains('France').should('exist');
       cy.contains('Téléphone : +33 5 56 00 00 02').should('exist');
       cy.contains('Lundi - Samedi : 10h00 - 23h00').should('exist');
-      cy.contains('© 2025 Cinéphoria. Tous droits réservés.').should('exist');
+      cy.contains('© 2026 Cinéphoria. Tous droits réservés.').should('exist');
     });
   });
 });

@@ -196,7 +196,7 @@ export class EmployeeComponent implements OnInit, OnDestroy {
                   (typeof response === 'object' && response && response.success === true)
                 ) {
                   this.snackBar.open('Incident ajouté avec succès.', 'Fermer', {
-                    duration: 3000,
+                    duration: 2000,
                   });
                   this.loadIncidentData();
                 } else {
@@ -248,7 +248,7 @@ export class EmployeeComponent implements OnInit, OnDestroy {
                   this.loadIncidentData();
                 } else {
                   this.snackBar.open("Erreur lors de la modification de l'incident.", 'Fermer', {
-                    duration: 3000,
+                    duration: 2000,
                   });
                 }
               },
@@ -289,7 +289,7 @@ export class EmployeeComponent implements OnInit, OnDestroy {
                   `
                   Incident "${incidentTitle}" supprimé avec succès.`,
                   'Fermer',
-                  { duration: 3000 },
+                  { duration: 2000 },
                 );
                 this.loadIncidentData();
               } else {

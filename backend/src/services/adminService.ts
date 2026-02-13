@@ -20,7 +20,6 @@ export async function getReservationStats(): Promise<ServiceResponse<Reservation
     // Fetch reservation data from SQL
     const data = await reservation.findAll({
       attributes: [
-        [fn('DATE', col('reservation.reservation_created_at')), 'date'],
         [col('screening.film_id'), 'filmId'],
         [col('screening.film.film_title'), 'filmTitle'],
         [fn('COUNT', col('reservation_id')), 'reservationCount'],
@@ -34,30 +33,29 @@ export async function getReservationStats(): Promise<ServiceResponse<Reservation
         },
       ],
       where: { reservationCreatedAt: { [Op.gte]: sevenDaysAgo } },
-      group: ['screening.film_id', 'screening->film.film_id', 'date'],
-      order: [[col('date'), 'ASC']],
+      group: ['screening.film_id', 'screening->film.film_id'],
+      order: [[col('screening.film.film_title'), 'ASC']],
     });
     if (data.length === 0) {
       return successResponse([]);
     }
-
+    const runDate = new Date().toISOString().split('T')[0];
     // Upsert into MongoDB using Mongoose
     for (const row of data) {
       const filmId = row.get('filmId');
       const filmTitle = row.get('filmTitle');
-      const date = row.get('date'); // YYYY-MM-DD
       const reservationCount = row.get('reservationCount');
 
       await ReservationStat.updateOne(
-        { filmId, date },
+        { filmId, date: runDate },
         { $set: { filmTitle, reservationCount } },
         { upsert: true },
       );
     }
     // Query MongoDB for the last 7 days
     const stats = await ReservationStat.find({
-      date: { $gte: sevenDaysAgo.toISOString().split('T')[0] },
-    }).sort({ date: 1 });
+      date: runDate,
+    }).sort({ filmTitle: 1 });
     if (stats.length === 0) {
       return successResponse([]);
     }

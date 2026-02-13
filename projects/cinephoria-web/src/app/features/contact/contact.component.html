@@ -1,1 +1,76 @@
-<p>Cette page est actuellement en construction. Merci de votre patience !</p>
+<mat-card class="contact-card">
+  <h2>Contactez-nous</h2>
+  <p>
+    Vous avez des questions, des suggestions ou besoin d'aide ? N'hésitez pas à nous contacter en
+    remplissant le formulaire ci-dessous :
+  </p>
+  <br />
+  <form [formGroup]="contactForm" (ngSubmit)="onSubmit()">
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Nom</mat-label>
+      <input
+        matInput
+        formControlName="name"
+        [attr.aria-label]="'Nom'"
+        [attr.aria-required]="true"
+        required
+      />
+      <mat-error *ngIf="contactForm.get('name')?.hasError('required')">
+        Veuillez entrer votre prénom et nom.
+      </mat-error>
+      <mat-error *ngIf="contactForm.get('name')?.hasError('invalidName')">
+        Nom contenant des caractères invalides.
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Adresse e-mail</mat-label>
+      <input
+        matInput
+        formControlName="email"
+        autocomplete="email"
+        [attr.aria-label]="'Adresse e-mail'"
+        [attr.aria-required]="true"
+        required
+        spellcheck="false"
+        type="email"
+      />
+      <mat-error *ngIf="contactForm.get('email')?.hasError('required')">
+        Veuillez entrer une adresse e-mail.
+      </mat-error>
+      <mat-error *ngIf="contactForm.get('email')?.hasError('email')">
+        Format d'adresse e-mail invalide.
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Votre message</mat-label>
+      <textarea
+        matInput
+        formControlName="message"
+        [attr.aria-label]="'Votre message'"
+        [attr.aria-required]="true"
+        required
+        rows="5"
+      ></textarea>
+      <mat-error *ngIf="contactForm.get('message')?.hasError('required')">
+        Veuillez entrer votre message.
+      </mat-error>
+      <mat-error *ngIf="contactForm.get('message')?.hasError('minlength')">
+        Votre message doit contenir au moins 10 caractères.
+      </mat-error>
+      <mat-error *ngIf="contactForm.get('message')?.hasError('invalidText')">
+        Message contenant des caractères invalides.
+      </mat-error>
+    </mat-form-field>
+
+    <button
+      mat-raised-button
+      color="primary"
+      class="full-width"
+      [disabled]="contactForm.invalid || contactForm.pristine"
+    >
+      Envoyer votre message
+    </button>
+  </form>
+</mat-card>
