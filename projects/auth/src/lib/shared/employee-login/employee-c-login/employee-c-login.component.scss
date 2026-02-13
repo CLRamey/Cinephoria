@@ -5,6 +5,17 @@
   box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.2);
   border: rgb(215, 222, 218) 0.25px solid;
 
+  .error-message {
+    color: rgb(200, 0, 0);
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+  }
+
+  @media (max-width: 768px) {
+    width: 95vw;
+    padding: 1.5rem;
+  }
+
   @media (max-width: 768px) {
     padding: 1.5rem 1rem 2rem 1rem;
   }

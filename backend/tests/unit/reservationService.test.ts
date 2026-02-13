@@ -3,7 +3,6 @@ import {
   getUserReservations,
   ReservationService,
   seatsWithStatus,
-  Reservation,
 } from '../../src/services/reservationService';
 import {
   screening,
@@ -381,28 +380,34 @@ describe('Reservation Service', () => {
 
     it('should return mapped reservations successfully', async () => {
       const mockReservation = {
-        toJSON: () =>
-          ({
-            reservationId: 100,
-            screeningId: 1,
-            reservationTotalPrice: 20,
-            reservationStatus: 'reserved',
-            reservationQrCode: 'qr123',
-            reservationSeats: [
-              {
-                reservationId: 100,
+        get: jest.fn().mockReturnValue({
+          reservationId: 100,
+          userId: mockUserId,
+          screeningId: 1,
+          reservationTotalPrice: 20,
+          reservationStatus: 'reserved',
+          reservationQrCode: 'qr123',
+          reservationSeats: [
+            {
+              reservationId: 100,
+              seatId: 1,
+              seat: {
                 seatId: 1,
-                seat: { seatId: 1, seatRow: 'A', seatNumber: 1, pmrSeat: false, roomId: 10 },
+                seatRow: 'A',
+                seatNumber: 1,
+                pmrSeat: false,
+                roomId: 10,
               },
-            ],
-            screening: {
-              screeningId: 1,
-              screeningDate: new Date().toISOString(),
-              cinemaId: 5,
-              filmId: 2,
-              roomId: 10,
             },
-          }) as unknown as Reservation,
+          ],
+          screening: {
+            screeningId: 1,
+            screeningDate: new Date().toISOString(),
+            cinemaId: 5,
+            filmId: 2,
+            roomId: 10,
+          },
+        }),
       };
       (reservation.findAll as jest.Mock).mockResolvedValue([mockReservation]);
 

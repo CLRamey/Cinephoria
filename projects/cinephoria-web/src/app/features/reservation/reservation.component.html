@@ -42,14 +42,14 @@
     <ng-container *ngIf="filtersNeeded && !isLoading && !hasError">
       <p>Veuillez sélectionner un cinéma et un film pour afficher les séances disponibles.</p>
     </ng-container>
-    <ng-container *ngIf="seances?.length && !filtersNeeded">
+    <ng-container *ngIf="seances.length && !filtersNeeded">
       <caw-reservation-card
         *ngFor="let screening of seances"
         [screening]="screening"
         (reserveScreening)="onSelectedScreening($event)"
       ></caw-reservation-card>
     </ng-container>
-    <ng-container *ngIf="!seances?.length && !isLoading && !hasError && !filtersNeeded">
+    <ng-container *ngIf="!seances.length && !isLoading && !hasError && !filtersNeeded">
       <p>Aucune séance disponible pour l'instant.</p>
     </ng-container>
   </div>

@@ -14,13 +14,17 @@ afterEach(() => {
 });
 
 describe('getReservationStats', () => {
+  const yesterdayDate = new Date();
+  yesterdayDate.setDate(yesterdayDate.getDate() - 1);
+  const yesterday = yesterdayDate.toISOString().split('T')[0];
+  const runDate = new Date().toISOString().split('T')[0];
   const mockSQLData = [
     {
       get: (key: string): string | number => {
         const map: Record<string, string | number> = {
           filmId: 1,
           filmTitle: 'Inception',
-          date: '2025-10-25',
+          date: yesterday,
           reservationCount: 5,
         };
         return map[key];
@@ -32,7 +36,7 @@ describe('getReservationStats', () => {
     {
       filmId: 1,
       filmTitle: 'Inception',
-      date: '2025-10-25',
+      date: runDate,
       reservationCount: 5,
     },
   ];
@@ -55,7 +59,7 @@ describe('getReservationStats', () => {
       }),
     );
     expect(ReservationStat.updateOne).toHaveBeenCalledWith(
-      expect.objectContaining({ filmId: 1, date: '2025-10-25' }),
+      expect.objectContaining({ filmId: 1, date: runDate }),
       expect.objectContaining({
         $set: { filmTitle: 'Inception', reservationCount: 5 },
       }),
@@ -63,7 +67,7 @@ describe('getReservationStats', () => {
     );
     expect(ReservationStat.find).toHaveBeenCalledWith(
       expect.objectContaining({
-        date: expect.objectContaining({ $gte: expect.any(String) }),
+        date: runDate,
       }),
     );
     expect(result.success).toBe(true);

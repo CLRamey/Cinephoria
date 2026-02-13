@@ -69,6 +69,18 @@ describe('registerUser', () => {
     }
   });
 
+  it('should return error response if user creation fails', async () => {
+    (hashPassword as jest.Mock).mockResolvedValue('hashedPassword123');
+    (generateVerificationCode as jest.Mock).mockReturnValue('abc123');
+    (generateVerificationCodeExpires as jest.Mock).mockReturnValue(new Date());
+    (user.create as jest.Mock).mockResolvedValue(null);
+    const result = await registerUser({ ...mockUserInput });
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error?.code).toBe('REGISTRATION_ERROR');
+    }
+  });
+
   it('should return error response on failure', async () => {
     (hashPassword as jest.Mock).mockResolvedValue('hashedPassword123');
     (generateVerificationCode as jest.Mock).mockReturnValue('abc123');
@@ -135,10 +147,30 @@ describe('registerEmployee', () => {
     }
   });
 
+  it('should return error response if email already existsand service fails', async () => {
+    (hashPassword as jest.Mock).mockResolvedValue('hashedPassword123');
+    (user.findOne as jest.Mock).mockResolvedValue(mockEmployeeInput);
+    const result = await registerEmployee({ ...mockEmployeeInput });
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error?.code).toBe('DUPLICATE_EMAIL_FORBIDDEN');
+    }
+  });
+
+  it('should return error response if employee creation fails', async () => {
+    (hashPassword as jest.Mock).mockResolvedValue('hashedPassword123');
+    (user.create as jest.Mock).mockResolvedValue(null);
+    const result = await registerEmployee({ ...mockEmployeeInput });
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error?.code).toBe('REGISTRATION_ERROR');
+    }
+  });
+
   it('should return error response on employee registration failure', async () => {
     (hashPassword as jest.Mock).mockResolvedValue('hashedPassword123');
     (user.create as jest.Mock).mockRejectedValue(new Error('Database error'));
-    const result = await registerUser({ ...mockEmployeeInput });
+    const result = await registerEmployee({ ...mockEmployeeInput });
     expect(result.success).toBe(false);
     if (!result.success) {
       expect(result.error?.code).toBe('REGISTRATION_ERROR');
@@ -172,6 +204,17 @@ describe('resetPassword', () => {
   it('should return error response if user not found during password reset', async () => {
     (hashPassword as jest.Mock).mockResolvedValue('newHashedPassword123');
     (user.update as jest.Mock).mockResolvedValue([0]);
+    const result = await resetPassword(1, 'NewPassword123!');
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error?.code).toBe('USER_NOT_FOUND');
+    }
+  });
+
+  it('should return error response if user not found after update', async () => {
+    (hashPassword as jest.Mock).mockResolvedValue('newHashedPassword123');
+    (user.update as jest.Mock).mockResolvedValue([1]);
+    (user.findOne as jest.Mock).mockResolvedValue(null);
     const result = await resetPassword(1, 'NewPassword123!');
     expect(result.success).toBe(false);
     if (!result.success) {

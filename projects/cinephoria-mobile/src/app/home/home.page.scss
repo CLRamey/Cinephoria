@@ -64,10 +64,11 @@ ion-button {
 
   ion-button {
     font-size: medium;
+    border-radius: 6px;
   }
 }
 
-@media (max-height: 400px) {
+@media (max-height: 440px) {
   #container {
     top: 40%;
   }

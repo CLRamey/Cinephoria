@@ -37,7 +37,7 @@ describe('Client login e2e Tests', () => {
     cy.get('input[formcontrolname="password"]').type('StrongPassword123!');
     cy.get('button[type="submit"]').click();
     cy.get('mat-error').contains(
-      "Nom d'utilisateur ou mot de passe incorrect, veuillez corriger les informations saisies.",
+      'Adresse e-mail ou mot de passe incorrect, veuillez corriger les informations saisies.',
     );
     cy.url().should('include', '/login-client');
   });
@@ -130,7 +130,7 @@ describe('Employee login e2e Tests', () => {
     cy.get('input[formcontrolname="password"]').type('StrongPassword123!');
     cy.get('button[type="submit"]').click();
     cy.get('mat-error').contains(
-      "Nom d'utilisateur ou mot de passe incorrect, veuillez corriger les informations saisies.",
+      'Adresse e-mail ou mot de passe incorrect, veuillez corriger les informations saisies.',
     );
     cy.url().should('include', '/login-employee');
   });
@@ -217,7 +217,7 @@ describe('Admin login e2e Tests', () => {
     cy.get('input[formcontrolname="password"]').type('StrongPassword123!');
     cy.get('button[type="submit"]').click();
     cy.get('mat-error').contains(
-      "Nom d'utilisateur ou mot de passe incorrect, veuillez corriger les informations saisies.",
+      'Adresse e-mail ou mot de passe incorrect, veuillez corriger les informations saisies.',
     );
     cy.url().should('include', '/login-admin');
   });

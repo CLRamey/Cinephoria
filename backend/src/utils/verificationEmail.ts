@@ -32,7 +32,7 @@ L'équipe Cinéphoria`;
         </a>
       </p>
       <p style="color: #999; font-size: 13px; text-decoration: italic;">
-        Ce lien expirera dans une heure.
+        Ce lien expirera dans quinze minutes.
       </p>
       <p>Cordialement,<br>L'équipe Cinéphoria</p>
     </div>
