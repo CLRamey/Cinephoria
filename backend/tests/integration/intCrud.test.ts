@@ -37,6 +37,10 @@ jest.mock('../../src/middlewares/authMiddleware', () => ({
 }));
 app.use('/api', staffRoutes);
 
+// Mock the uuid module for Jest
+jest.mock('uuid', () => ({
+  v4: jest.fn(() => 'mock-uuid-1234'),
+}));
 jest.mock('../../src/services/crudService');
 jest.mock('../../src/utils/sanitize', () => ({
   sanitizeFilmInput: jest.fn(data => data),

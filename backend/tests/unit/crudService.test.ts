@@ -31,6 +31,10 @@ jest.mock('../../src/config/databaseSql', () => ({
   sequelize: { transaction: jest.fn() },
 }));
 jest.mock('../../src/utils/logger');
+// Mock the uuid module for Jest
+jest.mock('uuid', () => ({
+  v4: jest.fn(() => 'mock-uuid-1234'),
+}));
 
 let mockTransaction: { commit: jest.Mock; rollback: jest.Mock };
 
