@@ -61,7 +61,14 @@
     "docker:stage": "docker compose -f docker-compose-staging.yml up --build",
     "docker:stage:down": "docker compose -f docker-compose-staging.yml down -v",
     "docker:run": "docker compose -f docker-compose.yml up --build -d",
-    "docker:stop": "docker compose -f docker-compose.yml down"
+    "docker:stop": "docker compose -f docker-compose.yml down",
+    "desktop": "ng serve cinephoria-desktop --configuration=development --port 4201",
+    "desktop:electron:dev": "tsc -p electron/tsconfig.json && cross-env NODE_ENV=development && electron electron/dist/main.js",
+    "desktop:dev": "concurrently -k \"npm run desktop:angular\" \"npm run desktop:electron:dev\"",
+    "desktop:build": "ng build cinephoria-desktop --configuration=production --output-path=dist/cinephoria-desktop --base-href ./",
+    "desktop:electron:prod": "tsc -p electron/tsconfig.json && cross-env NODE_ENV=production electron electron/dist/main.js",
+    "desktop:prod": "npm run desktop:build && npm run desktop:electron:prod",
+    "desktop:package": "electron-builder"
   },
   "private": true,
   "dependencies": {
@@ -97,10 +104,12 @@
     "@types/nodemailer": "^6.4.17",
     "@typescript-eslint/eslint-plugin": "^8.33.0",
     "@typescript-eslint/parser": "^8.33.0",
-    "concurrently": "^9.1.2",
+    "concurrently": "^9.2.1",
     "cross-env": "^7.0.3",
     "cypress": "^14.4.0",
     "dotenv": "^16.5.0",
+    "electron": "^37.10.3",
+    "electron-builder": "^26.0.12",
     "eslint": "^9.27.0",
     "eslint-config-prettier": "^10.1.5",
     "eslint-plugin-prettier": "^5.4.0",
@@ -112,7 +121,8 @@
     "prettier": "^3.5.3",
     "start-server-and-test": "^2.0.12",
     "ts-jest": "^29.3.4",
-    "typescript": "~5.5.2"
+    "typescript": "~5.5.2",
+    "wait-on": "^9.0.3"
   },
   "jest": {
     "preset": "jest-preset-angular",

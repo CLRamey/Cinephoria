@@ -3,7 +3,7 @@
 describe('Inscription e2e Tests', () => {
   beforeEach(() => {
     cy.visit('/accueil');
-    cy.wait(2000);
+    cy.wait(1000);
   });
 
   it('should access the registration form from the homepage', () => {

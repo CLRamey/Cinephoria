@@ -1,0 +1,92 @@
+import { ReservationStat } from '../models/ReservationStats';
+import { reservation, screening, film, user } from '../models/init-models';
+import { Op, fn, col } from 'sequelize';
+import { logerror } from '../utils/logger';
+import { ServiceResponse, successResponse, errorResponse } from '../interfaces/serviceResponse';
+import { Role } from '../validators/userValidator';
+
+export interface ReservationStats {
+  filmId: number;
+  filmTitle: string;
+  date: string;
+  reservationCount: number;
+}
+
+export async function getReservationStats(): Promise<ServiceResponse<ReservationStats[]>> {
+  try {
+    // Calculate the date 7 days ago
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+    // Fetch reservation data from SQL
+    const data = await reservation.findAll({
+      attributes: [
+        [col('screening.film_id'), 'filmId'],
+        [col('screening.film.film_title'), 'filmTitle'],
+        [fn('COUNT', col('reservation_id')), 'reservationCount'],
+      ],
+      include: [
+        {
+          model: screening,
+          as: 'screening',
+          attributes: ['screening_id', 'screening_date', 'film_id'],
+          include: [{ model: film, as: 'film', attributes: ['film_id', 'film_title'] }],
+        },
+      ],
+      where: { reservationCreatedAt: { [Op.gte]: sevenDaysAgo } },
+      group: ['screening.film_id', 'screening->film.film_id'],
+      order: [[col('screening.film.film_title'), 'ASC']],
+    });
+    if (data.length === 0) {
+      return successResponse([]);
+    }
+    const runDate = new Date().toISOString().split('T')[0];
+    // Upsert into MongoDB using Mongoose
+    for (const row of data) {
+      const filmId = row.get('filmId');
+      const filmTitle = row.get('filmTitle');
+      const reservationCount = row.get('reservationCount');
+
+      await ReservationStat.updateOne(
+        { filmId, date: runDate },
+        { $set: { filmTitle, reservationCount } },
+        { upsert: true },
+      );
+    }
+    // Query MongoDB for the last 7 days
+    const stats = await ReservationStat.find({
+      date: runDate,
+    }).sort({ filmTitle: 1 });
+    if (stats.length === 0) {
+      return successResponse([]);
+    }
+    // Format the stats to match the ReservationStats interface
+    const formattedStats: ReservationStats[] = stats.map(stat => ({
+      filmId: stat.filmId,
+      filmTitle: stat.filmTitle,
+      date: stat.date,
+      reservationCount: stat.reservationCount,
+    }));
+
+    return successResponse(formattedStats);
+  } catch (err) {
+    logerror('Error fetching reservation stats:', err);
+    return errorResponse('Internal server error', 'INTERNAL_SERVER_ERROR');
+  }
+}
+
+// List employee accounts (employee only)
+export async function listEmployees(): Promise<ServiceResponse<user[]>> {
+  try {
+    // Fetch employee data from the database
+    const employees = await user.findAll({
+      where: { userRole: Role.EMPLOYEE },
+      attributes: ['userId', 'userFirstName', 'userLastName', 'userUsername', 'userEmail'],
+      order: [['userLastName', 'ASC']],
+    });
+
+    return successResponse(employees);
+  } catch (err) {
+    logerror('Error fetching employee accounts:', err);
+    return errorResponse('Internal server error', 'INTERNAL_SERVER_ERROR');
+  }
+}

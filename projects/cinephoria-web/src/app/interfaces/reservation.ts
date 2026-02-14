@@ -39,3 +39,20 @@ export interface ReserveResponse {
   success: boolean;
   error?: string;
 }
+
+export interface ReservationStats {
+  filmId: number;
+  filmTitle: string;
+  date: string;
+  reservationCount: number;
+}
+
+export interface StatisticsSuccessResponse {
+  success: true;
+  data: ReservationStats[];
+}
+
+export interface StatisticsErrorResponse {
+  success: false;
+  error: { message: string; code?: string };
+}

@@ -1,0 +1,33 @@
+.desktop-header {
+  width: 100vw;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+}
+
+.navbar {
+  display: flex;
+  align-items: center;
+  height: 5.8rem;
+  border-bottom: 0.8rem solid rgb(27, 62, 43);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+
+  .cinephoria-logo {
+    display: flex;
+    align-items: center;
+    max-width: 12rem;
+    max-height: 2rem;
+  }
+
+  .spacer {
+    flex: 1 1 auto;
+  }
+
+  .nav-links.desktop {
+    display: flex;
+    gap: 1rem;
+    padding: 0rem 1rem 0rem 0rem;
+  }
+}

@@ -218,4 +218,29 @@ describe('LoginClientComponent', () => {
     expect(component.loginForm.get('email')?.errors).toEqual({ incorrect: true });
     expect(component.loginForm.get('password')?.errors).toEqual({ incorrect: true });
   });
+
+  it('should catch unexpected errors during login', () => {
+    mockAuthService.loginCookieClient = jest.fn().mockImplementation(() => {
+      throw new Error('Unexpected login failure');
+    });
+    component.loginForm.setValue({
+      email: 'client@example.com',
+      password: 'StrongPassword123!',
+    });
+    component.onLogin();
+    expect(mockAuthService.logoutSecurely).toHaveBeenCalled();
+    expect(component.loginError).toBe(true);
+    expect(component.loginForm.get('email')?.errors).toBeNull();
+    expect(component.loginForm.get('password')?.errors).toBeNull();
+    expect(mockSnackBar.open).toHaveBeenCalledWith(
+      'Une erreur est survenue. Veuillez réessayer plus tard.',
+      'Fermer',
+      {
+        duration: 3000,
+        verticalPosition: 'top',
+        panelClass: 'snackbar-error',
+      },
+    );
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/accueil']);
+  });
 });

@@ -13,7 +13,7 @@ export interface roomAttributes {
   qualityId: number;
   seatMapId?: string;
   cinemaId: number;
-  deletedAt?: Date;
+  deletedAt?: Date | null;
 }
 
 export type roomPk = 'roomId';
@@ -28,7 +28,7 @@ export class room extends Model<roomAttributes, roomCreationAttributes> implemen
   qualityId!: number;
   seatMapId?: string;
   cinemaId!: number;
-  deletedAt?: Date;
+  deletedAt?: Date | null;
 
   // room belongsTo cinema via cinemaId
   cinema!: cinema;
@@ -151,7 +151,7 @@ export class room extends Model<roomAttributes, roomCreationAttributes> implemen
             name: 'room_number',
             unique: true,
             using: 'BTREE',
-            fields: [{ name: 'room_number' }, { name: 'cinema_id' }],
+            fields: [{ name: 'room_number' }, { name: 'cinema_id' }, { name: 'deleted_at' }],
           },
           {
             name: 'quality_id',

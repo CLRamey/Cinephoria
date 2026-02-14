@@ -62,6 +62,7 @@ export async function loginClientHandler(req: Request, res: Response) {
     if (accessToken) {
       attachAccessToken(res, accessToken);
     }
+
     // Return success response with access token
     return {
       success: true,

@@ -7,8 +7,6 @@ import { ReservationService } from '../services/reservationService';
 import { logerror } from '../utils/logger';
 
 export const seatingController = asyncHandler(seatingHandler);
-export const reservingController = asyncHandler(reservingHandler);
-export const reservationsController = asyncHandler(reservationsHandler);
 
 // Function to handle seating requests
 export async function seatingHandler(req: Request) {
@@ -54,15 +52,15 @@ export async function seatingHandler(req: Request) {
   }
 }
 
+export const reservingController = asyncHandler(reservingHandler);
 // Function to handle reservation requests
 export async function reservingHandler(req: Request) {
   try {
-    const { screeningId, seatIds } = req.body;
     if (!req.user || !req.user.userId) {
       return errorResponse('User not authenticated', 'UNAUTHORIZED');
     }
     const userId = req.user.userId;
-
+    const { screeningId, seatIds } = req.body;
     // Validate request body
     if ((!screeningId && isNaN(screeningId)) || !Array.isArray(seatIds) || seatIds.length === 0) {
       return errorResponse('Invalid request data', 'BAD_REQUEST');
@@ -106,6 +104,7 @@ export async function reservingHandler(req: Request) {
   }
 }
 
+export const reservationsController = asyncHandler(reservationsHandler);
 // Function to retrieve client reservations
 export async function reservationsHandler(req: Request) {
   try {

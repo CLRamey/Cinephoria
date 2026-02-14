@@ -1,0 +1,51 @@
+.contact-card {
+  width: 90vw;
+  max-width: 450px;
+  padding: 2rem;
+  box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.2);
+  border: rgb(215, 222, 218) 0.25px solid;
+
+  @media (max-width: 768px) {
+    padding: 1.5rem 1rem 2rem 1rem;
+  }
+}
+
+.full-width {
+  width: 100%;
+}
+
+h2 {
+  font-size: 2.2rem;
+  font-family:
+    "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande", "Lucida Sans", Arial, sans-serif;
+  margin-bottom: 10px;
+  color: rgb(31, 48, 37);
+}
+
+p {
+  margin-bottom: 5px;
+  font-size: 1rem;
+  color: rgb(80, 80, 80);
+}
+
+mat-error {
+  font-style: italic;
+  flex-wrap: wrap;
+  font-size: 0.8rem;
+}
+
+mat-icon {
+  font-size: 22px;
+}
+
+button[mat-icon-button] {
+  min-width: 20px;
+  height: 25px;
+  padding: 0;
+  margin: 3px;
+  color: rgb(31, 48, 37);
+}
+
+button[mat-raised-button] {
+  margin-top: 20px;
+}

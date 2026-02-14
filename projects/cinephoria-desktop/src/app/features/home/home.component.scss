@@ -1,0 +1,58 @@
+.home-background {
+  background-color: #f1f1ed;
+  width: 60vw;
+  height: 50vh;
+  min-width: 500px;
+  max-height: 400px;
+  margin-bottom: 6rem;
+  border-radius: 12px;
+  border: 8px solid #80c683;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding-bottom: 5rem;
+}
+
+#container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+#container img {
+  max-height: 100px;
+  max-width: 300px;
+  border-radius: 6px;
+  margin: 2rem 0 1rem 0;
+}
+
+#container h1 {
+  font-weight: 400;
+  font-size: 2.5rem;
+  font-family:
+    "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande", "Lucida Sans", Arial, sans-serif;
+  margin-bottom: 1rem;
+  color: rgb(31, 48, 37);
+}
+
+#container p {
+  font-size: 17px;
+  line-height: 22px;
+  color: #0d1718;
+  margin: 10px 0;
+  padding-bottom: 400px;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.access-button {
+  margin-top: 1rem;
+  margin-bottom: 2rem;
+  align-self: center;
+  width: 250px;
+  background-color: #f0f0ebeb;
+  border: 0.5px solid #686868;
+  &:hover {
+    background-color: #80c683;
+  }
+}

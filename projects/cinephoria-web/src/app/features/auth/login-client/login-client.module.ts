@@ -12,7 +12,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { AuthService } from '../../../../../../auth/src/lib/services/auth.service';
 import { RegisterClientComponent } from './register-client/register-client.component';
 import { VerifyEmailComponent } from './verify-email/verify-email.component';
@@ -46,7 +46,7 @@ const routes: Routes = [
     MatCardModule,
     MatDividerModule,
     MatCheckboxModule,
-    MatProgressSpinnerModule,
+    MatProgressSpinner,
     MatSnackBarModule,
   ],
   providers: [AuthService],

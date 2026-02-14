@@ -7,7 +7,6 @@ import {
   ActivatedRouteSnapshot,
   RouterStateSnapshot,
 } from '@angular/router';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { BehaviorSubject, throwError, of } from 'rxjs';
 import { AuthService } from '../../projects/auth/src/lib/services/auth.service';
 import { AuthGuard, AuthGuardChild } from '../../projects/auth/src/lib/guards/auth-guard.guard';
@@ -17,7 +16,6 @@ describe('Auth Guards', () => {
   let authServiceMock: Partial<AuthService>;
   let isAuthenticatedSubject: BehaviorSubject<boolean>;
   let userRoleSubject: BehaviorSubject<Role | null>;
-  let snackBarMock: { open: jest.Mock };
   let mockRouter: { createUrlTree: jest.Mock; navigate: jest.Mock };
 
   const mockRoute = new ActivatedRouteSnapshot();
@@ -37,10 +35,6 @@ describe('Auth Guards', () => {
       checkAuth: jest.fn().mockReturnValue(isAuthenticatedSubject.asObservable()),
       logoutSecurely: jest.fn().mockReturnValue(isAuthenticatedSubject.asObservable()),
     };
-    snackBarMock = {
-      open: jest.fn(),
-    };
-
     mockRouter = {
       createUrlTree: jest.fn(),
       navigate: jest.fn(),
@@ -50,7 +44,6 @@ describe('Auth Guards', () => {
       providers: [
         { provide: AuthService, useValue: authServiceMock },
         { provide: Router, useValue: mockRouter },
-        { provide: MatSnackBar, useValue: snackBarMock },
       ],
     });
   });
@@ -140,14 +133,13 @@ describe('Auth Guards', () => {
     });
   });
 
-  it('should show not authorized snack bar and redirection if authenticated but not authorized admin role', done => {
+  it('should send redirection if authenticated but not authorized admin role', done => {
     isAuthenticatedSubject.next(true);
     userRoleSubject.next(Role.CLIENT);
     mockRoute.data = { roles: [Role.ADMIN] };
 
     const result = executeGuard(mockRoute, mockState);
     (result as import('rxjs').Observable<UrlTree>).subscribe((_res: UrlTree) => {
-      expect(snackBarMock.open).toHaveBeenCalled();
       expect(mockRouter.createUrlTree).toHaveBeenCalledWith(['/accueil'], {
         queryParams: { returnUrl: '/protected' },
       });
@@ -155,14 +147,13 @@ describe('Auth Guards', () => {
     });
   });
 
-  it('should show not authorized snack bar and redirection if authenticated but not authorized admin role', done => {
+  it('should send redirection if authenticated but not authorized admin role', done => {
     isAuthenticatedSubject.next(true);
     userRoleSubject.next(Role.CLIENT);
     mockRoute.data = { roles: [Role.ADMIN] };
 
     const result = executeGuard(mockRoute, mockState);
     (result as import('rxjs').Observable<UrlTree>).subscribe((_res: UrlTree) => {
-      expect(snackBarMock.open).toHaveBeenCalled();
       expect(mockRouter.createUrlTree).toHaveBeenCalledWith(['/accueil'], {
         queryParams: { returnUrl: '/protected' },
       });
@@ -170,14 +161,13 @@ describe('Auth Guards', () => {
     });
   });
 
-  it('should show not authorized snack bar and redirection if authenticated but not authorized client role', done => {
+  it('should send redirection if authenticated but not authorized client role', done => {
     isAuthenticatedSubject.next(true);
     userRoleSubject.next(Role.EMPLOYEE);
     mockRoute.data = { roles: [Role.CLIENT] };
 
     const result = executeGuard(mockRoute, mockState);
     (result as import('rxjs').Observable<UrlTree>).subscribe((_res: UrlTree) => {
-      expect(snackBarMock.open).toHaveBeenCalled();
       expect(mockRouter.createUrlTree).toHaveBeenCalledWith(['/accueil'], {
         queryParams: { returnUrl: '/protected' },
       });
@@ -262,14 +252,13 @@ describe('Auth Guards', () => {
     });
   });
 
-  it('should show not authorized snack bar and redirection for child routes if authenticated but not authorized for client route', done => {
+  it('should send redirection for child routes if authenticated but not authorized for client route', done => {
     isAuthenticatedSubject.next(true);
     userRoleSubject.next(Role.EMPLOYEE);
     mockRoute.data = { roles: [Role.CLIENT] };
 
     const result = executeGuardChild(mockRoute, mockState);
     (result as import('rxjs').Observable<UrlTree>).subscribe((_res: UrlTree) => {
-      expect(snackBarMock.open).toHaveBeenCalled();
       expect(mockRouter.createUrlTree).toHaveBeenCalledWith(['/accueil'], {
         queryParams: { returnUrl: '/protected' },
       });
@@ -277,14 +266,13 @@ describe('Auth Guards', () => {
     });
   });
 
-  it('should show not authorized snack bar and redirection for child routes if authenticated but not authorized for employee route', done => {
+  it('should send redirection for child routes if authenticated but not authorized for employee route', done => {
     isAuthenticatedSubject.next(true);
     userRoleSubject.next(Role.CLIENT);
     mockRoute.data = { roles: [Role.EMPLOYEE] };
 
     const result = executeGuardChild(mockRoute, mockState);
     (result as import('rxjs').Observable<UrlTree>).subscribe((_res: UrlTree) => {
-      expect(snackBarMock.open).toHaveBeenCalled();
       expect(mockRouter.createUrlTree).toHaveBeenCalledWith(['/accueil'], {
         queryParams: { returnUrl: '/protected' },
       });
@@ -292,14 +280,13 @@ describe('Auth Guards', () => {
     });
   });
 
-  it('should show not authorized snack bar and redirection for child routes if authenticated but not authorized for admin route', done => {
+  it('should send redirection for child routes if authenticated but not authorized for admin route', done => {
     isAuthenticatedSubject.next(true);
     userRoleSubject.next(Role.CLIENT);
     mockRoute.data = { roles: [Role.ADMIN] };
 
     const result = executeGuardChild(mockRoute, mockState);
     (result as import('rxjs').Observable<UrlTree>).subscribe((_res: UrlTree) => {
-      expect(snackBarMock.open).toHaveBeenCalled();
       expect(mockRouter.createUrlTree).toHaveBeenCalledWith(['/accueil'], {
         queryParams: { returnUrl: '/protected' },
       });

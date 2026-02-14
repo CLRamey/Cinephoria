@@ -11,6 +11,7 @@ import http from 'http';
 
 // Set the port from environment variable or fallback to 3000
 const port = process.env['PORT'] || 3000;
+const host = process.env['HOST'] || 'localhost';
 
 // Start the server and connect to databases
 const startServer = async () => {
@@ -20,7 +21,7 @@ const startServer = async () => {
 
     const server = http.createServer(app);
     server.setTimeout(5 * 60 * 1000); // Set timeout to 5 minutes
-    server.listen(port, () => {
+    server.listen({ port, host }, () => {
       log(`Server is running`);
     });
   } catch (error) {

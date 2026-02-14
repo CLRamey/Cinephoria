@@ -101,7 +101,7 @@ CREATE TABLE IF NOT EXISTS Room (
     deleted_at DATETIME DEFAULT NULL,
     FOREIGN KEY (quality_id) REFERENCES Quality(quality_id) ON DELETE RESTRICT,
     FOREIGN KEY (cinema_id) REFERENCES Cinema(cinema_id) ON DELETE CASCADE,
-    UNIQUE (room_number, cinema_id)
+    UNIQUE (room_number, cinema_id, deleted_at)
 );
 
 -- Create Seat table

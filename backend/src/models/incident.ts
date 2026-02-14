@@ -10,7 +10,7 @@ export interface incidentAttributes {
   incidentStatus?: 'open' | 'resolved';
   incidentCreatedAt?: Date;
   incidentUpdatedAt?: Date;
-  deletedAt?: Date;
+  deletedAt?: Date | null;
   roomId: number;
   userId: number;
 }
@@ -35,7 +35,7 @@ export class incident
   incidentStatus?: 'open' | 'resolved';
   incidentCreatedAt?: Date;
   incidentUpdatedAt?: Date;
-  deletedAt?: Date;
+  deletedAt?: Date | null;
   roomId!: number;
   userId!: number;
 

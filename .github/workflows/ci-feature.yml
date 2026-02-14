@@ -1,7 +1,7 @@
-# This workflow will be triggered on every pull to the feature branches.
+# This workflow will be triggered on every push to the feature branches.
 # It will run the build and test commands to ensure that the code is working correctly.
 
-name: CI Feature Branches and Security Improvements
+name: CI Feature Branches, Security Improvements, Admin and Fixes
 
 on:
   push:
@@ -87,11 +87,7 @@ jobs:
       run: npm ci
       working-directory: ./backend
 
-    - name: Audit frontend dependencies
-      run: npm audit --omit=dev
-      working-directory: ./
-
-    - name: Audit backend dependencies
+    - name: Audit dependencies
       run: npm audit --omit=dev
       working-directory: ./backend
 

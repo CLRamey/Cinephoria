@@ -1,0 +1,54 @@
+.employee-container {
+  width: 100vw;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  justify-content: left;
+  max-width: 80vw;
+}
+
+h1 {
+  font-weight: 400;
+  font-size: 2.25rem;
+  font-family:
+    "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande", "Lucida Sans", Arial, sans-serif;
+  margin-bottom: 1.6rem;
+  color: rgb(31, 48, 37);
+}
+
+h2 {
+  font-size: 1.6rem;
+  font-weight: 400;
+  color: #686868;
+  text-decoration: underline;
+}
+
+mat-divider {
+  margin: 10px 0;
+  border-top-color: #80c683;
+  max-width: 85vw;
+}
+
+mat-form-field {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 250px;
+}
+
+.incident-section {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: left;
+  width: 80vw;
+}
+
+.no-incidents {
+  padding-top: none;
+  font-style: italic;
+}
+
+.table-section {
+  max-width: 650px;
+}

@@ -1,0 +1,154 @@
+<cad-header [logoClickEnabled]="false"></cad-header>
+<div class="employee-container">
+  <h1>Gestion des incidents</h1>
+  <div class="cinema-section">
+    <p>Veuillez sélectionner un cinéma pour voir les incidents :</p>
+
+    <ng-container *ngIf="cinemasLoading">
+      <p>Chargement des cinémas...</p>
+      <mat-spinner diameter="50"></mat-spinner>
+    </ng-container>
+
+    <ng-container *ngIf="cinemasError">
+      <p class="error-text">Erreur lors du chargement des cinémas. Veuillez réessayer plus tard.</p>
+    </ng-container>
+
+    <ng-container *ngIf="!cinemasLoading && !cinemasError">
+      <mat-form-field appearance="outline">
+        <mat-label>Choisir un cinéma</mat-label>
+        <mat-select [(ngModel)]="selectedCinemaId" (selectionChange)="onCinemaSelect($event.value)">
+          <mat-option [value]="null">— Sélectionnez —</mat-option>
+          <mat-option *ngFor="let c of cinemas" [value]="c.cinemaId">
+            {{ c.cinemaName }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-container>
+  </div>
+
+  <div class="room-section">
+    <ng-container *ngIf="!selectedCinemaId">
+      <p>Veuillez sélectionner un cinéma pour voir les salles disponibles.</p>
+    </ng-container>
+    <ng-container *ngIf="selectedCinemaId">
+      <p>Veuillez sélectionner une salle pour consulter les incidents spécifiques à cette salle</p>
+      <p>ou ajouter un nouvel incident :</p>
+
+      <ng-container *ngIf="roomsLoading">
+        <p>Chargement des salles...</p>
+        <mat-spinner diameter="50"></mat-spinner>
+      </ng-container>
+
+      <ng-container *ngIf="roomsError">
+        <p class="error-text">
+          Erreur lors du chargement des salles. Veuillez réessayer plus tard.
+        </p>
+      </ng-container>
+
+      <ng-container *ngIf="!roomsLoading && !roomsError && rooms.length === 0">
+        <p>Vous n'avez aucune salle pour le moment.</p>
+      </ng-container>
+
+      <ng-container *ngIf="!roomsLoading && !roomsError">
+        <mat-form-field appearance="outline">
+          <mat-label>Choisir une salle</mat-label>
+          <mat-select [(ngModel)]="selectedRoomId" (selectionChange)="onRoomSelect($event.value)">
+            <mat-option [value]="null">— Sélectionnez —</mat-option>
+            <mat-option *ngFor="let r of rooms" [value]="r.roomId">
+              {{ r.roomNumber }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <ng-container *ngIf="selectedCinemaId && selectedRoomId && !incidentsError">
+          <div class="add-incident-button">
+            <button mat-raised-button color="primary" (click)="onAddIncident()">
+              <mat-icon>add</mat-icon>
+              Ajouter un incident
+            </button>
+          </div>
+        </ng-container>
+      </ng-container>
+    </ng-container>
+  </div>
+
+  <mat-divider></mat-divider>
+
+  <div class="incident-section">
+    <ng-container *ngIf="selectedCinemaId">
+      <h2>Les incidents</h2>
+      <ng-container *ngIf="staffIncidents.length !== 0">
+        <p>
+          Veuillez trouver ci-dessous une liste des incidents signalés pour le cinéma sélectionné :
+        </p>
+      </ng-container>
+
+      <ng-container *ngIf="incidentsLoading">
+        <p>Chargement des incidents...</p>
+        <mat-spinner diameter="50"></mat-spinner>
+      </ng-container>
+
+      <ng-container *ngIf="incidentsError">
+        <p class="error-text">
+          Erreur lors du chargement des incidents. Veuillez réessayer plus tard.
+        </p>
+      </ng-container>
+
+      <ng-container *ngIf="!incidentsLoading && !incidentsError && staffIncidents.length === 0">
+        <p class="no-incidents">Vous n'avez aucun incident pour le moment.</p>
+      </ng-container>
+    </ng-container>
+  </div>
+
+  <div
+    class="table-section"
+    data-cy="incident-table"
+    *ngIf="!incidentsLoading && !incidentsError && staffIncidents.length > 0"
+  >
+    <table mat-table [dataSource]="staffIncidents" class="mat-elevation-z8 responsive-table">
+      <ng-container matColumnDef="room.roomNumber">
+        <th mat-header-cell *matHeaderCellDef>Salle</th>
+        <td mat-cell *matCellDef="let element">{{ element.room.roomNumber }}</td>
+      </ng-container>
+      <ng-container matColumnDef="incidentEquipment">
+        <th mat-header-cell *matHeaderCellDef>Équipement</th>
+        <td mat-cell *matCellDef="let element">{{ element.incidentEquipment }}</td>
+      </ng-container>
+      <ng-container matColumnDef="incidentDescription">
+        <th mat-header-cell *matHeaderCellDef>Description</th>
+        <td mat-cell *matCellDef="let element" class="hide-on-mobile">
+          {{ element.incidentDescription }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="incidentStatus">
+        <th mat-header-cell *matHeaderCellDef>Statut</th>
+        <td mat-cell *matCellDef="let element" class="hide-on-mobile">
+          {{ element.incidentStatus === "open" ? "Ouvert" : "Résolu" }}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Actions</th>
+        <td mat-cell *matCellDef="let element" class="action-buttons">
+          <button
+            mat-icon-button
+            color="primary"
+            aria-label="Modifier"
+            (click)="onModifyIncident(element)"
+          >
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button
+            mat-icon-button
+            color="warn"
+            aria-label="Supprimer"
+            (click)="onDeleteIncident(element)"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="incidentColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: incidentColumns"></tr>
+    </table>
+  </div>
+</div>

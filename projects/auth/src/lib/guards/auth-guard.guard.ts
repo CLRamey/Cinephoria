@@ -9,10 +9,8 @@ import {
 } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { Role } from '../interfaces/auth-interfaces';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { combineLatest, Observable, of } from 'rxjs';
 import { map, take, catchError, switchMap } from 'rxjs/operators';
-import { notAuthorizedSnackBar } from '../shared/utils/shared-responses';
 
 // Function to get the login path based on user roles
 function getLoginPathForRole(roles?: Role[]): string {
@@ -35,7 +33,6 @@ function getLoginPathForRole(roles?: Role[]): string {
 function checkAccess(route: ActivatedRouteSnapshot, url: string): Observable<boolean | UrlTree> {
   const authService = inject(AuthService);
   const router = inject(Router);
-  const snackBar = inject(MatSnackBar);
 
   const requiredRole = route.data['roles'] as Role[] | undefined;
   const loginPath = getLoginPathForRole(requiredRole);
@@ -51,7 +48,6 @@ function checkAccess(route: ActivatedRouteSnapshot, url: string): Observable<boo
             });
           }
           if (!userRole || (requiredRole && !requiredRole.includes(userRole as Role))) {
-            notAuthorizedSnackBar(snackBar);
             authService.logoutSecurely().pipe(take(1)).subscribe();
             return router.createUrlTree(['/accueil'], {
               queryParams: { returnUrl: url },
